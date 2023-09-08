@@ -44,6 +44,14 @@ To achieve fast transcription, `say` uses some existing APIs that offer low-late
 
 `say` has a user interface that is optimized to reduce the perceived latency.
 
+### Segmentation
+
+`say` uses topic segmentation to divide the text into meaningful units.
+
+When the subject matter of the text changes, `say` creates a new paragraph for each topic.
+
+You can move between paragraphs in Neovim by using its keyboard shortcut.
+
 ### Budget
 
 Most productivity tools designed for individual users have a lower price than $100/month. I wanted to keep `say` affordable.

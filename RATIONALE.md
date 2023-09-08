@@ -1,6 +1,12 @@
 # Rationale
 
-## 24/7
+## Just Say It
+
+Whether you want to capture a fleeting thought, a raw emotion, or an unfiltered idea, just say it. Chronicle every essence of who you are with `say`.
+
+## Goals
+
+### 24/7
 
 `say` is a tool designed for capturing thoughts and ideas through continuous voice recording. It's a personal reflection-focused tool that avoids any potential legal complications. 
 
@@ -16,7 +22,7 @@ Journaling can have therapeutic effects, and `say` automates this process, poten
 
 `say` can boost your creativity and productivity by allowing you to record inspirations as they come. Whether it's a business idea, narrative, or comedic line, just say it.
 
-## Latency
+### Latency
 
 `say` allows you to transcribe your speech into text quickly. You can use the transcription right away for your purposes, such as writing, editing, or sharing.
 
@@ -26,7 +32,7 @@ To achieve fast transcription, `say` uses some existing APIs that offer low-late
 
 `say` has a user interface that is optimized to reduce the perceived latency.
 
-## Accuracy
+### Accuracy
 
 `say` aims to provide high-quality transcription for any user, but there are some limitations and challenges.
 

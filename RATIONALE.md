@@ -44,3 +44,24 @@ To improve accuracy, users with non-standard accents can consider accent coachin
 
 `say` aims to capture your thoughts anytime and anywhere, but common sense applies. If any human listener cannot understand you, `say` will probably struggle too.
 
+## Hardware
+
+### Ubiquity
+
+Chances are, you have an old phone lying around that you can use to test `say`. If not, you can always use your current device.
+
+### Connectivity
+
+Your mobile phone is equipped with Wi-Fi, which allows `say` to automatically transfer your recordings.
+
+### Setup
+
+You're already familiar with how to use your phone, so getting started is easy.
+
+### Cost
+
+Acquiring a second-hand phone to use with `say` is an inexpensive option.
+
+### Portability
+
+While `say` is primarily designed to be stationary and plugged in, it's easy to move it.

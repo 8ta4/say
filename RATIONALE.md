@@ -16,6 +16,16 @@ Journaling can have therapeutic effects, and `say` automates this process, poten
 
 `say` can boost your creativity and productivity by allowing you to record inspirations as they come. Whether it's a business idea, narrative, or comedic line, just say it.
 
+## Latency
+
+`say` allows you to transcribe your speech into text quickly. You can use the transcription right away for your purposes, such as writing, editing, or sharing.
+
+`say` is not designed to provide real-time feedback. It aims to let you express your thoughts without interruption or distraction.
+
+To achieve fast transcription, `say` uses some existing APIs that offer low-latency transcription and topic segmentation. `say` does not need to create its own algorithms for these tasks.
+
+`say` has a user interface that is optimized to reduce the perceived latency.
+
 ## Accuracy
 
 `say` aims to provide high-quality transcription for any user, but there are some limitations and challenges.
@@ -27,3 +37,4 @@ Another challenge is handling different accents and dialects. Currently, the mos
 To improve accuracy, users with non-standard accents can consider accent coaching, simpler diction, or avoiding complex or fancy vocabulary. This is similar to learning to touch-type to type faster. Technology will hopefully improve over time, and this adaptation may become unnecessary.
 
 `say` aims to capture your thoughts anytime and anywhere, but common sense applies. If any human listener cannot understand you, `say` will probably struggle too.
+

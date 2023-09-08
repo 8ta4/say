@@ -44,14 +44,6 @@ To achieve fast transcription, `say` uses some existing APIs that offer low-late
 
 `say` has a user interface that is optimized to reduce the perceived latency.
 
-### Segmentation
-
-`say` uses topic segmentation to divide the text into meaningful units.
-
-When the subject matter of the text changes, `say` creates a new paragraph for each topic.
-
-You can move between paragraphs in Neovim by using its keyboard shortcut.
-
 ### Budget
 
 Most productivity tools designed for individual users have a lower price than $100/month. I wanted to keep `say` affordable.
@@ -82,6 +74,34 @@ While `say` is primarily designed to be stationary and plugged in, it's easy to 
 
 ## Software
 
+### Segmentation
+
+#### File
+
+Daily segmentation speeds up loading times when using Neovim.
+
+You can easily access recent transcriptions by opening "today".
+
+If you need weekly or monthly transcriptions, you can simply concatenate the daily transcriptions.
+
+This also makes it easy to search for a specific date.
+
+#### Paragraph
+
+`say` uses topic segmentation to divide the text. When the subject matter of the text changes, `say` creates a new paragraph.
+
+You can move between paragraphs in Neovim by using its keyboard shortcut.
+
+#### Line
+
+`say` displays each sentence on a separate line.
+
+You can navigate through sentences using Neovim's keyboard shortcuts.
+
+`say` doesn't prioritize readability for human readers.
+
+Instead, `say` is designed for interaction with the LLM, which doesn't require traditional readability structures.
+
 ### Local Storage
 
 `say` prioritizes user control, so your recordings and transcriptions will be stored locally on your desktop.
@@ -98,12 +118,3 @@ We encourage you to use device-level encryption to protect your data.
 
 To make the most of your storage space, `say` uses voice activity detection to eliminate silent periods.
 
-### Daily Segmentation
-
-Daily segmentation speeds up loading times when using Neovim.
-
-You can easily access recent transcriptions by opening "today".
-
-If you need weekly or monthly transcriptions, you can simply concatenate the daily transcriptions.
-
-This also makes it easy to search for a specific date.

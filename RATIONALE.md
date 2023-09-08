@@ -79,3 +79,31 @@ Acquiring a second-hand phone to use with `say` is an inexpensive option.
 ### Portability
 
 While `say` is primarily designed to be stationary and plugged in, it's easy to move it.
+
+## Software
+
+### Local Storage
+
+`say` prioritizes user control, so your recordings and transcriptions will be stored locally on your desktop.
+
+### Backup
+
+`say` gives you the freedom to choose your preferred backup or cloud storage method.
+
+### Encryption
+
+We encourage you to use device-level encryption to protect your data.
+
+### Voice Activity Detection
+
+To make the most of your storage space, `say` uses voice activity detection to eliminate silent periods.
+
+### Daily Segmentation
+
+Daily segmentation speeds up loading times when using Neovim.
+
+You can easily access recent transcriptions by opening "today".
+
+If you need weekly or monthly transcriptions, you can simply concatenate the daily transcriptions.
+
+This also makes it easy to search for a specific date.

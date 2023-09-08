@@ -44,6 +44,12 @@ To achieve fast transcription, `say` uses some existing APIs that offer low-late
 
 `say` has a user interface that is optimized to reduce the perceived latency.
 
+### Budget
+
+Most productivity tools designed for individual users have a lower price than $100/month. I wanted to keep `say` affordable.
+
+A high price point can motivate you to use `say` more often. You might think that since you are paying a lot, you should make the most of it and "just say it".
+
 ## Hardware
 
 ### Ubiquity

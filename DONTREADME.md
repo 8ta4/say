@@ -1,4 +1,4 @@
-# Rationale
+# say
 
 ## Just Say It
 

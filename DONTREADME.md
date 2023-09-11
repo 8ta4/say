@@ -82,9 +82,9 @@ Eventually, the IT will be transformed into the Final Transcript (FT).
 
 ### Manual Edit
 
-Manual Edit (ME) is a feature that allows you to make changes.
+The Manual Edit (ME) feature lets you make changes to the transcript.
 
-ME doesn't affect the IT. The beginning of the IT is marked by Neovim's extmark. Any ME that modifies content before this mark will be saved, while any changes made after will not be saved. If the extmark itself is deleted, the ME will not be saved.
+ME doesn't affect the IT. The start of the IT is marked by Neovim's extmark. Any changes you make before this mark will be saved, while any changes made after will not be saved. If you delete the extmark, the ME will not be saved.
 
 ### Segmentation
 
@@ -119,6 +119,10 @@ If you need weekly or monthly transcriptions, you can simply concatenate the dai
 This also makes it easy to search for a specific date.
 
 ### Interaction
+
+FT or ME triggers ALS. Once ALS is activated, it then triggers APS.
+
+If a new FT or ME is introduced, any pending ALS and APS are cancelled because the previous ALS and APS may have been based on an outdated last paragraph.
 
 |     | IT                                             | FT                                             | ALS                                                       | APS                                                       | ME                                                     |
 | --- | ---------------------------------------------- | ---------------------------------------------- | --------------------------------------------------------- | --------------------------------------------------------- | ------------------------------------------------------ |

@@ -4,6 +4,16 @@
 
 Whether you want to capture a fleeting thought, a raw emotion, or an unfiltered idea, just say it. Chronicle every essence of who you are with `say`.
 
+## Installation
+
+First off, you need Homebrew. If you don't have it already, you can find the instructions on the [Homebrew website](https://brew.sh/).
+
+Once you've got Homebrew, just enter this command in your terminal:
+
+```sh
+brew install 8ta4/say/say
+```
+
 ## Usage
 
 ### Transcription

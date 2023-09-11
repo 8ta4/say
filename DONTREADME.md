@@ -38,13 +38,19 @@ Most productivity tools designed for individual users have a lower price than $1
 
 A high price point can motivate you to use `say` more often. You might think that since you are paying a lot, you should make the most of it and "just say it".
 
-## Setup
+## Architecture
 
 `say` functions as a monolithic macOS background process and also as a Neovim plugin. It's just a `brew install` away, eliminating the need for any additional devices.
 
 The uniformity of the macOS ecosystem simplifies both development and testing.
 
 By self-hosting `say`, you're enhancing your privacy.
+
+## API Key
+
+I've chosen not to store the API key. This approach keeps the codebase simple and reduces potential security vulnerabilities.
+
+Designed for continuous operation, `say` ideally requires the API key to be entered just once.
 
 ## Name Overlap
 

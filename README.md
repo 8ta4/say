@@ -4,15 +4,25 @@
 
 Whether you want to capture a fleeting thought, a raw emotion, or an unfiltered idea, just say it. Chronicle every essence of who you are with `say`.
 
-## Installation
+## Setup
 
-First off, you need Homebrew. If you don't have it already, you can find the instructions on the [Homebrew website](https://brew.sh/).
+- First off, you need Homebrew. If you don't have it already, you can find the instructions on the [Homebrew website](https://brew.sh/).
 
-Once you've got Homebrew, just enter this command in your terminal:
+- Once you've got Homebrew, enter this command in your terminal:
 
 ```sh
 brew install 8ta4/say/say
 ```
+
+- You can do launch `say` by entering:
+
+```sh
+say
+```
+
+- You'll need a Deepgram API key to use `say`. If you don't have one yet, you can get it from the Deepgram website.
+
+- When `say` prompts you for the API key, just paste it in.
 
 ## Usage
 

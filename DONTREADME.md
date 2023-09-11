@@ -46,6 +46,14 @@ The uniformity of the macOS ecosystem simplifies both development and testing.
 
 By self-hosting `say`, you're enhancing your privacy.
 
+## Name Overlap
+
+This tool intentionally replaces the `say` command built-in with macOS.
+
+If you run the default `say` command on macOS while this tool is active, it may interfere with the recording and transcription process.
+
+I've chosen to keep the name of this tool as `say` to ensure a smooth installation and usage experience.
+
 ## Voice Activity Detection
 
 To make the most of your storage space, `say` uses voice activity detection to eliminate silent periods.

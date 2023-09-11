@@ -8,7 +8,7 @@
 
 Voice is an efficient medium for brain-to-computer communication. However, it may require some adaptation in your thought process. You might need to learn to verbalize every internal monologue and express yourself more coherently.
 
-Prolonged speaking can strain your voice, and continuous speaking may require voice training. However, future technologies, such as lip reading, could potentially offer more efficient solutions.
+Prolonged speaking can strain your voice, and continuous speaking may require voice training.
 
 `say` allows you to capture your thoughts in situations where traditional note-taking isn't feasible, such as when you're in bed or when your hands are occupied.
 

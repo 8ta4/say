@@ -6,13 +6,9 @@
 
 `say` is a tool designed for capturing thoughts and ideas through continuous voice recording. It's a personal reflection-focused tool that avoids any potential legal complications.
 
-Voice is an efficient medium for brain-to-computer communication. However, it may require some adaptation in your thought process. You might need to learn to verbalize every internal monologue and express yourself more coherently.
-
-Prolonged speaking can strain your voice, and continuous speaking may require voice training.
+Voice is an efficient medium for brain-to-computer communication.
 
 `say` allows you to capture your thoughts in situations where traditional note-taking isn't feasible, such as when you're in bed or when your hands are occupied.
-
-To avoid contaminating your recordings, you might want to consider living alone or avoiding playing any songs or movies that could interfere with your recording. If you are married, consider getting a divorce.
 
 Journaling can have therapeutic effects, and `say` automates this process, potentially providing catharsis.
 
@@ -25,10 +21,6 @@ Journaling can have therapeutic effects, and `say` automates this process, poten
 One of the challenges is dealing with low-confidence segments that the transcription system is not sure how to transcribe. To avoid contaminating the transcription with errors, `say` can drop these segments and only retain the ones with high confidence.
 
 Another challenge is handling different accents and dialects. Currently, the most recognized accent is Standard American English, because it has the most data available for training the transcription system. This is a form of accentism.
-
-To improve accuracy, users with non-standard accents can consider accent coaching, simpler diction, or avoiding complex or fancy vocabulary. This is similar to learning to touch-type to type faster. Technology will hopefully improve over time, and this adaptation may become unnecessary.
-
-`say` aims to capture your thoughts anytime and anywhere, but common sense applies. If any human listener cannot understand you, `say` will probably struggle too.
 
 ### Latency
 
@@ -76,15 +68,11 @@ ME doesn't affect the IT. The start of the IT is marked by Neovim's extmark. Any
 
 `say` displays each sentence on a separate line, a feature known as Automatic Line Segmentation (ALS).
 
-You can navigate through sentences using `j` and `k`.
-
 `say` prioritizes interaction with the LLM over traditional readability for human readers.
 
 ### Paragraph
 
 `say` analyzes topics and divides the last paragraph. When the subject matter of the text changes, `say` creates a new paragraph. This feature is known as Automatic Paragraph Segmentation (APS).
-
-You can move between paragraphs using `{` and `}`.
 
 If the last paragraph is one or two sentences long, APS doesn't activate because you can navigate it using `j` and `k`. APS only activates if the paragraph is three sentences long or longer.
 
@@ -95,8 +83,6 @@ Each sentence's embedding is calculated and cached because calculating sentence 
 ### File
 
 Daily segmentation speeds up loading times when using Neovim.
-
-You can easily access recent transcriptions by opening "today".
 
 If you need weekly or monthly transcriptions, you can simply concatenate the daily transcriptions.
 
@@ -115,15 +101,3 @@ If a new FT or ME is introduced, any pending ALS and APS are cancelled because t
 | ALS | If IT exists, replace IT; otherwise, append IT | If IT exists, replace IT; otherwise, append FT | Not Applicable (New FT or ME cancels pending ALS and APS) | Apply APS excluding IT                                    | Apply ME only to the section finalized before ME began |
 | APS | If IT exists, replace IT; otherwise, append IT | If IT exists, replace IT; otherwise, append FT | Not Applicable (New FT or ME cancels pending ALS and APS) | Not Applicable (New FT or ME cancels pending ALS and APS) | Apply ME only to the section finalized before ME began |
 | ME  | If IT exists, replace IT; otherwise, append IT | If IT exists, replace IT; otherwise, append FT | Apply ALS excluding IT                                    | Not Applicable (New FT or ME cancels pending ALS and APS) | Apply ME only to the section finalized before ME began |
-
-## Storage
-
-`say` prioritizes user control, so your recordings and transcriptions will be stored locally on your desktop.
-
-## Encryption
-
-We encourage you to use device-level encryption to protect your data.
-
-## Backup
-
-`say` gives you the freedom to choose your preferred backup or cloud storage method.

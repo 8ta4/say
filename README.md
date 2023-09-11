@@ -6,23 +6,23 @@ Whether you want to capture a fleeting thought, a raw emotion, or an unfiltered 
 
 ## Setup
 
-- First off, you need Homebrew. If you don't have it already, you can find the instructions on the [Homebrew website](https://brew.sh/).
+1. First off, you need Homebrew. If you don't have it already, you can find the instructions on the [Homebrew website](https://brew.sh/).
 
-- Once you've got Homebrew, enter this command in your terminal:
+1. Once you've got Homebrew, enter this command in your terminal:
 
-```sh
-brew install 8ta4/say/say
-```
+   ```sh
+   brew install 8ta4/say/say
+   ```
 
-- You can do launch `say` by entering:
+1. You can do launch `say` by entering:
 
-```sh
-say
-```
+   ```sh
+   say
+   ```
 
-- You'll need a Deepgram API key to use `say`. If you don't have one yet, you can get it from the Deepgram website.
+1. You'll need a Deepgram API key to use `say`. If you don't have one yet, you can get it from the Deepgram website.
 
-- When `say` prompts you for the API key, just paste it in.
+1. When `say` prompts you for the API key, just paste it in.
 
 ## Usage
 

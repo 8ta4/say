@@ -50,37 +50,33 @@ Most productivity tools designed for individual users have a lower price than $1
 
 A high price point can motivate you to use `say` more often. You might think that since you are paying a lot, you should make the most of it and "just say it".
 
-## Hardware
-
-### Usability
+## Setup
 
 `say` functions as a monolithic macOS background process and also as a Neovim plugin. It's just a `brew install` away, eliminating the need for any additional devices.
 
-### Privacy
+The uniformity of the macOS ecosystem simplifies both development and testing.
 
 By self-hosting `say`, you're enhancing your privacy.
 
-### Development
+## Voice Activity Detection
 
-The uniformity of the macOS ecosystem simplifies both development and testing.
+To make the most of your storage space, `say` uses voice activity detection to eliminate silent periods.
 
-## Software
-
-### Transcription
+## Transcription
 
 The Interim Transcript (IT) is a real-time draft of ongoing speech.
 
 Eventually, the IT will be transformed into the Final Transcript (FT).
 
-### Manual Edit
+## Manual Edit
 
 The Manual Edit (ME) feature lets you make changes to the transcript.
 
 ME doesn't affect the IT. The start of the IT is marked by Neovim's extmark. Any changes you make before this mark will be saved, while any changes made after will not be saved. If you delete the extmark, the ME will not be saved.
 
-### Segmentation
+## Segmentation
 
-#### Line
+### Line
 
 `say` displays each sentence on a separate line, a feature known as Automatic Line Segmentation (ALS).
 
@@ -88,7 +84,7 @@ You can navigate through sentences using `j` and `k`.
 
 `say` prioritizes interaction with the LLM over traditional readability for human readers.
 
-#### Paragraph
+### Paragraph
 
 `say` analyzes topics and divides the last paragraph. When the subject matter of the text changes, `say` creates a new paragraph. This feature is known as Automatic Paragraph Segmentation (APS).
 
@@ -100,7 +96,7 @@ APS uses sentence embedding to split paragraphs. It identifies potential paragra
 
 Each sentence's embedding is calculated and cached because calculating sentence embedding is computationally expensive.
 
-#### File
+### File
 
 Daily segmentation speeds up loading times when using Neovim.
 
@@ -110,7 +106,7 @@ If you need weekly or monthly transcriptions, you can simply concatenate the dai
 
 This also makes it easy to search for a specific date.
 
-### Interaction
+## Interaction
 
 FT or ME triggers ALS. Once ALS is activated, it then triggers APS.
 
@@ -124,18 +120,14 @@ If a new FT or ME is introduced, any pending ALS and APS are cancelled because t
 | APS | If IT exists, replace IT; otherwise, append IT | If IT exists, replace IT; otherwise, append FT | Not Applicable (New FT or ME cancels pending ALS and APS) | Not Applicable (New FT or ME cancels pending ALS and APS) | Apply ME only to the section finalized before ME began |
 | ME  | If IT exists, replace IT; otherwise, append IT | If IT exists, replace IT; otherwise, append FT | Apply ALS excluding IT                                    | Not Applicable (New FT or ME cancels pending ALS and APS) | Apply ME only to the section finalized before ME began |
 
-### Local Storage
+## Storage
 
 `say` prioritizes user control, so your recordings and transcriptions will be stored locally on your desktop.
 
-### Backup
-
-`say` gives you the freedom to choose your preferred backup or cloud storage method.
-
-### Encryption
+## Encryption
 
 We encourage you to use device-level encryption to protect your data.
 
-### Voice Activity Detection
+## Backup
 
-To make the most of your storage space, `say` uses voice activity detection to eliminate silent periods.
+`say` gives you the freedom to choose your preferred backup or cloud storage method.

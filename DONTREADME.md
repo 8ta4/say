@@ -8,13 +8,13 @@ Whether you want to capture a fleeting thought, a raw emotion, or an unfiltered 
 
 ### 24/7
 
-`say` is a tool designed for capturing thoughts and ideas through continuous voice recording. It's a personal reflection-focused tool that avoids any potential legal complications. 
+`say` is a tool designed for capturing thoughts and ideas through continuous voice recording. It's a personal reflection-focused tool that avoids any potential legal complications.
 
 Voice is an efficient medium for brain-to-computer communication. However, it may require some adaptation in your thought process. You might need to learn to verbalize every internal monologue and express yourself more coherently.
 
 Prolonged speaking can strain your voice, and continuous speaking may require voice training. However, future technologies, such as lip reading, could potentially offer more efficient solutions.
 
-`say` allows you to capture your thoughts in situations where traditional note-taking isn't feasible, such as when you're in bed or when your hands are occupied. 
+`say` allows you to capture your thoughts in situations where traditional note-taking isn't feasible, such as when you're in bed or when your hands are occupied.
 
 To avoid contaminating your recordings, you might want to consider living alone or avoiding playing any songs or movies that could interfere with your recording. If you are married, consider getting a divorce.
 
@@ -74,7 +74,39 @@ While `say` is primarily designed to be stationary and plugged in, it's easy to 
 
 ## Software
 
+### Transcription
+
+The Interim Transcript (IT) is a real-time draft of ongoing speech.
+
+Eventually, the IT will be transformed into the Final Transcript (FT).
+
+### Manual Edit
+
+Manual Edit (ME) is a feature that allows you to make changes.
+
+ME doesn't affect the IT. The beginning of the IT is marked by Neovim's extmark. Any ME that modifies content before this mark will be saved, while any changes made after will not be saved. If the extmark itself is deleted, the ME will not be saved.
+
 ### Segmentation
+
+#### Line
+
+`say` displays each sentence on a separate line, a feature known as Automatic Line Segmentation (ALS).
+
+You can navigate through sentences using `j` and `k`.
+
+`say` prioritizes interaction with the LLM over traditional readability for human readers.
+
+#### Paragraph
+
+`say` analyzes topics and divides the last paragraph. When the subject matter of the text changes, `say` creates a new paragraph. This feature is known as Automatic Paragraph Segmentation (APS).
+
+You can move between paragraphs using `{` and `}`.
+
+If the last paragraph is one or two sentences long, APS doesn't activate because you can navigate it using `j` and `k`. APS only activates if the paragraph is three sentences long or longer.
+
+APS uses sentence embedding to split paragraphs. It identifies potential paragraph boundaries using sentence boundaries and then calculates the similarity of two new potential paragraphs using averaged embedding.
+
+Each sentence's embedding is calculated and cached because calculating sentence embedding is computationally expensive.
 
 #### File
 
@@ -86,21 +118,15 @@ If you need weekly or monthly transcriptions, you can simply concatenate the dai
 
 This also makes it easy to search for a specific date.
 
-#### Paragraph
+### Interaction
 
-`say` uses topic segmentation to divide the text. When the subject matter of the text changes, `say` creates a new paragraph.
-
-You can move between paragraphs in Neovim by using its keyboard shortcut.
-
-#### Line
-
-`say` displays each sentence on a separate line.
-
-You can navigate through sentences using Neovim's keyboard shortcuts.
-
-`say` doesn't prioritize readability for human readers.
-
-Instead, `say` is designed for interaction with the LLM, which doesn't require traditional readability structures.
+|     | IT                                             | FT                                             | ALS                                                       | APS                                                       | ME                                                     |
+| --- | ---------------------------------------------- | ---------------------------------------------- | --------------------------------------------------------- | --------------------------------------------------------- | ------------------------------------------------------ |
+| IT  | Replace IT                                     | Replace IT                                     | Apply ALS excluding IT                                    | Apply APS excluding IT                                    | Apply ME only to the section finalized before ME began |
+| FT  | Append IT                                      | Append FT                                      | Apply ALS                                                 | Not Applicable (New FT or ME cancels pending ALS and APS) | Apply ME only to the section finalized before ME began |
+| ALS | If IT exists, replace IT; otherwise, append IT | If IT exists, replace IT; otherwise, append FT | Not Applicable (New FT or ME cancels pending ALS and APS) | Apply APS excluding IT                                    | Apply ME only to the section finalized before ME began |
+| APS | If IT exists, replace IT; otherwise, append IT | If IT exists, replace IT; otherwise, append FT | Not Applicable (New FT or ME cancels pending ALS and APS) | Not Applicable (New FT or ME cancels pending ALS and APS) | Apply ME only to the section finalized before ME began |
+| ME  | If IT exists, replace IT; otherwise, append IT | If IT exists, replace IT; otherwise, append FT | Apply ALS excluding IT                                    | Not Applicable (New FT or ME cancels pending ALS and APS) | Apply ME only to the section finalized before ME began |
 
 ### Local Storage
 
@@ -117,4 +143,3 @@ We encourage you to use device-level encryption to protect your data.
 ### Voice Activity Detection
 
 To make the most of your storage space, `say` uses voice activity detection to eliminate silent periods.
-

@@ -52,25 +52,17 @@ A high price point can motivate you to use `say` more often. You might think tha
 
 ## Hardware
 
-### Ubiquity
+### Usability
 
-Chances are, you have an old phone lying around that you can use to test `say`. If not, you can always use your current device.
+`say` functions as a monolithic macOS background process and also as a Neovim plugin. It's just a `brew install` away, eliminating the need for any additional devices.
 
-### Connectivity
+### Privacy
 
-Your mobile phone is equipped with Wi-Fi, which allows `say` to automatically transfer your recordings.
+By self-hosting `say`, you're enhancing your privacy.
 
-### Setup
+### Development
 
-You're already familiar with how to use your phone, so getting started is easy.
-
-### Cost
-
-Acquiring a second-hand phone to use with `say` is an inexpensive option.
-
-### Portability
-
-While `say` is primarily designed to be stationary and plugged in, it's easy to move it.
+The uniformity of the macOS ecosystem simplifies both development and testing.
 
 ## Software
 

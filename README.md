@@ -10,9 +10,7 @@ Whether you want to capture a fleeting thought, a raw emotion, or an unfiltered 
 
 You can easily access recent transcriptions by opening "today".
 
-You can navigate through sentences using `j` and `k`.
-
-You can move between paragraphs using `{` and `}`.
+You can navigate your transcription file using Neovim keyboard shortcuts.
 
 ### Recording
 

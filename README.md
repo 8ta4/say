@@ -24,6 +24,10 @@ Whether you want to capture a fleeting thought, a raw emotion, or an unfiltered 
 
 1. When `say` prompts you for the API key, just paste it in.
 
+## Pricing
+
+For information on the cost of using say, refer to Deepgram’s streaming pricing available [here](https://deepgram.com/pricing).
+
 ## Usage
 
 ### Transcription

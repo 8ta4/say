@@ -2,7 +2,7 @@
 
 ## Just Say It
 
-Whether you want to capture a fleeting thought, a raw emotion, or an unfiltered idea, just say it. Chronicle every essence of who you are with `say`.
+`Say` is always on, recording and transcribing your voice 24/7. Whenever inspiration strikes, just say it.
 
 ## Setup
 

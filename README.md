@@ -24,9 +24,11 @@ Whether you want to capture a fleeting thought, a raw emotion, or an unfiltered 
 
 1. When `say` prompts you for the API key, just paste it in.
 
-## Pricing
+## Cost
 
-For information on the cost of using say, refer to Deepgram’s streaming pricing available [here](https://deepgram.com/pricing).
+`say` is free to use, but keep in mind that it uses the Deepgram API, which might cost you some money. You can check out the prices on [Deepgram’s streaming pricing page](https://deepgram.com/pricing).
+
+To help save money, `say` uses voice activity detection (VAD). This feature tries to cut down on unnecessary usage. But VAD may not be flawless.
 
 ## Usage
 

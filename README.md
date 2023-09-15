@@ -34,7 +34,11 @@ To help save money, `say` uses voice activity detection (VAD). This feature trie
 
 ### Transcription
 
-You can easily access recent transcriptions by opening "today".
+You can easily access recent transcriptions by entering:
+
+   ```sh
+   say
+   ```
 
 You can navigate your transcription file using Neovim keyboard shortcuts.
 

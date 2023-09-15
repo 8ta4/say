@@ -77,7 +77,7 @@ To avoid contaminating your recordings, you might want to consider living alone 
 
 To improve accuracy, you can consider accent coaching, simpler diction, or avoiding complex or fancy vocabulary. This is similar to learning to touch-type to type faster.
 
-`say` aims to capture your thoughts anytime and anywhere, but common sense applies. If any human listener cannot understand you, `say` will probably struggle too.
+`say` aims to capture your thoughts anytime, but common sense applies. If any human listener cannot understand you, `say` will probably struggle too.
 
 ### Encryption
 

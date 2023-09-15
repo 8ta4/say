@@ -40,8 +40,6 @@ You can easily access recent transcriptions by entering:
    say
    ```
 
-You can navigate your transcription file using Neovim keyboard shortcuts.
-
 ### Directory Structure
 
 `say` organizes your transcripts in a specific directory structure to make it easy for you to locate your files. Here's how it works:

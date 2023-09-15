@@ -63,6 +63,10 @@ The `archive/` directory stores all your transcripts. Each day's transcript is o
 
 The `live/` directory contains the real-time transcript for today.
 
+### Backup
+
+You can consider backing up `archive/` directory. `say` gives you the freedom to choose your preferred backup or cloud storage method.
+
 ### Recording
 
 You might need to learn to verbalize every internal monologue and express yourself more coherently.
@@ -78,7 +82,3 @@ To improve accuracy, you can consider accent coaching, simpler diction, or avoid
 ### Encryption
 
 We encourage you to use device-level encryption to protect your data.
-
-### Backup
-
-`say` gives you the freedom to choose your preferred backup or cloud storage method.

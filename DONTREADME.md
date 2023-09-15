@@ -102,6 +102,14 @@ If you need weekly or monthly transcriptions, you can simply concatenate the dai
 
 This also makes it easy to search for a specific date.
 
+## Updating `read-only.txt`
+
+1. `say` makes a copy of the `read-only.txt` file and creates a temporary file in the system's temp directory. This ensures that the application directory doesn't get cluttered.
+
+2. Any updates made to the file will modify the temporary file, preserving the read-only nature of the original `read-only.txt` file.
+
+3. `say` uses the atomic `rename` operation to replace the original `read-only.txt` file with the modified temporary file. This atomic operation ensures that the `read-only.txt` file is always consistent.
+
 ## Interaction
 
 FT or ME triggers ALS. Once ALS is activated, it then triggers APS.

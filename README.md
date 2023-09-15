@@ -63,6 +63,10 @@ The `archive/` directory stores all your transcripts. Each day's transcript is o
 
 The `live/` directory contains the real-time transcript for today.
 
+The `read-only.txt` file is just that - read-only. While you technically can edit this file, it’s best not to.
+
+Feel free to make edits in the `read-write.txt` file.
+
 ### Backup
 
 You can consider backing up `archive/` directory. `say` gives you the freedom to choose your preferred backup or cloud storage method.

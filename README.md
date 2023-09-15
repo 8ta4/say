@@ -38,6 +38,29 @@ You can easily access recent transcriptions by opening "today".
 
 You can navigate your transcription file using Neovim keyboard shortcuts.
 
+### Directory Structure
+
+`say` organizes your transcripts in a specific directory structure to make it easy for you to locate your files. Here's how it works:
+
+```
+.local/share/say/
+│
+├── archive/
+│   ├── YYYY
+│   │   ├── MM
+│   │   │   ├── DD
+│   │   │   │   ├── read-only.txt
+│   │   │   │   └── read-write.txt
+│
+└── live/
+    ├── read-only.txt
+    └── read-write.txt
+```
+
+The `archive/` directory stores all your transcripts. Each day's transcript is organized by year (`YYYY`), month (`MM`), and day (`DD`). The transcript for today is saved every 10 minutes.
+
+The `live/` directory contains the real-time transcript for today.
+
 ### Recording
 
 You might need to learn to verbalize every internal monologue and express yourself more coherently.

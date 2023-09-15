@@ -18,9 +18,7 @@ Journaling can have therapeutic effects, and `say` automates this process, poten
 
 `say` aims to provide high-quality transcription for any user, but there are some limitations and challenges.
 
-One of the challenges is dealing with low-confidence segments that the transcription system is not sure how to transcribe. To avoid contaminating the transcription with errors, `say` can drop these segments and only retain the ones with high confidence.
-
-Another challenge is handling different accents and dialects. Currently, the most recognized accent is Standard American English, because it has the most data available for training the transcription system. This is a form of accentism.
+One of the challenges is handling different accents and dialects. Currently, the most recognized accent is Standard American English, because it has the most data available for training the transcription system. This is a form of accentism.
 
 ### Latency
 
@@ -62,13 +60,15 @@ I've chosen to keep the name of this tool as `say` to ensure a smooth installati
 
 ## Voice Activity Detection
 
-To make the most of your storage space, `say` uses voice activity detection to eliminate silent periods.
+To save on using the transcription API, `say` uses voice activity detection to eliminate silent periods.
 
 ## Transcription
 
 The Interim Transcript (IT) is a real-time draft of ongoing speech.
 
 Eventually, the IT will be transformed into the Final Transcript (FT).
+
+To avoid contaminating the transcription with errors, `say` can drop low-confidence segments that the transcription system is not sure how to transcribe and only retain the ones with high confidence.
 
 ## Manual Edit
 

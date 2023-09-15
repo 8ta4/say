@@ -2,7 +2,7 @@
 
 ## Just Say It
 
-`Say` is always on, recording and transcribing your voice 24/7. Whenever inspiration strikes, just say it.
+`say` is always on, recording and transcribing your voice 24/7. Whenever inspiration strikes, just say it.
 
 ## Setup
 

@@ -97,8 +97,6 @@ You can protect your data using device-level encryption.
 
 `say` aims to capture your thoughts anytime, but common sense applies. If any human listener cannot understand you, `say` will probably struggle too.
 
-> How can I improve transcription accuracy?
-
 You might need to learn to verbalize every internal monologue and express yourself more coherently.
 
 To avoid contaminating your recordings, you might want to consider living alone or avoiding playing any songs or movies that could interfere with your recording. If you are married, consider getting a divorce.

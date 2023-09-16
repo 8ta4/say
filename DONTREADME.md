@@ -14,12 +14,6 @@ Journaling can have therapeutic effects, and `say` automates this process, poten
 
 `say` can boost your creativity and productivity by allowing you to record inspirations as they come. Whether it's a business idea, narrative, or comedic line, just say it.
 
-### Accuracy
-
-`say` aims to provide high-quality transcription for any user, but there are some limitations and challenges.
-
-One of the challenges is handling different accents and dialects. Currently, the most recognized accent is Standard American English, because it has the most data available for training the transcription system. This is a form of accentism.
-
 ### Latency
 
 `say` allows you to transcribe your speech into text quickly. You can use the transcription right away for your purposes, such as writing, editing, or sharing.

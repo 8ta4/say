@@ -10,7 +10,7 @@
 
 > How do I set up this tool?
 
-1. First off, you need Homebrew. If you don't have it already, you can find the instructions on the [Homebrew website](https://brew.sh/).
+1. First off, you need Homebrew. If you don't have it already, check out the [Homebrew website](https://brew.sh/).
 
 1. Once you've got Homebrew, enter this command in your terminal:
 
@@ -18,31 +18,31 @@
    brew install 8ta4/say/say
    ```
 
-1. You can do launch `say` by entering:
+1. To launch `say`, type:
 
    ```sh
    say
    ```
 
-1. You'll need a Deepgram API key to use `say`. If you don't have one yet, you can get it from the Deepgram website.
+1. You'll need a Deepgram API key. If you don't have one yet, you can get it from the Deepgram website.
 
-1. When `say` prompts you for the API key, just paste it in.
+1. When `say` asks for the API key, paste it in.
 
 ## Cost
 
 > What's the cost?
 
-`say` is free to use, but keep in mind that it uses the Deepgram API, which might cost you some money. You can check out the prices on [Deepgram’s streaming pricing page](https://deepgram.com/pricing).
+`say` is free to use, but it uses the Deepgram API, which might cost you some money. You can check out the prices on [Deepgram’s streaming pricing page](https://deepgram.com/pricing).
 
 > Will I be charged all the time?
 
-To help save money, `say` uses voice activity detection (VAD). This feature tries to cut down on unnecessary usage. But VAD may not be flawless.
+To save some bucks, `say` uses voice activity detection (VAD) to cut down on unnecessary usage. But VAD may not be flawless.
 
 ## Usage
 
 > How do I access recent transcriptions?
 
-Accessing today's transcriptions is as simple as entering:
+To access today's transcriptions, type:
 
    ```sh
    say
@@ -50,7 +50,7 @@ Accessing today's transcriptions is as simple as entering:
 
 > How are my transcriptions organized?
 
-`say` organizes your transcripts in a specific directory structure to make it easy for you to locate your files. Here's how it works:
+`say` organizes your transcripts in a specific directory structure:
 
 ```
 .local/share/say/
@@ -79,11 +79,11 @@ The `live/` directory contains the real-time transcript for today.
 
 The `read-only.txt` file is just that - read-only. While you technically can edit this file, it’s best not to.
 
-Feel free to make edits in the `read-write.txt` file.
+Feel free to edit the `read-write.txt` file.
 
 > How do I back up my transcripts?
 
-You can consider backing up `archive/` directory. `say` gives you the freedom to choose your preferred backup or cloud storage method.
+You can back up the `archive/` directory using your preferred backup or cloud storage method.
 
 > How do I secure my transcripts?
 
@@ -91,12 +91,13 @@ You can protect your data using device-level encryption.
 
 > How accurate are the transcriptions?
 
-`say` aims to capture your thoughts anytime, but common sense applies. If any human listener cannot understand you, `say` will probably struggle too.
+`say` aims to capture your thoughts anytime, but it's not magic. If a human can't understand you, `say` will probably struggle too.
 
-You might need to learn to verbalize every internal monologue and express yourself more coherently.
-
-To avoid contaminating your recordings, you might want to consider living alone or avoiding playing any songs or movies that could interfere with your recording. If you are married, consider getting a divorce.
-
-You can consider accent coaching, simpler diction, or avoiding complex or fancy vocabulary. This is similar to learning to touch-type to type faster.
-
-Prolonged speaking can strain your voice, and continuous speaking may require voice training.
+Here are some pro tips:
+- Practice verbalizing your inner monologues. It's like learning a new language!
+- Keep your words simple and clear. It's like touch-typing for your voice.
+- Consider accent coaching. No offense, but Standard American English is the most recognized. Yeah, it's accentist.
+- Look into voice training. You don't want to lose your voice after a long chat, right?
+- Try to avoid background noise like music or movies. They can mess with your recordings.
+- Living alone could be an option... if you're really serious about clean recordings.
+- And if all else fails... well, there's always divorce.

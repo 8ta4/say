@@ -40,8 +40,6 @@ To help save money, `say` uses voice activity detection (VAD). This feature trie
 
 ## Usage
 
-## Transcription
-
 > How do I access recent transcriptions?
 
 Accessing today's transcriptions is as simple as entering:
@@ -90,8 +88,6 @@ You can consider backing up `archive/` directory. `say` gives you the freedom to
 > How do I secure my transcripts?
 
 You can protect your data using device-level encryption.
-
-### Recording
 
 > How accurate are the transcriptions?
 

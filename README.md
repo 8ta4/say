@@ -94,7 +94,7 @@ You can protect your data using device-level encryption.
 `say` aims to capture your thoughts anytime, but it's not magic. If a human can't understand you, `say` will probably struggle too.
 
 Here are some pro tips:
-- Practice verbalizing your inner monologues. It's like learning a new language!
+- Practice verbalizing every internal monologue. It's like learning a new language!
 - Keep your words simple and clear. It's like touch-typing for your voice.
 - Consider accent coaching. No offense, but Standard American English is the most recognized. Yeah, it's accentist.
 - Look into voice training. You don't want to lose your voice after a long chat, right?

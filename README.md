@@ -2,9 +2,13 @@
 
 ## Just Say It
 
+> What's the purpose of this tool?
+
 `say` is always on, recording and transcribing your voice 24/7. Whenever inspiration strikes, just say it.
 
 ## Setup
+
+> How do I set up this tool?
 
 1. First off, you need Homebrew. If you don't have it already, you can find the instructions on the [Homebrew website](https://brew.sh/).
 
@@ -26,21 +30,27 @@
 
 ## Cost
 
+> What's the cost?
+
 `say` is free to use, but keep in mind that it uses the Deepgram API, which might cost you some money. You can check out the prices on [Deepgram’s streaming pricing page](https://deepgram.com/pricing).
+
+> Will I be charged all the time?
 
 To help save money, `say` uses voice activity detection (VAD). This feature tries to cut down on unnecessary usage. But VAD may not be flawless.
 
 ## Usage
 
-### Transcription
+## Transcription
 
-You can easily access recent transcriptions by entering:
+> How do I access recent transcriptions?
+
+Accessing today's transcriptions is as simple as entering:
 
    ```sh
    say
    ```
 
-### Directory Structure
+> How are my transcriptions organized?
 
 `say` organizes your transcripts in a specific directory structure to make it easy for you to locate your files. Here's how it works:
 
@@ -59,30 +69,40 @@ You can easily access recent transcriptions by entering:
     └── read-write.txt
 ```
 
+> What is the `archive/` folder?
+
 The `archive/` directory stores all your transcripts. Each day's transcript is organized by year (`YYYY`), month (`MM`), and day (`DD`). The transcript for today is saved every 10 minutes.
 
+> What is the `live/` folder?
+
 The `live/` directory contains the real-time transcript for today.
+
+> Why are there `read-only.txt` and `read-write.txt` files?
 
 The `read-only.txt` file is just that - read-only. While you technically can edit this file, it’s best not to.
 
 Feel free to make edits in the `read-write.txt` file.
 
-### Backup
+> How do I back up my transcripts?
 
 You can consider backing up `archive/` directory. `say` gives you the freedom to choose your preferred backup or cloud storage method.
 
+> How do I secure my transcripts?
+
+You can protect your data using device-level encryption.
+
 ### Recording
 
-You might need to learn to verbalize every internal monologue and express yourself more coherently.
-
-Prolonged speaking can strain your voice, and continuous speaking may require voice training.
-
-To avoid contaminating your recordings, you might want to consider living alone or avoiding playing any songs or movies that could interfere with your recording. If you are married, consider getting a divorce.
-
-To improve accuracy, you can consider accent coaching, simpler diction, or avoiding complex or fancy vocabulary. This is similar to learning to touch-type to type faster.
+> How accurate are the transcriptions?
 
 `say` aims to capture your thoughts anytime, but common sense applies. If any human listener cannot understand you, `say` will probably struggle too.
 
-### Encryption
+> How can I improve transcription accuracy?
 
-We encourage you to use device-level encryption to protect your data.
+You might need to learn to verbalize every internal monologue and express yourself more coherently.
+
+To avoid contaminating your recordings, you might want to consider living alone or avoiding playing any songs or movies that could interfere with your recording. If you are married, consider getting a divorce.
+
+You can consider accent coaching, simpler diction, or avoiding complex or fancy vocabulary. This is similar to learning to touch-type to type faster.
+
+Prolonged speaking can strain your voice, and continuous speaking may require voice training.

@@ -20,7 +20,7 @@ Journaling can have therapeutic effects, and `say` automates this process, poten
 
 `say` is not designed to provide real-time feedback. It aims to let you express your thoughts without interruption or distraction.
 
-To achieve fast transcription, `say` uses some existing APIs that offer low-latency transcription and topic segmentation. `say` does not need to create its own algorithms for these tasks.
+To achieve fast transcription, `say` uses some existing APIs that offer low-latency transcription and topic segmentation. `say` doesn't need to create its own algorithms for these tasks.
 
 `say` has a user interface that is optimized to reduce the perceived latency.
 

@@ -18,7 +18,7 @@ Journaling can have therapeutic effects, and `say` automates this process, poten
 
 `say` allows you to transcribe your speech into text quickly. You can use the transcription right away for your purposes, such as writing, editing, or sharing.
 
-`say` is not designed to provide real-time feedback. It aims to let you express your thoughts without interruption or distraction.
+`say` isn't designed to provide real-time feedback. It aims to let you express your thoughts without interruption or distraction.
 
 To achieve fast transcription, `say` uses some existing APIs that offer low-latency transcription and topic segmentation. `say` doesn't need to create its own algorithms for these tasks.
 
@@ -58,7 +58,7 @@ The Interim Transcript (IT) is a real-time draft of ongoing speech.
 
 Eventually, the IT will be transformed into the Final Transcript (FT).
 
-To avoid contaminating the transcription with errors, `say` can drop low-confidence segments that the transcription system is not sure how to transcribe and only retain the ones with high confidence.
+To avoid contaminating the transcription with errors, `say` can drop low-confidence segments that the transcription system isn't sure how to transcribe and only retain the ones with high confidence.
 
 ## Manual Edit
 

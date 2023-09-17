@@ -52,10 +52,6 @@ If you run the default `say` command on macOS while this tool is active, it may 
 
 I've chosen to keep the name of this tool as `say` to ensure a smooth installation and usage experience.
 
-## Voice Activity Detection
-
-To save on using the transcription API, `say` uses voice activity detection to eliminate silent periods.
-
 ## Transcription
 
 The Interim Transcript (IT) is a real-time draft of ongoing speech.

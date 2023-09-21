@@ -14,6 +14,16 @@ Journaling can have therapeutic effects, and `say` automates this process, poten
 
 `say` can boost your creativity and productivity by allowing you to record inspirations as they come. Whether it's a business idea, narrative, or comedic line, just say it.
 
+### Accuracy
+
+`say` is designed with the anticipation that another AI model will utilize its transcriptions.
+
+Interaction with the LLM takes the front seat here, even over traditional readability. It's all about preserving the essence and intent of your words.
+
+Not all words are created equal. Getting named entities right is crucial.
+
+And don't forget those trendy new terms - `say` knows they're crucial to nail down.
+
 ### Latency
 
 `say` allows you to transcribe your speech into text quickly. You can use the transcription right away for your purposes, such as writing, editing, or sharing.
@@ -48,7 +58,7 @@ I've chosen to keep the name of this tool as `say` to ensure a smooth installati
 
 ## Transcription
 
-`say` taps into a powerful API that can transcribe speech fast and accurately. `say` doesn't reinvent the wheel.
+`say` taps into a powerful API that can transcribe speech accurately and fast. `say` doesn't reinvent the wheel.
 
 To avoid contaminating the transcription with errors, `say` can drop low-confidence segments that the transcription system isn't sure how to transcribe and only retain the ones with high confidence.
 
@@ -63,8 +73,6 @@ Designed for continuous operation, `say` ideally requires the API key to be ente
 ### Line
 
 `say` displays each sentence on a separate line.
-
-`say` prioritizes interaction with the LLM over traditional readability for human readers.
 
 ### Paragraph
 

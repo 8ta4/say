@@ -66,13 +66,9 @@ To avoid contaminating the transcription with errors, `say` can drop low-confide
 
 ### Paragraph
 
-`say` analyzes topics and divides the last paragraph. When the subject matter of the text changes, `say` creates a new paragraph. This feature is known as Automatic Paragraph Segmentation (APS).
+The reason `say` starts a new paragraph when you request transcription is to make it easier for you to access the most recent portion of your content. This way, you can separate the previous content that you have already used from the new content that you need.
 
-If the last paragraph is one or two sentences long, APS doesn't activate because you can navigate it using `j` and `k`. APS only activates if the paragraph is three sentences long or longer.
-
-APS uses sentence embedding to split paragraphs. It identifies potential paragraph boundaries using sentence boundaries and then calculates the similarity of two new potential paragraphs using averaged embedding.
-
-Each sentence's embedding is calculated and cached because calculating sentence embedding is computationally expensive.
+It's also consistent. You can expect that every time you request transcription, a new paragraph will begin.
 
 ### File
 

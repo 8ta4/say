@@ -94,20 +94,6 @@ This also makes it easy to search for a specific date.
 
 3. `say` uses the atomic `rename` operation to replace the original `read-only.txt` file with the modified temporary file. This atomic operation ensures that the `read-only.txt` file is always consistent.
 
-## Interaction
-
-FT or ME triggers ALS. Once ALS is activated, it then triggers APS.
-
-If a new FT or ME is introduced, any pending ALS and APS are cancelled because the previous ALS and APS may have been based on an outdated last paragraph.
-
-|     | IT                                             | FT                                             | ALS                                                       | APS                                                       | ME                                                     |
-| --- | ---------------------------------------------- | ---------------------------------------------- | --------------------------------------------------------- | --------------------------------------------------------- | ------------------------------------------------------ |
-| IT  | Replace IT                                     | Replace IT                                     | Apply ALS excluding IT                                    | Apply APS excluding IT                                    | Apply ME only to the section finalized before ME began |
-| FT  | Append IT                                      | Append FT                                      | Apply ALS                                                 | Not Applicable (New FT or ME cancels pending ALS and APS) | Apply ME only to the section finalized before ME began |
-| ALS | If IT exists, replace IT; otherwise, append IT | If IT exists, replace IT; otherwise, append FT | Not Applicable (New FT or ME cancels pending ALS and APS) | Apply APS excluding IT                                    | Apply ME only to the section finalized before ME began |
-| APS | If IT exists, replace IT; otherwise, append IT | If IT exists, replace IT; otherwise, append FT | Not Applicable (New FT or ME cancels pending ALS and APS) | Not Applicable (New FT or ME cancels pending ALS and APS) | Apply ME only to the section finalized before ME began |
-| ME  | If IT exists, replace IT; otherwise, append IT | If IT exists, replace IT; otherwise, append FT | Apply ALS excluding IT                                    | Not Applicable (New FT or ME cancels pending ALS and APS) | Apply ME only to the section finalized before ME began |
-
 ## Data Retention
 
 `say` doesn't keep a record of the audio once it has been transcribed.

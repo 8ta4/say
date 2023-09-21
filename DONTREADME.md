@@ -60,7 +60,7 @@ To avoid contaminating the transcription with errors, `say` can drop low-confide
 
 ### Line
 
-`say` displays each sentence on a separate line, a feature known as Automatic Line Segmentation (ALS).
+`say` displays each sentence on a separate line.
 
 `say` prioritizes interaction with the LLM over traditional readability for human readers.
 

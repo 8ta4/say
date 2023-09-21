@@ -60,8 +60,6 @@ To avoid contaminating the transcription with errors, `say` can drop low-confide
 
 The Manual Edit (ME) feature lets you make changes to the transcript.
 
-ME doesn't affect the IT. The start of the IT is marked by Neovim's extmark. Any changes you make before this mark will be saved, while any changes made after will not be saved. If you delete the extmark, the ME will not be saved.
-
 ## Segmentation
 
 ### Line

@@ -56,10 +56,6 @@ I've chosen to keep the name of this tool as `say` to ensure a smooth installati
 
 To avoid contaminating the transcription with errors, `say` can drop low-confidence segments that the transcription system isn't sure how to transcribe and only retain the ones with high confidence.
 
-## Manual Edit
-
-The Manual Edit (ME) feature lets you make changes to the transcript.
-
 ## Segmentation
 
 ### Line

@@ -34,7 +34,7 @@ A high price point can motivate you to use `say` more often. You might think tha
 
 ## Architecture
 
-`say` functions as a monolithic macOS background process and also as a Neovim plugin. It's just a `brew install` away, eliminating the need for any additional devices.
+`say` functions as a monolithic macOS background process. It's just a `brew install` away, eliminating the need for any additional devices.
 
 The uniformity of the macOS ecosystem simplifies both development and testing.
 

@@ -18,6 +18,8 @@ Journaling can have therapeutic effects, and `say` automates this process, poten
 
 `say` allows you to transcribe your speech into text quickly. You can use the transcription right away for your purposes, such as writing, editing, or sharing.
 
+`say` boasts sub-second latency. To put it in perspective, Jacob Nielsen says "[1.0 second is about the limit for the user's flow of thought to stay uninterrupted](https://www.nngroup.com/articles/response-times-3-important-limits/#:~:text=1.0%20second%20is%20about%20the%20limit%20for%20the%20user's%20flow%20of%20thought%20to%20stay%20uninterrupted)".
+
 `say` isn't designed to provide real-time feedback. It aims to let you express your thoughts without interruption or distraction.
 
 To achieve fast transcription, `say` uses some existing APIs that offer low-latency transcription and topic segmentation. `say` doesn't need to create its own algorithms for these tasks.

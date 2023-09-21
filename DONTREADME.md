@@ -54,10 +54,6 @@ I've chosen to keep the name of this tool as `say` to ensure a smooth installati
 
 ## Transcription
 
-The Interim Transcript (IT) is a real-time draft of ongoing speech.
-
-Eventually, the IT will be transformed into the Final Transcript (FT).
-
 To avoid contaminating the transcription with errors, `say` can drop low-confidence segments that the transcription system isn't sure how to transcribe and only retain the ones with high confidence.
 
 ## Manual Edit

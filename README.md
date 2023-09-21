@@ -32,7 +32,7 @@
 
 > What's the cost?
 
-`say` is free to use, but it uses the Deepgram API, which might cost you some money. You can check out the prices on [Deepgram’s streaming pricing page](https://deepgram.com/pricing).
+`say` is free to use, but it uses the Deepgram API, which might cost you some money. You can check out the prices on [Deepgram’s pricing page](https://deepgram.com/pricing).
 
 > Will I be charged all the time?
 
@@ -55,25 +55,14 @@ To access today's transcriptions, type:
 ```
 .local/share/say/
 │
-├── archive/
-│   ├── YYYY
-│   │   ├── MM
-│   │   │   ├── DD
-│   │   │   │   ├── read-only.txt
-│   │   │   │   └── read-write.txt
-│
-└── live/
-    ├── read-only.txt
-    └── read-write.txt
+├── YYYY
+│   ├── MM
+│   │   ├── DD
+│   │   │   ├── read-only.txt
+│   │   │   └── read-write.txt
 ```
 
-> What is the `archive/` folder?
-
-The `archive/` directory stores all your transcripts. Each day's transcript is organized by year (`YYYY`), month (`MM`), and day (`DD`). The transcript for today is saved every 10 minutes.
-
-> What is the `live/` folder?
-
-The `live/` directory contains the real-time transcript for today.
+Each day's transcript is organized by year (`YYYY`), month (`MM`), and day (`DD`).
 
 > Why are there `read-only.txt` and `read-write.txt` files?
 
@@ -83,7 +72,7 @@ Feel free to edit the `read-write.txt` file.
 
 > How do I back up my transcripts?
 
-You can back up the `archive/` directory using your preferred backup or cloud storage method.
+You can back up the `.local/share/say/` directory using your preferred backup or cloud storage method.
 
 > How do I secure my transcripts?
 

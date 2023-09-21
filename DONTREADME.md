@@ -121,11 +121,3 @@ Being arrested and having your own audio used against you in a court of law isn'
 Even the sound of typing can sometimes be enough to decipher what you're typing. This becomes a security risk if you're entering sensitive information like passwords while speaking.
 
 If you're interested in documenting everything, you might consider recording video. However, this comes with its own risks, such as accidentally capturing footage when you're nude.
-
-## Backup
-
-By storing the most frequently updated data separately, `say` doesn't continuously trigger cloud synchronization, even if you've set up `archive/` to be synced.
-
-With a 10-minute archival interval, the risk of data loss is minimized to a manageable amount.
-
-This 10-minute interval strategy might seem familiar to you as it’s a widely adopted auto-save feature in many applications.

@@ -22,8 +22,6 @@ Journaling can have therapeutic effects, and `say` automates this process, poten
 
 `say` isn't designed to provide real-time feedback. It aims to let you express your thoughts without interruption or distraction.
 
-To achieve fast transcription, `say` uses some existing APIs that offer low-latency transcription and topic segmentation. `say` doesn't need to create its own algorithms for these tasks.
-
 `say` has a user interface that is optimized to reduce the perceived latency.
 
 ### Budget
@@ -40,12 +38,6 @@ The uniformity of the macOS ecosystem simplifies both development and testing.
 
 By self-hosting `say`, you're enhancing your privacy.
 
-## API Key
-
-I've chosen not to store the API key. This approach keeps the codebase simple and reduces potential security vulnerabilities.
-
-Designed for continuous operation, `say` ideally requires the API key to be entered just once.
-
 ## Name Overlap
 
 This tool intentionally replaces the `say` command built-in with macOS.
@@ -56,7 +48,15 @@ I've chosen to keep the name of this tool as `say` to ensure a smooth installati
 
 ## Transcription
 
+`say` taps into a powerful API that can transcribe speech fast and accurately. `say` doesn't reinvent the wheel.
+
 To avoid contaminating the transcription with errors, `say` can drop low-confidence segments that the transcription system isn't sure how to transcribe and only retain the ones with high confidence.
+
+## API Key
+
+I've chosen not to store the API key. This approach keeps the codebase simple and reduces potential security vulnerabilities.
+
+Designed for continuous operation, `say` ideally requires the API key to be entered just once.
 
 ## Segmentation
 

@@ -72,13 +72,11 @@ Designed for continuous operation, `say` ideally requires the API key to be ente
 
 ### Line
 
-`say` displays each sentence on a separate line.
+Each sentence in `say` gets its own line. That way, you can easily move up and down with `j` and `k`.
 
 ### Paragraph
 
-The reason `say` starts a new paragraph when you request transcription is to make it easier for you to access the most recent portion of your content. This way, you can separate the previous content that you have already used from the new content that you need.
-
-It's also consistent. You can expect that every time you request transcription, a new paragraph will begin.
+`say` starts a new paragraph when you request transcription. This helps you keep track of what you have already used and what you need next. You can jump to the latest chunk of text with `{` and `}`. 
 
 ### File
 

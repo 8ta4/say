@@ -6,23 +6,17 @@
 
 `say` is always on, recording and transcribing your voice 24/7. Whenever inspiration strikes, just say it.
 
-## Prerequisites
-
-> What do I need to use this tool?
-
-You'll need:
-
-- A Mac
-
-- An internet connection with an upload bandwidth of at least 100 Mbps
-
 ## Setup
 
 > How do I set up this tool?
 
-1. First off, you need Homebrew. If you don't have it already, check out the [Homebrew website](https://brew.sh/).
+1. You're gonna need a Mac.
 
-1. Once you've got Homebrew, enter this command in your terminal:
+2. Make sure you've got an internet connection that can handle an upload bandwidth of at least 100 Mbps.
+
+3. Grab [Homebrew](https://brew.sh/#install).
+
+1. Enter this command in your terminal:
 
    ```sh
    brew install 8ta4/say/say
@@ -34,7 +28,7 @@ You'll need:
    say
    ```
 
-1. You'll need a Deepgram API key. If you don't have one yet, you can get it from the Deepgram website.
+1. Head over to the [Deepgram website](https://deepgram.com/) and snag a Deepgram API key.
 
 1. When `say` asks for the API key, paste it in.
 

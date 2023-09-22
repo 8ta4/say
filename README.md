@@ -28,7 +28,11 @@ You'll need:
    brew install 8ta4/say/say
    ```
 
-1. To launch `say`, hit `Shift+Space`.
+1. To launch `say`, type:
+
+   ```sh
+   say
+   ```
 
 1. You'll need a Deepgram API key. If you don't have one yet, you can get it from the Deepgram website.
 

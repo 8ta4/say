@@ -72,6 +72,12 @@ Designed for continuous operation, `say` ideally requires the API key to be ente
 
 To avoid contaminating the transcription with errors, `say` can drop low-confidence segments that the transcription system isn't sure how to transcribe and only retain the ones with high confidence.
 
+## Keyboard Shortcut
+
+I've picked `Shift + Space` because it's easy to press and it doesn't conflict with anything.
+
+`⌘ + Space` is used by Spotlight or third-party launchers. `Ctrl + Space` triggers auto-suggestions in IDEs, including VS Code.
+
 ## Buffering
 
 `say` incorporates a 1-minute buffer before transmitting audio. This buffering strategy is designed to strike a balance between accuracy and latency.

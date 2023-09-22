@@ -6,6 +6,16 @@
 
 `say` is always on, recording and transcribing your voice 24/7. Whenever inspiration strikes, just say it.
 
+## Prerequisites
+
+> What do I need to use this tool?
+
+You'll need:
+
+- A Mac
+
+- An internet connection with an upload bandwidth of at least 100 Mbps
+
 ## Setup
 
 > How do I set up this tool?

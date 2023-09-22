@@ -98,7 +98,7 @@ Each sentence in `say` gets its own line. That way, you can easily move up and d
 
 ### Paragraph
 
-`say` starts a new paragraph when you request transcription. This helps you keep track of what you have already used and what you need next. You can jump to the latest chunk of text with `{` and `}`.
+`say` starts a new paragraph when you request transcription. This helps you keep track of what you have already used and what you need next. You can jump to the latest chunk of text with `Shift + [` and `Shift + ]`.
 
 ### File
 

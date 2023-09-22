@@ -54,7 +54,11 @@ This tool intentionally replaces the `say` command built-in with macOS.
 
 If you run the default `say` command on macOS while this tool is active, it may interfere with the recording and transcription process.
 
-I've chosen to keep the name of this tool as `say` to ensure a smooth installation and usage experience.
+I've chosen to keep the name of this tool as `say` to ensure a smooth installation experience.
+
+I could have asked you to change your `.skhdrc` file to set up a shortcut for this tool. But that would be a hassle.
+
+And I couldn't do it for you, because that would break [Homebrew's policy](https://docs.brew.sh/Homebrew-and-Python#:~:text=homebrew%20has%20a%20strict%20policy%20never%20to%20write%20stuff%20outside%20of%20the%20brew%20--prefix).
 
 ## Transcription
 

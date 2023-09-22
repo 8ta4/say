@@ -72,27 +72,33 @@ Designed for continuous operation, `say` ideally requires the API key to be ente
 
 To avoid contaminating the transcription with errors, `say` can drop low-confidence segments that the transcription system isn't sure how to transcribe and only retain the ones with high confidence.
 
-## Keyboard Shortcut
+`say` doesn't send any previous speech to the API for context. Sending partial context may not help much with accuracy. Sending full context may help, but it may also increase cost, latency, and complexity.
 
-I've picked `Shift + Space` because it's easy to press and it doesn't conflict with anything.
+## Trigger
 
-`⌘ + Space` is used by Spotlight or third-party launchers. `Ctrl + Space` triggers auto-suggestions in IDEs, including VS Code.
+There are two ways to start transcription: manual and automatic.
 
-## Buffering
+The manual trigger is `Shift + Space`. It's easy to press and it doesn't clash with anything.
 
-`say` incorporates a 1-minute buffer before transmitting audio. This buffering strategy is designed to strike a balance between accuracy and latency.
+`⌘ + Space` is used by Spotlight or other launchers. `Ctrl + Space` triggers auto-suggestions in IDEs, like VS Code.
 
-The accuracy of `say` improves with more context. 
+The automatic trigger is based on voice activity. `say` keeps track of how much you talk without transcribing. When you reach 1 minute of untranscribed speech, `say` waits for a pause and then sends the audio for transcription.
 
-`say` is capable of maintaining sub-second latency. Here's a breakdown of the time allocation within the 1-minute buffer:
+This trategy is designed to strike a balance between accuracy and latency.
 
-| Component                | Time (ms) | Explanation                                                                                                                                                                                                                                                                                                                                  |
-| ------------------------ | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Round trip latency       | 400       | This is based on the assumption that the target user resides in a major city worldwide.                                                                                                                                                                                                                                                     |
-| Upload time              | 160       | This is calculated as $$\frac{1\text{ MB/min} \times 1\text{ min}}{\frac12 \times 100\text{ Mb/s}} \times \frac{8\text{ b}}{1\text{ B}} \times \frac{1000\text{ ms}}{1\text{s}} = 160\text{ ms}$$ It assumes that 1-minute of audio is roughly equal to 1 MB, and that the bandwidth is 100 Mbps with a utilization of 50%.                 |
+Longer speech gives more context and improves accuracy. And waiting for a pause helps capture your whole thought and avoid cutting off mid-sentence.
+
+This strategy also helps the manual trigger meet the sub-second latency goal. There is a natural delay when you switch from talking to reading your transcript. This delay might offset any extra speech when you surpass 1 minute.
+
+`say` aims for sub-second latency when you manually trigger transcription. Here’s the breakdown:
+
+| Component                | Time (ms) | Explanation                                                                                                                                                                                                                                                                                                                                                                |
+| ------------------------ | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Round trip latency       | 400       | This is based on the assumption that the target user resides in a major city worldwide.                                                                                                                                                                                                                                                                                    |
+| Upload time              | 160       | This is calculated as $$\frac{1\text{ MB/min} \times 1\text{ min}}{\frac12 \times 100\text{ Mb/s}} \times \frac{8\text{ b}}{1\text{ B}} \times \frac{1000\text{ ms}}{1\text{s}} = 160\text{ ms}$$ It assumes that 1-minute of audio is roughly equal to 1 MB, and that the bandwidth is 100 Mbps with a utilization of 50%.                                                |
 | Deepgram processing time | 200       | This is calculated as $$12\text{ s/h} \times 1\text{ min} \times \frac{1000\text{ ms}}{1\text{s}} \times \frac{1\text{ h}}{60\text{ min}} = 200 \text{ ms}$$ It's based on Deepgram's claim that it can transcribe "[an hour of pre-recorded audio in about 12 seconds](https://deepgram.com/#:~:text=an%20hour%20of%20pre-recorded%20audio%20in%20about%2012%20seconds)". |
-| Other                    | 240       | This accounts for any additional processing or unexpected delays.                                                                                                                                                                                                                                                                           |
-| **Total**                | **1000**      | This is the total time taken within the 1-minute buffer.                                                                                                                                                                                                                                                                                     |
+| Other                    | 240       | This accounts for any additional processing or unexpected delays.                                                                                                                                                                                                                                                                                                          |
+| **Total**                | **1000**  | -                                                                                                                                                                                                                                                                                                                                                                          |
 
 This document was written based on some assumptions that may change over time.
 

@@ -28,7 +28,7 @@ You'll need:
    brew install 8ta4/say/say
    ```
 
-1. To launch `say`, hit `Shift+Space`. Think of it like this: “Say”, “Shift”, “Space” all start with “S”. Just like you hit space at the end of a sentence, `Shift+Space` signals the end of your thought.
+1. To launch `say`, hit `Shift+Space`.
 
 1. You'll need a Deepgram API key. If you don't have one yet, you can get it from the Deepgram website.
 
@@ -49,6 +49,8 @@ To save some bucks, `say` uses voice activity detection (VAD) to cut down on unn
 > How do I access recent transcriptions?
 
 To access today's transcriptions, hit `Shift+Space`.
+
+Think of it like this: “Say”, “Shift”, “Space” all start with “S”. Just like you hit space at the end of a sentence, `Shift+Space` signals the end of your thought.
 
 > How are my transcriptions organized?
 

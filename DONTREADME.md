@@ -62,6 +62,22 @@ I've chosen to keep the name of this tool as `say` to ensure a smooth installati
 
 To avoid contaminating the transcription with errors, `say` can drop low-confidence segments that the transcription system isn't sure how to transcribe and only retain the ones with high confidence.
 
+## Buffering
+
+`say` incorporates a 1-minute buffer before transmitting audio. This buffering strategy is designed to strike a balance between accuracy and latency.
+
+The accuracy of `say` improves with more context. 
+
+`say` is capable of maintaining sub-second latency. Here's a breakdown of the time allocation within the 1-minute buffer:
+
+| Component                | Time (ms) | Explanation                                                                                                                                                                                                                                                                                                                                  |
+| ------------------------ | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Round trip latency       | 400       | This is based on the assumption that the target user resides in a major city worldwide.                                                                                                                                                                                                                                                     |
+| Upload time              | 160       | This is calculated as $$\frac{1\text{ MB/min} \times 1\text{ min}}{\frac12 \times 100\text{ Mb/s}} \times \frac{8\text{ b}}{1\text{ B}} \times \frac{1000\text{ ms}}{1\text{s}} = 160\text{ ms}$$ It assumes that 1-minute of audio is roughly equal to 1 MB, and that the bandwidth is 100 Mbps with a utilization of 50%.                 |
+| Deepgram processing time | 200       | This is calculated as $$12\text{ s/h} \times 1\text{ min} \times \frac{1000\text{ ms}}{1\text{s}} \times \frac{1\text{ h}}{60\text{ min}} = 200 \text{ ms}$$ It's based on Deepgram's claim that it can process "[an hour of pre-recorded audio in about 12 seconds]". |
+| Other                    | 240       | This accounts for any additional processing or unexpected delays.                                                                                                                                                                                                                                                                           |
+| **Total**                | **1000**      | This is the total time taken within the 1-minute buffer.                                                                                                                                                                                                                                                                                     |
+
 ## API Key
 
 I've chosen not to store the API key. This approach keeps the codebase simple and reduces potential security vulnerabilities.
@@ -76,7 +92,7 @@ Each sentence in `say` gets its own line. That way, you can easily move up and d
 
 ### Paragraph
 
-`say` starts a new paragraph when you request transcription. This helps you keep track of what you have already used and what you need next. You can jump to the latest chunk of text with `{` and `}`. 
+`say` starts a new paragraph when you request transcription. This helps you keep track of what you have already used and what you need next. You can jump to the latest chunk of text with `{` and `}`.
 
 ### File
 

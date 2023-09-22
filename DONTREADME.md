@@ -78,6 +78,8 @@ The accuracy of `say` improves with more context.
 | Other                    | 240       | This accounts for any additional processing or unexpected delays.                                                                                                                                                                                                                                                                           |
 | **Total**                | **1000**      | This is the total time taken within the 1-minute buffer.                                                                                                                                                                                                                                                                                     |
 
+This document was written based on some assumptions that may change over time.
+
 ## API Key
 
 I've chosen not to store the API key. This approach keeps the codebase simple and reduces potential security vulnerabilities.

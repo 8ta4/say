@@ -28,7 +28,7 @@ And don't forget those trendy new terms - `say` knows they're crucial to nail do
 
 `say` allows you to transcribe your speech into text quickly. You can use the transcription right away for your purposes, such as writing, editing, or sharing.
 
-`say` boasts sub-second latency. "[1.0 second is about the limit for the user's flow of thought to stay uninterrupted](https://www.nngroup.com/articles/response-times-3-important-limits/#:~:text=1.0%20second%20is%20about%20the%20limit%20for%20the%20user's%20flow%20of%20thought%20to%20stay%20uninterrupted)".
+`say` aims to keep the latency below one second. "[1.0 second is about the limit for the user's flow of thought to stay uninterrupted](https://www.nngroup.com/articles/response-times-3-important-limits/#:~:text=1.0%20second%20is%20about%20the%20limit%20for%20the%20user's%20flow%20of%20thought%20to%20stay%20uninterrupted)".
 
 `say` isn't designed to provide real-time feedback. It aims to let you express your thoughts without interruption or distraction.
 

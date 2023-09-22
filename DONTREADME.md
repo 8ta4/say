@@ -60,6 +60,12 @@ I could have asked you to change your `.skhdrc` file to set up a shortcut for th
 
 And I couldn't do it for you, because that would break [Homebrew's policy](https://docs.brew.sh/Homebrew-and-Python#:~:text=homebrew%20has%20a%20strict%20policy%20never%20to%20write%20stuff%20outside%20of%20the%20brew%20--prefix).
 
+## API Key
+
+I've chosen not to store the API key. This approach keeps the codebase simple and reduces potential security vulnerabilities.
+
+Designed for continuous operation, `say` ideally requires the API key to be entered just once.
+
 ## Transcription
 
 `say` taps into a powerful API that can transcribe speech accurately and fast. `say` doesn't reinvent the wheel.
@@ -83,12 +89,6 @@ The accuracy of `say` improves with more context.
 | **Total**                | **1000**      | This is the total time taken within the 1-minute buffer.                                                                                                                                                                                                                                                                                     |
 
 This document was written based on some assumptions that may change over time.
-
-## API Key
-
-I've chosen not to store the API key. This approach keeps the codebase simple and reduces potential security vulnerabilities.
-
-Designed for continuous operation, `say` ideally requires the API key to be entered just once.
 
 ## Segmentation
 

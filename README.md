@@ -10,11 +10,13 @@
 
 > How do I set up this tool?
 
-1. You're gonna need a Mac.
+1. Make sure you're using a Mac.
 
-2. Make sure you've got an internet connection that can handle an upload bandwidth of at least 100 Mbps.
+1. Make sure you're somewhere in North America.
 
-3. Grab [Homebrew](https://brew.sh/#install).
+1. Check that you have an internet connection with an upload bandwidth of at least 1 Gbps.
+
+1. Grab [Homebrew](https://brew.sh/#install).
 
 1. Enter this command in your terminal:
 

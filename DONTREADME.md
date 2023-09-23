@@ -76,31 +76,27 @@ To avoid contaminating the transcription with errors, `say` can drop low-confide
 
 ## Trigger
 
-There are two ways to start transcription: manual and automatic.
+### Manual
 
 The manual trigger is `Shift + Space`. It's easy to press and it doesn't clash with anything.
 
 `⌘ + Space` is used by Spotlight or other launchers. `Ctrl + Space` triggers auto-suggestions in IDEs, like VS Code.
 
+### Automatic
+
 The automatic trigger is based on voice activity. `say` keeps track of how much you talk without transcribing. When you reach 1 minute of untranscribed speech, `say` waits for a pause and then sends the audio for transcription.
 
 This trategy is designed to strike a balance between accuracy and latency.
 
-Longer speech gives more context and improves accuracy. And waiting for a pause helps capture your whole thought and avoid cutting off mid-sentence.
+Longer speech gives more context and improves accuracy.
 
-This strategy also helps the manual trigger meet the sub-second latency goal. There is a natural delay when you switch from talking to reading your transcript. This delay might offset any extra speech when you surpass 1 minute.
+And waiting for a pause helps capture your whole thought and avoid cutting off mid-sentence.
 
-`say` aims for sub-second latency when you manually trigger transcription. Here’s the breakdown:
+This strategy also helps the manual trigger meet the sub-second latency goal. 
 
-| Component                | Time (ms) | Explanation                                                                                                                                                                                                                                                                                                                                                                |
-| ------------------------ | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Round trip latency       | 400       | This is based on the assumption that the target user resides in a major city worldwide.                                                                                                                                                                                                                                                                                    |
-| Upload time              | 160       | This is calculated as $$\frac{1\text{ MB/min} \times 1\text{ min}}{\frac12 \times 100\text{ Mb/s}} \times \frac{8\text{ b}}{1\text{ B}} \times \frac{1000\text{ ms}}{1\text{s}} = 160\text{ ms}$$ It assumes that 1-minute of audio is roughly equal to 1 MB, and that the bandwidth is 100 Mbps with a utilization of 50%.                                                |
-| Deepgram processing time | 200       | This is calculated as $$12\text{ s/h} \times 1\text{ min} \times \frac{1000\text{ ms}}{1\text{s}} \times \frac{1\text{ h}}{60\text{ min}} = 200 \text{ ms}$$ It's based on Deepgram's claim that it can transcribe "[an hour of pre-recorded audio in about 12 seconds](https://deepgram.com/#:~:text=an%20hour%20of%20pre-recorded%20audio%20in%20about%2012%20seconds)". |
-| Other                    | 240       | This accounts for any additional processing or unexpected delays.                                                                                                                                                                                                                                                                                                          |
-| **Total**                | **1000**  | -                                                                                                                                                                                                                                                                                                                                                                          |
+From my experience, if the audio is 1 minute or less, the transcription API usually responds in under a second. But if the audio is 2 minutes or longer, the latency can extend to 1 second or more. This was tested on a North American gigabit connection and might vary.
 
-This document was written based on some assumptions that may change over time.
+There is a natural delay when you switch from talking to reading your transcript. This delay might offset any extra speech when you surpass 1 minute.
 
 ## Segmentation
 

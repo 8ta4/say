@@ -61,18 +61,10 @@ Think of it like this: "Say", "Shift", "Space" all start with "S". Just like you
 │
 ├── YYYY
 │   ├── MM
-│   │   ├── DD
-│   │   │   ├── read-only.txt
-│   │   │   └── read-write.txt
+│   │   ├── DD.txt
 ```
 
 Each day's transcript is organized by year (`YYYY`), month (`MM`), and day (`DD`).
-
-> Why are there `read-only.txt` and `read-write.txt` files?
-
-The `read-only.txt` file is just that - read-only. While you technically can edit this file, it’s best not to.
-
-Feel free to edit the `read-write.txt` file.
 
 > How do I back up my transcripts?
 

@@ -98,6 +98,20 @@ From my experience, if the audio is 1 minute or less, the transcription API usua
 
 There is a natural delay when you switch from talking to reading your transcript. This delay might offset any extra speech when you surpass 1 minute.
 
+## Data Retention
+
+`say` doesn't keep a record of the audio once it has been transcribed.
+
+The act of storing audio can amplify the observer effect, potentially making you more self-aware and uncomfortable.
+
+By choosing not to store audio, `say` ensures that sounds like your snoring, farting, or moaning aren't kept on record.
+
+Being arrested and having your own audio used against you in a court of law isn't a pleasant experience.
+
+Even the sound of typing can sometimes be enough to decipher what you're typing. This becomes a security risk if you're entering sensitive information like passwords while speaking.
+
+If you're interested in documenting everything, you might consider recording video. However, this comes with its own risks, such as accidentally capturing footage when you're nude.
+
 ## Segmentation
 
 ### Line
@@ -133,17 +147,3 @@ I've selected Visual Studio Code, and here's why:
 - It can be set up to [honor read-only files](https://code.visualstudio.com/docs/getstarted/settings#:~:text=//%20Marks%20files%20as%20readonly%20when%20their%20file%20permissions%20indicate%20as%20such.%20This%20can%20be%20overridden%20via%20%60files.readonlyInclude%60%20and%20%60files.readonlyExclude%60%20settings.%0A%20%20%22files.readonlyFromPermissions%22%3A%20false%2C).
 
 - It's got a [Neovim plugin](https://github.com/vscode-neovim/vscode-neovim#neovim-configuration) that plays nice with your existing Neovim config.
-
-## Data Retention
-
-`say` doesn't keep a record of the audio once it has been transcribed.
-
-The act of storing audio can amplify the observer effect, potentially making you more self-aware and uncomfortable.
-
-By choosing not to store audio, `say` ensures that sounds like your snoring, farting, or moaning aren't kept on record.
-
-Being arrested and having your own audio used against you in a court of law isn't a pleasant experience.
-
-Even the sound of typing can sometimes be enough to decipher what you're typing. This becomes a security risk if you're entering sensitive information like passwords while speaking.
-
-If you're interested in documenting everything, you might consider recording video. However, this comes with its own risks, such as accidentally capturing footage when you're nude.

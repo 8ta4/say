@@ -124,6 +124,16 @@ This also makes it easy to search for a specific date.
 
 1. `say` uses the atomic `rename` operation to replace the original `DD.txt` file with the modified temporary file. This atomic operation ensures that the `DD.txt` file is always consistent.
 
+## Text Editor
+
+I've selected Visual Studio Code, and here's why:
+
+- It's got this cool [auto-reload feature](https://stackoverflow.com/questions/30078077/visual-studio-code-auto-refresh-file-changes#:~:text=vscode%20will%20never%20refresh%20the%20file%20if%20you%20have%20changes%20in%20that%20file%20that%20are%20not%20saved%20to%20disk.%20however%2C%20if%20the%20file%20is%20open%20and%20does%20not%20have%20changes%2C%20it%20will%20replace%20with%20the%20changes%20on%20disk%2C%20that%20is%20true.) built right in.
+
+- It can be set up to [honor read-only files](https://code.visualstudio.com/docs/getstarted/settings#:~:text=//%20Marks%20files%20as%20readonly%20when%20their%20file%20permissions%20indicate%20as%20such.%20This%20can%20be%20overridden%20via%20%60files.readonlyInclude%60%20and%20%60files.readonlyExclude%60%20settings.%0A%20%20%22files.readonlyFromPermissions%22%3A%20false%2C).
+
+- It's got a [Neovim plugin](https://github.com/vscode-neovim/vscode-neovim#neovim-configuration) that plays nice with your existing Neovim config.
+
 ## Data Retention
 
 `say` doesn't keep a record of the audio once it has been transcribed.

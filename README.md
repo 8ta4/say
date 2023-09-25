@@ -10,9 +10,11 @@
 
 > How do I set up this tool?
 
+`say` might configure some third-party tools during its initial run. Just keep an eye on the log if you're curious.
+
 1. Make sure you're using a Mac.
 
-1. Make sure you're somewhere in North America.
+1. Be somewhere in North America.
 
 1. Check that you have an internet connection with an upload bandwidth of at least 1 Gbps.
 
@@ -32,7 +34,7 @@
 
 1. Head over to the [Deepgram website](https://deepgram.com/) and snag a Deepgram API key.
 
-1. When `say` asks for the API key, paste it in.
+1. When `say` asks for the API key, paste it in. 
 
 ## Cost
 

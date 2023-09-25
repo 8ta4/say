@@ -110,7 +110,7 @@ Each sentence in `say` gets its own line. That way, you can easily move up and d
 
 ### File
 
-Daily segmentation speeds up loading times when using Neovim.
+Daily segmentation speeds up loading times.
 
 If you need weekly or monthly transcriptions, you can simply concatenate the daily transcriptions.
 

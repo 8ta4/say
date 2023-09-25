@@ -116,7 +116,7 @@ If you need weekly or monthly transcriptions, you can simply concatenate the dai
 
 This also makes it easy to search for a specific date.
 
-## Updating the transcript file
+## Updating the Transcript File
 
 1. `say` makes a copy of the `DD.txt` file and creates a temporary file in the system's temp directory. This ensures that the application directory doesn't get cluttered.
 

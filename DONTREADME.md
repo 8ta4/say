@@ -46,7 +46,7 @@ A high price point can motivate you to use `say` more often. You might think tha
 
 The uniformity of the macOS ecosystem simplifies both development and testing.
 
-By self-hosting `say`, you're enhancing your privacy.
+This setup cuts down on cloud dependence and gives your privacy a boost.
 
 ## Name Overlap
 

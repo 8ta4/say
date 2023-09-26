@@ -52,11 +52,11 @@ A high price point can motivate you to use `say` more often. You might think tha
 
 1. Run the following commands:
 
-```sh
-git clone git@github.com:8ta4/say.git
-cd say
-direnv allow
-```
+   ```sh
+   git clone git@github.com:8ta4/say.git
+   cd say
+   direnv allow
+   ```
 
 The `devenv.nix` file has got all the scripts you need.
 

@@ -147,3 +147,15 @@ I've selected Visual Studio Code, and here's why:
 - It can be set up to [honor read-only files](https://code.visualstudio.com/docs/getstarted/settings#:~:text=//%20Marks%20files%20as%20readonly%20when%20their%20file%20permissions%20indicate%20as%20such.%20This%20can%20be%20overridden%20via%20%60files.readonlyInclude%60%20and%20%60files.readonlyExclude%60%20settings.%0A%20%20%22files.readonlyFromPermissions%22%3A%20false%2C).
 
 - It's got a [Neovim plugin](https://github.com/vscode-neovim/vscode-neovim#neovim-configuration) that plays nice with your existing Neovim config.
+
+## Encryption
+
+I've decided to skip application-level encryption, and let me tell you why:
+
+Adding an encryption layer might mean you'd have to juggle a decryption key or passphrase.
+
+I want you to be able to access your transcription with any software you fancy.
+
+You can totally use device-level encryption.
+
+A forgotten key or an encryption hiccup could lead to data loss.

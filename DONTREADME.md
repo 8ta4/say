@@ -40,6 +40,26 @@ Most productivity tools designed for individual users have a lower price than $1
 
 A high price point can motivate you to use `say` more often. You might think that since you are paying a lot, you should make the most of it and "just say it".
 
+## Setup
+
+1. Make sure you're using a Mac.
+
+1. Get [git](https://formulae.brew.sh/formula/git#default) installed.
+
+1. Get [devenv](https://devenv.sh/getting-started/) installed too.
+
+1. Get [direnv](https://formulae.brew.sh/formula/direnv#default) installed as well.
+
+1. Run the following commands:
+
+```sh
+git clone git@github.com:8ta4/say.git
+cd say
+direnv allow
+```
+
+The `devenv.nix` file has got all the scripts you need.
+
 ## Architecture
 
 `say` functions as a monolithic macOS background process. It's just a `brew install` away, eliminating the need for any additional devices.

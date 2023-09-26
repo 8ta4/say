@@ -70,8 +70,6 @@ Designed for continuous operation, `say` ideally requires the API key to be ente
 
 `say` taps into a powerful API that can transcribe speech accurately and fast. `say` doesn't reinvent the wheel.
 
-To avoid contaminating the transcription with errors, `say` can drop low-confidence segments that the transcription system isn't sure how to transcribe and only retain the ones with high confidence.
-
 `say` doesn't send any previous speech to the API for context. Sending partial context may not help much with accuracy. Sending full context may help, but it may also increase cost, latency, and complexity.
 
 ## Trigger

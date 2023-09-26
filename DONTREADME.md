@@ -42,6 +42,8 @@ A high price point can motivate you to use `say` more often. You might think tha
 
 ## Setup
 
+> How do I set up this tool's dev environment?
+
 1. Make sure you're using a Mac.
 
 1. Get [git](https://formulae.brew.sh/formula/git#default) installed.

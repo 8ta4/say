@@ -94,3 +94,11 @@ Here are some pro tips:
 - Try to avoid background noise like music or movies.
 - Living alone could be an option... if you're really serious about clean recordings.
 - And if all else fails... well, there's always divorce.
+
+> Does `say` keep a record of the audio?
+
+Nope, `say` doesn't store any audio after it's transcribed.
+
+But it uses Deepgram as the transcription service. And Deepgram say they only hold "[audio data for as long as necessary](https://help.deepgram.com/hc/en-us/articles/6126293557399-Data-Security-Privacy-FAQ#:~:text=Deepgram%20holds%20audio%20data%20for%20as%20long%20as%20necessary)" , but who knows what that means.
+
+

@@ -112,8 +112,6 @@ Even the sound of typing can sometimes be enough to decipher what you're typing.
 
 If you're interested in documenting everything, you might consider recording video. However, this comes with its own risks, such as accidentally capturing footage when you're nude.
 
-The weakest link could be Deepgram as "[Deepgram holds audio data for as long as necessary](https://help.deepgram.com/hc/en-us/articles/6126293557399-Data-Security-Privacy-FAQ#:~:text=Deepgram%20holds%20audio%20data%20for%20as%20long%20as%20necessary)" , but who knows what that means.
-
 ## Segmentation
 
 ### Line

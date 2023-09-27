@@ -26,13 +26,23 @@ And don't forget those trendy new terms - `say` knows they're crucial to nail do
 
 ### Latency
 
-`say` allows you to transcribe your speech into text quickly. You can use the transcription right away for your purposes, such as writing, editing, or sharing.
+> How low is the latency goal?
 
-`say` aims to keep the latency below one second. "[1.0 second is about the limit for the user's flow of thought to stay uninterrupted](https://www.nngroup.com/articles/response-times-3-important-limits/#:~:text=1.0%20second%20is%20about%20the%20limit%20for%20the%20user's%20flow%20of%20thought%20to%20stay%20uninterrupted)".
+`say` is shooting for sub-one-second latency.
 
-`say` isn't designed to provide real-time feedback. It aims to let you express your thoughts without interruption or distraction.
+> Why keep latency below one second?
 
-`say` has a user interface that is optimized to reduce the perceived latency.
+"[1.0 second is about the limit for the user's flow of thought to stay uninterrupted](https://www.nngroup.com/articles/response-times-3-important-limits/#:~:text=1.0%20second%20is%20about%20the%20limit%20for%20the%20user's%20flow%20of%20thought%20to%20stay%20uninterrupted)".
+
+With `say`, you can turn speech into text in a flash, ready for whatever you need it for - writing, editing, sharing.
+
+`say`’s user interface is optimized to reduce perceived latency.
+
+> Why not go for lower latency?
+
+"[[D]uring delays of more than 0.1 but less than 1.0 second... the user does lose the feeling of operating directly on the data](https://www.nngroup.com/articles/response-times-3-important-limits/#:~:text=during%20delays%20of%20more%20than%200.1%20but%20less%20than%201.0%20second%2C%20but%20the%20user%20does%20lose%20the%20feeling%20of%20operating%20directly%20on%20the%20data)"
+
+But that's OK. Operating directly on the data can be distracting. You can focus on speaking now and working on the data later.
 
 ### Budget
 

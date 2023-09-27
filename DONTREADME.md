@@ -38,7 +38,7 @@ With `say`, you can turn speech into text in a flash, ready for whatever you nee
 
 `say`’s user interface is optimized to reduce perceived latency.
 
-> Why not go for lower latency?
+> Why not aim for latency below 0.1 seconds?
 
 "[[D]uring delays of more than 0.1 but less than 1.0 second... the user does lose the feeling of operating directly on the data](https://www.nngroup.com/articles/response-times-3-important-limits/#:~:text=during%20delays%20of%20more%20than%200.1%20but%20less%20than%201.0%20second%2C%20but%20the%20user%20does%20lose%20the%20feeling%20of%20operating%20directly%20on%20the%20data)"
 

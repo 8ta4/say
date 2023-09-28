@@ -222,12 +222,12 @@ I've selected Visual Studio Code, and here's why:
 
 ## Encryption
 
-I've decided to skip application-level encryption, and let me tell you why:
+> Does this tool do application-level encryption?
 
-Adding an encryption layer might mean you'd have to juggle a decryption key or passphrase.
+No. Encryption would mean dealing with decryption keys or passphrases, and that’s no fun.
 
-I want you to be able to access your transcription with any software you fancy.
+If you lose your key or something goes wrong with the encryption, you might lose your data.
 
-You can totally use device-level encryption.
+Plus, I want you to be able to open your transcripts with any tool you like.
 
-A forgotten key or an encryption hiccup could lead to data loss.
+But you can still use device-level encryption if you want.

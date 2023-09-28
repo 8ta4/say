@@ -116,23 +116,41 @@ Plus, using the macOS `say` while this tool is active might mess up the recordin
 
 ## API Key
 
-I've chosen not to store the API key. This approach keeps the codebase simple and reduces potential security vulnerabilities.
+> How does this tool store the API key?
+
+It doesn’t store it on disk, only in memory. This keeps the code simple and secure.
 
 Designed for continuous operation, `say` ideally requires the API key to be entered just once.
 
 ## Transcription
 
-`say` taps into a powerful API that can transcribe speech accurately and fast. `say` doesn't reinvent the wheel.
+> Why not do transcription locally?
+
+`say` uses a powerful API that can transcribe speech fast and accurately. Deepgram seems to be the best one right now.
+
+> Does this tool any previous speech to the API for context?
 
 `say` doesn't send any previous speech to the API for context. Sending partial context may not help much with accuracy. Sending full context may help, but it may also increase cost, latency, and complexity.
+
+> Why doesn't this tool use streaming transcription?
+
+Streaming transcription seems less accurate and more expensive.
 
 ## Trigger
 
 ### Manual
 
-The manual trigger is `Shift + Space`. It's easy to press and it doesn't clash with anything.
+> Why does this tool use `Shift + Space` to trigger transcription?
 
-`⌘ + Space` is used by Spotlight or other launchers. `Ctrl + Space` triggers auto-suggestions in IDEs, like VS Code.
+`Shift + Space` is to press and it doesn't clash with anything.
+
+> Why doesn't this tool use `⌘ + Space` to trigger transcription?
+
+`⌘ + Space` is used by Spotlight or other launchers.
+
+> Why doesn't this tool use `Ctrl + Space` to trigger transcription?
+
+`Ctrl + Space` triggers auto-suggestions in IDEs, like VS Code.
 
 ### Automatic
 

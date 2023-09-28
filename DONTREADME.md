@@ -102,7 +102,9 @@ Plus, it’s a breeze to develop and test `say` using Mac.
 
 I wanted to make say easy to try out.
 
-## Name Overlap
+## Functionality
+
+### CLI
 
 > Does this tool conflict with the macOS built-in `say` command?
 
@@ -114,31 +116,29 @@ I wanted to keep installation and usage simple.
 
 Plus, using the macOS `say` while this tool is active might mess up the recording and transcription.
 
-## API Key
-
 > How does this tool store the API key?
 
 It doesn’t store it on disk, only in memory. This keeps the code simple and secure.
 
 Designed for continuous operation, `say` ideally requires the API key to be entered just once.
 
-## Transcription
+### Recording
 
-> Why not do transcription locally?
+> Why doesn't this tool store my audio after transcribing?
 
-`say` uses a powerful API that can transcribe speech fast and accurately. Deepgram seems to be the best one right now.
+Storing audio can amplify the observer effect, potentially making you more self-conscious.
 
-> Does this tool any previous speech to the API for context?
+By choosing not to store audio, `say` ensures that sounds like your snoring, farting, or moaning aren't kept on record.
 
-`say` doesn't send any previous speech to the API for context. Sending partial context may not help much with accuracy. Sending full context may help, but it may also increase cost, latency, and complexity.
+Being arrested and having your own audio used against you in court isn't a pleasant experience.
 
-> Why doesn't this tool use streaming transcription?
+Even the sound of typing can sometimes reveal what you're typing. This is risky if you're entering sensitive information like passwords while speaking.
 
-Streaming transcription seems less accurate and more expensive.
+If you want to document everything, you might consider recording video. But this has its own risks, such as accidentally capturing yourself naked.
 
-## Trigger
+### Trigger
 
-### Manual
+#### Manual
 
 > Why does this tool use `Shift + Space` to trigger transcription?
 
@@ -152,7 +152,7 @@ Streaming transcription seems less accurate and more expensive.
 
 `Ctrl + Space` triggers auto-suggestions in IDEs, like VS Code.
 
-### Automatic
+#### Automatic
 
 > When does `say` start transcribing automatically?
 
@@ -172,21 +172,21 @@ From my experience, if the audio is 1 minute or less, the transcription API usua
 
 There is a natural delay when you switch from talking to reading your transcript. This delay might offset any extra speech when you surpass 1 minute.
 
-## Data Retention
+### Transcription
 
-> Why doesn't this tool store my audio after transcribing?
+> Why not do transcription locally?
 
-Storing audio can amplify the observer effect, potentially making you more self-conscious.
+`say` uses a powerful API that can transcribe speech fast and accurately. Deepgram seems to be the best one right now.
 
-By choosing not to store audio, `say` ensures that sounds like your snoring, farting, or moaning aren't kept on record.
+> Does this tool any previous speech to the API for context?
 
-Being arrested and having your own audio used against you in court isn't a pleasant experience.
+`say` doesn't send any previous speech to the API for context. Sending partial context may not help much with accuracy. Sending full context may help, but it may also increase cost, latency, and complexity.
 
-Even the sound of typing can sometimes reveal what you're typing. This is risky if you're entering sensitive information like passwords while speaking.
+> Why doesn't this tool use streaming transcription?
 
-If you want to document everything, you might consider recording video. But this has its own risks, such as accidentally capturing yourself naked.
+Streaming transcription seems less accurate and more expensive.
 
-## Segmentation
+### Segmentation
 
 > Why does each day gets its own file?
 
@@ -202,7 +202,7 @@ This also makes it easy to search for a specific date.
 
 Each sentence in `say` gets its own line. That way, you can easily move up and down with `j` and `k`.
 
-## Updating the Transcript File
+### Transcript
 
 > How does this tool keep its transcript read-only when it updates it?
 
@@ -211,18 +211,6 @@ Each sentence in `say` gets its own line. That way, you can easily move up and d
 1. Any updates made to the file will modify the temporary file, preserving the read-only nature of the original `DD.txt` file.
 
 1. `say` uses the atomic `rename` operation to replace the original `DD.txt` file with the modified temporary file. This atomic operation ensures that the `DD.txt` file is always consistent.
-
-## Text Editor
-
-> Why does this tool prefer Visual Studio Code for viewing transcript files?
-
-It's got this cool [auto-reload feature](https://stackoverflow.com/questions/30078077/visual-studio-code-auto-refresh-file-changes#:~:text=vscode%20will%20never%20refresh%20the%20file%20if%20you%20have%20changes%20in%20that%20file%20that%20are%20not%20saved%20to%20disk.%20however%2C%20if%20the%20file%20is%20open%20and%20does%20not%20have%20changes%2C%20it%20will%20replace%20with%20the%20changes%20on%20disk%2C%20that%20is%20true.) built right in.
-
-It can be set up to [honor read-only files](https://code.visualstudio.com/docs/getstarted/settings#:~:text=//%20Marks%20files%20as%20readonly%20when%20their%20file%20permissions%20indicate%20as%20such.%20This%20can%20be%20overridden%20via%20%60files.readonlyInclude%60%20and%20%60files.readonlyExclude%60%20settings.%0A%20%20%22files.readonlyFromPermissions%22%3A%20false%2C).
-
-It's got a [Neovim plugin](https://github.com/vscode-neovim/vscode-neovim#neovim-configuration) that plays nice with your existing Neovim config.
-
-## Encryption
 
 > Does this tool do application-level encryption?
 
@@ -233,3 +221,11 @@ If you lose your key or something goes wrong with the encryption, you might lose
 Plus, I want you to be able to open your transcripts with any tool you like.
 
 But you can still use device-level encryption if you want.
+
+> Why does this tool prefer Visual Studio Code for viewing transcript files?
+
+It's got this cool [auto-reload feature](https://stackoverflow.com/questions/30078077/visual-studio-code-auto-refresh-file-changes#:~:text=vscode%20will%20never%20refresh%20the%20file%20if%20you%20have%20changes%20in%20that%20file%20that%20are%20not%20saved%20to%20disk.%20however%2C%20if%20the%20file%20is%20open%20and%20does%20not%20have%20changes%2C%20it%20will%20replace%20with%20the%20changes%20on%20disk%2C%20that%20is%20true.) built right in.
+
+It can be set up to [honor read-only files](https://code.visualstudio.com/docs/getstarted/settings#:~:text=//%20Marks%20files%20as%20readonly%20when%20their%20file%20permissions%20indicate%20as%20such.%20This%20can%20be%20overridden%20via%20%60files.readonlyInclude%60%20and%20%60files.readonlyExclude%60%20settings.%0A%20%20%22files.readonlyFromPermissions%22%3A%20false%2C).
+
+It's got a [Neovim plugin](https://github.com/vscode-neovim/vscode-neovim#neovim-configuration) that plays nice with your existing Neovim config.

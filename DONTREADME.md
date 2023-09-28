@@ -58,9 +58,11 @@ But that's OK. Operating directly on the data can be distracting. You can focus 
 
 ### Budget
 
-Most productivity tools designed for individual users have a lower price than $100/month. I wanted to keep `say` affordable.
+> How much does say cost per month?
 
-A high price point can motivate you to use `say` more often. You might think that since you are paying a lot, you should make the most of it and "just say it".
+`say` is aiming for less than $100/month because that's the sweet spot for most personal productivity tools.
+
+Some folks might say that a higher price makes you use the tool more. You know, the whole sunk cost fallacy thing. But let's just say it: that's just a trick to get you to spend more money.
 
 ## Setup
 

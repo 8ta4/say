@@ -94,7 +94,7 @@ And I couldn't do it for you, because that would break [Homebrew's policy](https
 
 > Why not just let a cloud server handle the transcript API calls?
 
-`say` is a self-contained macOS background process. This design reduces cloud dependency and gives your privacy a boost.
+`say` is a macOS background process. This design reduces cloud dependency and gives your privacy a boost.
 
 Plus, it’s a breeze to develop and test `say` using Mac.
 

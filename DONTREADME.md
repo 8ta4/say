@@ -104,13 +104,15 @@ I wanted to make say easy to try out.
 
 ## Name Overlap
 
-This tool intentionally replaces the `say` command built-in with macOS.
+> Does this tool conflict with the macOS built-in `say` command?
 
-If you run the default `say` command on macOS while this tool is active, it may interfere with the recording and transcription process.
+Yes, `say` intentionally replaces the macOS built-in `say`.
 
-I've chosen to keep the name of this tool as `say` to ensure a smooth installation experience.
+> Why not use an alias to avoid conflict?
 
+I wanted to keep installation and usage simple.
 
+Plus, using the macOS `say` while this tool is active might mess up the recording and transcription.
 
 ## API Key
 

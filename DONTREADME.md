@@ -154,17 +154,21 @@ Streaming transcription seems less accurate and more expensive.
 
 ### Automatic
 
-The automatic trigger is based on voice activity. `say` keeps track of how much you talk without transcribing. When you reach 1 minute of untranscribed speech, `say` waits for a pause and then sends the audio for transcription.
+> When does `say` start transcribing automatically?
 
-This trategy is designed to strike a balance between accuracy and latency.
+The automatic trigger is based on voice activity. `say` tracks how much you talk without transcribing. When you reach 1 minute of untranscribed speech, `say` waits for a pause and then sends the audio for transcription.
+
+> Why does this tool wait for a pause and then send the audio for transcription?
+
+Waiting for a pause helps capture your whole thought and avoid cutting off mid-sentence.
+
+This 1-minute strategy strikes a balance between accuracy and latency.
 
 Longer speech gives more context and improves accuracy.
 
-And waiting for a pause helps capture your whole thought and avoid cutting off mid-sentence.
+But I also want to keep things snappy with the manual trigger aiming for sub-second latency.
 
-This strategy also helps the manual trigger meet the sub-second latency goal. 
-
-From my experience, if the audio is 1 minute or less, the transcription API usually responds in under a second. But if the audio is 2 minutes or longer, the latency can extend to 1 second or more. This was tested on a North American gigabit connection.
+From my experience, if the audio is 1 minute or less, the transcription API usually responds in under a second. But if the audio is 2 minutes or longer, the latency can extend to 1 second or more. And that's on a North American gigabit connection.
 
 There is a natural delay when you switch from talking to reading your transcript. This delay might offset any extra speech when you surpass 1 minute.
 

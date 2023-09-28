@@ -152,17 +152,17 @@ There is a natural delay when you switch from talking to reading your transcript
 
 ## Data Retention
 
-`say` doesn't keep a record of the audio once it has been transcribed.
+> Why doesn't this tool keep the audio after transcribing?
 
-The act of storing audio can amplify the observer effect, potentially making you more self-aware and uncomfortable.
+Storing audio can amplify the observer effect, potentially making you more self-conscious.
 
 By choosing not to store audio, `say` ensures that sounds like your snoring, farting, or moaning aren't kept on record.
 
-Being arrested and having your own audio used against you in a court of law isn't a pleasant experience.
+Being arrested and having your own audio used against you in court isn't a pleasant experience.
 
-Even the sound of typing can sometimes be enough to decipher what you're typing. This becomes a security risk if you're entering sensitive information like passwords while speaking.
+Even the sound of typing can sometimes reveal what you're typing. This is risky if you're entering sensitive information like passwords while speaking.
 
-If you're interested in documenting everything, you might consider recording video. However, this comes with its own risks, such as accidentally capturing footage when you're nude.
+If you want to document everything, you might consider recording video. But this has its own risks, such as accidentally capturing yourself naked.
 
 ## Segmentation
 

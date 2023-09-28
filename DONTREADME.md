@@ -24,13 +24,11 @@ Absolutely. That's why `say` is designed for home use. Just be aware it might pi
 
 ### Accuracy
 
-> Does this tool focus on interacting with Large Language Models or readability?
-
-Interaction with Large Language Models (LLMs) takes the front seat here. `say` is built with the expectation that LLMs will use its transcripts, even if it means sacrificing readability.
-
 > Is there a Word Error Rate goal?
 
 Word Error Rate can be misleading. It counts every mistake equally, regardless of how significant or trivial it is.
+
+Interaction with Large Language Models (LLMs) takes the front seat here. `say` is built with the expectation that LLMs will use its transcripts, even if it means sacrificing readability.
 
 What matters is whether LLMs can understand what you are saying and respond accordingly.
 

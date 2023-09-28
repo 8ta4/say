@@ -178,7 +178,7 @@ There is a natural delay when you switch from talking to reading your transcript
 
 `say` uses a powerful API that can transcribe speech fast and accurately. Deepgram seems to be the best one right now.
 
-> Does this tool any previous speech to the API for context?
+> Does this tool send any previous speech to the API for context?
 
 `say` doesn't send any previous speech to the API for context. Sending partial context may not help much with accuracy. Sending full context may help, but it may also increase cost, latency, and complexity.
 

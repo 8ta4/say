@@ -4,15 +4,23 @@
 
 ### 24/7
 
-`say` is a tool designed for capturing thoughts and ideas through continuous voice recording. It's a personal reflection-focused tool that avoids any potential legal complications.
+> What's wrong with writing or typing?
 
-Voice is an efficient medium for brain-to-computer communication.
+`say` is for those moments when note-taking is a hassle, like when you're busy, when you're in bed, or when you're busy in bed.
 
-`say` allows you to capture your thoughts in situations where traditional note-taking isn't feasible, such as when you're in bed or when your hands are occupied.
+Writing or typing can be slow. You might lose your train of thought.
 
-Journaling can have therapeutic effects, and `say` automates this process, potentially providing catharsis.
+It's automatic, so say goodbye to keeping a journal.
 
-`say` can boost your creativity and productivity by allowing you to record inspirations as they come. Whether it's a business idea, narrative, or comedic line, just say it.
+> What's wrong with other dictation apps?
+
+Most dictation apps require you to press a button or say a command before you start speaking. That can interrupt your flow.
+
+`say` is always on. Whether it's a business idea or comedic line, just say it.
+
+> Isn't recording all the time a privacy concern?
+
+Absolutely. That's why `say` is designed for home use. Just be aware it might pick up others' voices if they're around.
 
 ### Accuracy
 

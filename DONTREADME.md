@@ -92,11 +92,15 @@ And I couldn't do it for you, because that would break [Homebrew's policy](https
 
 ## Architecture
 
-`say` functions as a monolithic macOS background process. It's just a `brew install` away, eliminating the need for any additional devices.
+> Why not just let a cloud server handle the transcript API calls?
 
-The uniformity of the macOS ecosystem simplifies both development and testing.
+`say` is a self-contained macOS background process. This design reduces cloud dependency and gives your privacy a boost.
 
-This setup cuts down on cloud dependence and gives your privacy a boost.
+Plus, it’s a breeze to develop and test `say` using Mac.
+
+> Why not use a dedicated recording device?
+
+I wanted to make say easy to try out.
 
 ## Name Overlap
 

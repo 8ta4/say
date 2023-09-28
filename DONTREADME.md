@@ -62,14 +62,6 @@ But that's OK. Operating directly on the data can be distracting. You can focus 
 
 Some folks might say that a higher price makes you use the tool more. You know, the whole sunk cost fallacy thing. But let's just say it: that's just a trick to get you to spend more money.
 
-With [Deepgram's Pay-as-You-Go at $0.0043/min](https://deepgram.com/pricing#:~:text=deepgram%20nova-2%20(pre-recorded)starting%20at%20%240.0043%2Fmin), here's a quick math:
-
-An average month has about 30.44 days.
-
-$$\frac{100\text{ dollar/month}}{0.0043\text{ dollar/min} \times 30.44\text{ d/month} \times 60\text{ min/h}} \approx 12.73\text{ h}$$
-
-So, you can transcribe roughly 12.73 hours of voice activity daily.
-
 ## Setup
 
 > How do I set up this tool's dev environment?
@@ -184,7 +176,15 @@ There is a natural delay when you switch from talking to reading your transcript
 
 > Why not do transcription locally?
 
-`say` uses a powerful API that can transcribe speech fast and accurately. Deepgram seems to be the best one right now.
+`say` uses a powerful API that can transcribe speech cheap, fast, and accurately. Deepgram seems to be the best one right now.
+
+With [Deepgram's Pay-as-You-Go at $0.0043/min](https://deepgram.com/pricing#:~:text=deepgram%20nova-2%20(pre-recorded)starting%20at%20%240.0043%2Fmin), here's a quick math:
+
+An average month has about 30.44 days.
+
+$$\frac{100\text{ dollar/month}}{0.0043\text{ dollar/min} \times 30.44\text{ d/month} \times 60\text{ min/h}} \approx 12.73\text{ h}$$
+
+So, you can transcribe roughly 12.73 hours of voice activity daily.
 
 > Does this tool send any previous speech to the API for context?
 

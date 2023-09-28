@@ -24,13 +24,17 @@ Absolutely. That's why `say` is designed for home use. Just be aware it might pi
 
 ### Accuracy
 
-`say` is designed with the anticipation that another AI model will utilize its transcriptions.
+> Does this tool focus on interacting with Large Language Models or readability?
 
-Interaction with the LLM takes the front seat here, even over traditional readability. It's all about preserving the essence and intent of your words.
+Interaction with Large Language Models (LLMs) takes the front seat here. `say` is built with the expectation that LLMs will use its transcripts, even if it means sacrificing readability.
 
-Not all words are created equal. Getting named entities right is crucial.
+> Is there a Word Error Rate goal?
 
-And don't forget those trendy new terms - `say` knows they're crucial to nail down.
+Word Error Rate can be misleading. It counts every mistake equally, regardless of how significant or trivial it is.
+
+What matters is whether LLMs can understand what you are saying and respond accordingly.
+
+Not all words are created equal. Getting named entities and trendy terms right is crucial.
 
 ### Latency
 

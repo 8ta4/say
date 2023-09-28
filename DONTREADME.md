@@ -170,7 +170,7 @@ There is a natural delay when you switch from talking to reading your transcript
 
 ## Data Retention
 
-> Why doesn't this tool keep the audio after transcribing?
+> Why doesn't this tool store my audio after transcribing?
 
 Storing audio can amplify the observer effect, potentially making you more self-conscious.
 
@@ -184,21 +184,19 @@ If you want to document everything, you might consider recording video. But this
 
 ## Segmentation
 
-### Line
+> Why does each day gets its own file?
 
-Each sentence in `say` gets its own line. That way, you can easily move up and down with `j` and `k`.
-
-### Paragraph
-
-`say` starts a new paragraph when you request transcription. This helps you keep track of what you have already used and what you need next. You can jump to the latest chunk of text with `Shift + [` and `Shift + ]`.
-
-### File
-
-Daily segmentation speeds up loading times.
+Daily files load faster.
 
 If you need weekly or monthly transcriptions, you can simply concatenate the daily transcriptions.
 
 This also makes it easy to search for a specific date.
+
+> How does this tool segment each file?
+
+`say` starts a new paragraph when you ask for transcription. This helps you keep track of what you have already used and what you need next. You can jump to the latest chunk of text with `Shift + [` and `Shift + ]`.
+
+Each sentence in `say` gets its own line. That way, you can easily move up and down with `j` and `k`.
 
 ## Updating the Transcript File
 

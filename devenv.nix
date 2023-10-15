@@ -23,6 +23,13 @@
   pre-commit.hooks = {
     nixpkgs-fmt.enable = true;
     prettier.enable = true;
+    # https://github.com/cachix/pre-commit-hooks.nix/issues/31#issuecomment-744657870
+    trailing-whitespace = {
+      enable = true;
+      # https://github.com/pre-commit/pre-commit-hooks/blob/4b863f127224b6d92a88ada20d28a4878bf4535d/.pre-commit-hooks.yaml#L201-L207
+      entry = "${pkgs.python3Packages.pre-commit-hooks}/bin/trailing-whitespace-fixer";
+      types = [ "text" ];
+    };
   };
 
   # https://devenv.sh/processes/

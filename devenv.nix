@@ -23,6 +23,7 @@
   # pre-commit.hooks.shellcheck.enable = true;
   pre-commit.hooks = {
     nixpkgs-fmt.enable = true;
+    ormolu.enable = true;
     prettier.enable = true;
     # https://github.com/cachix/pre-commit-hooks.nix/issues/31#issuecomment-744657870
     trailing-whitespace = {

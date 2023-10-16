@@ -12,3 +12,6 @@
 
 (def pyaudio (py/import-module "pyaudio"))
 (def wave (py/import-module "wave"))
+
+; Record in chunks of 1024 samples
+(def chunk 1024)

@@ -34,7 +34,7 @@
 
 1. Head over to the [Deepgram website](https://deepgram.com/) and snag a Deepgram API key.
 
-1. When `say` asks for the API key, paste it in. 
+1. When `say` asks for the API key, paste it in.
 
 ## Cost
 
@@ -87,6 +87,7 @@ You can protect your data using device-level encryption.
 `say` aims to capture your thoughts anytime, but it's not magic. If a human can't understand you, `say` will probably struggle too.
 
 Here are some pro tips:
+
 - Practice verbalizing every internal monologue. It's like learning a new language!
 - Keep your words simple and clear. It's like touch-typing for your voice.
 - Consider accent coaching. No offense, but Standard American English is the most recognized. Yeah, it's accentist.

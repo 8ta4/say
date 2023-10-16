@@ -28,3 +28,9 @@
 (def filename "output.wav")
 
 (def p (py/call-attr pyaudio "PyAudio"))
+
+(def stream (py/call-attr-kw p "open" [] {:format sample-format
+                                          :channels channels
+                                          :rate fs
+                                          :frames_per_buffer chunk
+                                          :input true}))

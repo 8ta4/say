@@ -1,3 +1,4 @@
+# Leiningen
 /target
 /classes
 /checkouts
@@ -11,3 +12,6 @@ pom.xml.asc
 /.prepl-port
 .hgignore
 .hg/
+
+# Calva
+.calva

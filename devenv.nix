@@ -22,6 +22,11 @@
   # languages.nix.enable = true;
   languages.clojure.enable = true;
   languages.haskell.enable = true;
+  languages.python = {
+    enable = true;
+    poetry.enable = true;
+    poetry.activate.enable = true;
+  };
 
   # https://devenv.sh/pre-commit-hooks/
   # pre-commit.hooks.shellcheck.enable = true;

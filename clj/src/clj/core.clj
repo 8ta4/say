@@ -9,3 +9,6 @@
   (println "Hello, World!"))
 
 (py/initialize! :python-executable "../.venv/bin/python")
+
+(def pyaudio (py/import-module "pyaudio"))
+(def wave (py/import-module "wave"))

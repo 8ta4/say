@@ -6,8 +6,10 @@ authors = ["Your Name <you@example.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
+numpy = {version = "^1.26.1", python="^3.10,<3.13"}
 python = "^3.10"
 pyaudio = "^0.2.13"
+torchaudio = "^2.1.0"
 
 
 [build-system]

@@ -10,8 +10,8 @@
 (require-python '[numpy :as np])
 (require-python 'pyaudio)
 (require-python 'spacy)
+(require-python '[subprocess :as sp])
 (require-python 'torch)
-(require-python 'wave)
 
 (defn -main
   "I don't do a whole lot ... yet."
@@ -31,8 +31,7 @@
 ; TODO: Ensure the recording continues indefinitely
 (def seconds 3)
 
-; TODO: Revisit the decision to use .wav format
-(def filename "output.wav")
+(def filename "output.mp3")
 
 (def p (pyaudio/PyAudio))
 
@@ -70,16 +69,12 @@
 ; Terminate the PortAudio interface
 (py/call-attr p "terminate")
 
-; Save the recorded data as a WAV file
-(def wf (wave/open filename "wb"))
-(py/call-attr wf "setnchannels" channels)
-(py/call-attr wf "setsampwidth" (py/call-attr p "get_sample_size" sample-format))
-(py/call-attr wf "setframerate" fs)
-
+; Save the recorded data
 (def empty-bytes (python/bytes "" "utf-8"))
 
-(py/call-attr wf "writeframes" (py/call-attr empty-bytes "join" frames))
-(py/call-attr wf "close")
+(def raw-pcm (py/call-attr empty-bytes "join" frames))
+(def l (sp/Popen ["lame" "-" "-r" "-m" "m" "-s" "16" filename] :stdin sp/PIPE))
+(py/call-attr-kw l "communicate" [] {:input raw-pcm})
 
 (def nlp (spacy/load "en_core_web_sm"))
 

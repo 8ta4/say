@@ -72,6 +72,7 @@
 ; Save the recorded data
 (def empty-bytes (python/bytes "" "utf-8"))
 
+; https://stackoverflow.com/a/63794529
 (def raw-pcm (py/call-attr empty-bytes "join" frames))
 (def l (sp/Popen ["lame" "-" "-r" "-m" "m" "-s" "16" filename] :stdin sp/PIPE))
 (py/call-attr-kw l "communicate" [] {:input raw-pcm})

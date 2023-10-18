@@ -18,17 +18,15 @@
   [& args]
   (println "Hello, World!"))
 
-; Record in chunks of 1024 samples
 ; TODO: Evaluate if chunk-size and fs values are optimal for the current use case
-(def chunk-size 1024)
+(def chunk-size 512)
 
 ; 16 bits per sample
 (def sample-format pyaudio/paInt16)
 
 (def channels 1)
 
-; Record at 44100 samples per second
-(def fs 44100)
+(def fs 16000)
 
 ; TODO: Ensure the recording continues indefinitely
 (def seconds 3)

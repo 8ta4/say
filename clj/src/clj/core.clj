@@ -51,17 +51,17 @@
 
 ; https://github.com/snakers4/silero-vad/blob/563106ef8cfac329c8be5f9c5051cd365195aff9/examples/pyaudio-streaming/pyaudio-streaming-examples.ipynb#L117-L123
 (defn int2float [sound]
- (let [abs-max (py/call-attr sound "max")
-       sound (py/call-attr sound "astype" "float32")]
-   (if (> abs-max 0)
-     (py/call-attr sound "__mul__" (/ 1 32768)))
-   (py/call-attr sound "squeeze")))
+  (let [abs-max (py/call-attr sound "max")
+        sound (py/call-attr sound "astype" "float32")]
+    (if (> abs-max 0)
+      (py/call-attr sound "__mul__" (/ 1 32768)))
+    (py/call-attr sound "squeeze")))
 
 (defn apply-model [audio-chunk]
- (let [audio-int16 (np/frombuffer audio-chunk np/int16)
-       audio-float32 (int2float audio-int16)
-       confidence (model (torch/from_numpy audio-float32) 16000)]
-   (py/call-attr confidence "item")))
+  (let [audio-int16 (np/frombuffer audio-chunk np/int16)
+        audio-float32 (int2float audio-int16)
+        confidence (model (torch/from_numpy audio-float32) 16000)]
+    (py/call-attr confidence "item")))
 
 ; Stop and close the stream
 (py/call-attr stream "stop_stream")

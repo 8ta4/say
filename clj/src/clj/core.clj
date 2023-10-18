@@ -9,6 +9,7 @@
 (require-python '[builtins :as python])
 (require-python '[numpy :as np])
 (require-python 'pyaudio)
+(require-python 'spacy)
 (require-python 'torch)
 (require-python 'wave)
 
@@ -81,3 +82,10 @@
 
 (py/call-attr wf "writeframes" (py/call-attr empty-bytes "join" frames))
 (py/call-attr wf "close")
+
+(def nlp (spacy/load "en_core_web_sm"))
+
+(defn segment-sentences [input_text]
+  (let [doc (nlp input_text)
+        sentences (py/get-attr doc "sents")]
+    (map #(py/get-attr % "text") sentences)))

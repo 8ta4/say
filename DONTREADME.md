@@ -170,8 +170,6 @@ But I also want to keep things snappy with the manual trigger aiming for sub-sec
 
 From my experience, if the audio is 1 minute or less, the transcription API usually responds in under a second. But if the audio is 2 minutes or longer, the latency can extend to 1 second or more. And that's on a North American gigabit connection.
 
-There is a natural delay when you switch from talking to reading your transcript. This delay might offset any extra speech when you surpass 1 minute.
-
 ### Transcription
 
 > Why not do transcription locally?

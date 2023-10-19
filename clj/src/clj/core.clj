@@ -19,17 +19,16 @@
   (println "Hello, World!"))
 
 ; TODO: Evaluate if chunk-size and fs values are optimal for the current use case
-(def chunk-size 512)
+; https://github.com/snakers4/silero-vad/blob/cb92cdd1e33cc1eb9c4ae3626bf3cd60fc660976/utils_vad.py#L207
+(def chunk-size 1536)
 
 ; 16 bits per sample
 (def sample-format pyaudio/paInt16)
 
 (def channels 1)
 
+; https://github.com/snakers4/silero-vad/blob/cb92cdd1e33cc1eb9c4ae3626bf3cd60fc660976/utils_vad.py#L207
 (def fs 16000)
-
-; TODO: Ensure the recording continues indefinitely
-(def seconds 3)
 
 (def filename "output.mp3")
 
@@ -44,11 +43,9 @@
 (defn read-chunk []
   (py/call-attr stream "read" chunk-size))
 
-(def frames (vec (take (int (* (/ fs chunk-size) seconds)) (repeatedly read-chunk))))
-
 (def model (first (py/call-attr torch/hub "load" "snakers4/silero-vad" "silero_vad")))
 
-; https://github.com/snakers4/silero-vad/blob/563106ef8cfac329c8be5f9c5051cd365195aff9/examples/pyaudio-streaming/pyaudio-streaming-examples.ipynb#L117-L123
+; https://github.com/snakers4/silero-vad/blob/cb92cdd1e33cc1eb9c4ae3626bf3cd60fc660976/examples/pyaudio-streaming/pyaudio-streaming-examples.ipynb?short_path=da46792#L117-L123
 (defn int2float [sound]
   (let [abs-max (py/call-attr sound "max")
         sound (py/call-attr sound "astype" "float32")]
@@ -56,26 +53,28 @@
       (py/call-attr sound "__mul__" (/ 1 32768)))
     (py/call-attr sound "squeeze")))
 
-(defn apply-model [audio-chunk]
+(defn vad? [audio-chunk]
   (let [audio-int16 (np/frombuffer audio-chunk np/int16)
         audio-float32 (int2float audio-int16)
-        confidence (model (torch/from_numpy audio-float32) 16000)]
-    (py/call-attr confidence "item")))
+        confidence (model (torch/from_numpy audio-float32) fs)]
+    (<= 0.5 (py/call-attr confidence "item"))))
 
-; Stop and close the stream
-(py/call-attr stream "stop_stream")
-(py/call-attr stream "close")
-
-; Terminate the PortAudio interface
-(py/call-attr p "terminate")
-
-; Save the recorded data
 (def empty-bytes (python/bytes "" "utf-8"))
 
-; https://stackoverflow.com/a/63794529
-(def raw-pcm (py/call-attr empty-bytes "join" frames))
-(def l (sp/Popen ["lame" "-" "-r" "-m" "m" "-s" "16" filename] :stdin sp/PIPE))
-(py/call-attr-kw l "communicate" [] {:input raw-pcm})
+(defn process-and-save-audio [frames]
+  ; https://stackoverflow.com/a/63794529
+  (let [raw-pcm (py/call-attr empty-bytes "join" frames)
+        l (sp/Popen ["lame" "-" "-r" "-m" "m" "-s" "16" filename] :stdin sp/PIPE)]
+    (py/call-attr-kw l "communicate" [] {:input raw-pcm})))
+
+(defn continuously-record [frames vad]
+  (let [chunk (read-chunk)
+        vad* (vad? chunk)]
+    (if vad*
+      (recur (conj frames chunk) vad*)
+      (do (if vad
+            (process-and-save-audio frames))
+          (recur frames vad*)))))
 
 (def nlp (spacy/load "en_core_web_sm"))
 

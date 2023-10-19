@@ -28,9 +28,6 @@
 
 (def fs 16000)
 
-; TODO: Ensure the recording continues indefinitely
-(def seconds 3)
-
 (def filename "output.mp3")
 
 (def p (pyaudio/PyAudio))
@@ -43,8 +40,6 @@
 
 (defn read-chunk []
   (py/call-attr stream "read" chunk-size))
-
-(def frames (vec (take (int (* (/ fs chunk-size) seconds)) (repeatedly read-chunk))))
 
 (def model (first (py/call-attr torch/hub "load" "snakers4/silero-vad" "silero_vad")))
 
@@ -62,13 +57,22 @@
         confidence (model (torch/from_numpy audio-float32) 16000)]
     (<= 0.5 (py/call-attr confidence "item"))))
 
-; Save the recorded data
 (def empty-bytes (python/bytes "" "utf-8"))
 
-; https://stackoverflow.com/a/63794529
-(def raw-pcm (py/call-attr empty-bytes "join" frames))
-(def l (sp/Popen ["lame" "-" "-r" "-m" "m" "-s" "16" filename] :stdin sp/PIPE))
-(py/call-attr-kw l "communicate" [] {:input raw-pcm})
+(defn process-and-save-audio [frames]
+  ; https://stackoverflow.com/a/63794529
+  (let [raw-pcm (py/call-attr empty-bytes "join" frames)
+        l (sp/Popen ["lame" "-" "-r" "-m" "m" "-s" "16" filename] :stdin sp/PIPE)]
+    (py/call-attr-kw l "communicate" [] {:input raw-pcm})))
+
+(defn continuously-record [frames vad]
+  (let [chunk (read-chunk)
+        vad* (vad? chunk)]
+    (if vad*
+      (recur (conj frames chunk) vad*)
+      (do (if vad
+            (process-and-save-audio frames))
+          (recur frames vad*)))))
 
 (def nlp (spacy/load "en_core_web_sm"))
 

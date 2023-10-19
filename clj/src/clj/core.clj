@@ -45,7 +45,7 @@
 
 (def model (first (py/call-attr torch/hub "load" "snakers4/silero-vad" "silero_vad")))
 
-; https://github.com/snakers4/silero-vad/blob/563106ef8cfac329c8be5f9c5051cd365195aff9/examples/pyaudio-streaming/pyaudio-streaming-examples.ipynb#L117-L123
+; https://github.com/snakers4/silero-vad/blob/cb92cdd1e33cc1eb9c4ae3626bf3cd60fc660976/examples/pyaudio-streaming/pyaudio-streaming-examples.ipynb?short_path=da46792#L117-L123
 (defn int2float [sound]
   (let [abs-max (py/call-attr sound "max")
         sound (py/call-attr sound "astype" "float32")]

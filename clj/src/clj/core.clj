@@ -19,7 +19,7 @@
   (println "Hello, World!"))
 
 ; TODO: Evaluate if chunk-size and fs values are optimal for the current use case
-(def chunk-size 512)
+(def chunk-size 1536)
 
 ; 16 bits per sample
 (def sample-format pyaudio/paInt16)

@@ -56,11 +56,11 @@
       (py/call-attr sound "__mul__" (/ 1 32768)))
     (py/call-attr sound "squeeze")))
 
-(defn apply-model [audio-chunk]
+(defn vad? [audio-chunk]
   (let [audio-int16 (np/frombuffer audio-chunk np/int16)
         audio-float32 (int2float audio-int16)
         confidence (model (torch/from_numpy audio-float32) 16000)]
-    (py/call-attr confidence "item")))
+    (<= 0.5 (py/call-attr confidence "item"))))
 
 ; Save the recorded data
 (def empty-bytes (python/bytes "" "utf-8"))

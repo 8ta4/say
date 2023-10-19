@@ -62,13 +62,6 @@
         confidence (model (torch/from_numpy audio-float32) 16000)]
     (py/call-attr confidence "item")))
 
-; Stop and close the stream
-(py/call-attr stream "stop_stream")
-(py/call-attr stream "close")
-
-; Terminate the PortAudio interface
-(py/call-attr p "terminate")
-
 ; Save the recorded data
 (def empty-bytes (python/bytes "" "utf-8"))
 

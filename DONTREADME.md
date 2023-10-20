@@ -156,11 +156,13 @@ If you want to document everything, you might consider recording video. But this
 
 > When does `say` start transcribing automatically?
 
-The automatic trigger is based on voice activity. `say` tracks how much you talk without transcribing. When you reach 1 minute of untranscribed speech, `say` waits for a pause and then sends the audio for transcription.
+The automatic trigger is based on voice activity. `say` listens to you and waits for a pause before it starts transcribing.
 
-> Why does this tool wait for a pause and then send the audio for transcription?
+> Why does this tool wait for a pause?
 
 Waiting for a pause helps capture your whole thought and avoid cutting off mid-sentence.
+
+To be more specific, `say` waits for 1 minute of untranscribed speech and then looks for a 1.5 second pause.
 
 This 1-minute strategy strikes a balance between accuracy and latency.
 
@@ -169,6 +171,26 @@ Longer speech gives more context and improves accuracy.
 But I also want to keep things snappy with the manual trigger aiming for sub-second latency.
 
 From my experience, if the audio is 1 minute or less, the transcription API usually responds in under a second. But if the audio is 2 minutes or longer, the latency can extend to 1 second or more. And that's on a North American gigabit connection.
+
+The 1.5 second pause was statistically derived from storytelling and interview pause durations.
+
+The choice of a 1.5-second pause was statistically derived from storytelling and interview pause durations. [The mean pause duration in storytelling is 0.94 seconds (standard deviation: 0.23 seconds; sample size: 437), while in interviews it's 0.53 seconds (standard deviation: 0.06 seconds; sample size: 69)](https://www.researchgate.net/profile/Richard-Wiese-2/publication/257239931_The_Use_of_Time_in_Storytelling/links/00b4952d7b579ab2ac000000/The-Use-of-Time-in-Storytelling.pdf#page=11).
+
+I chose the storytelling pause duration.
+
+> Why was storytelling chosen ?
+
+I chose storytelling because its pause duration is longer, and I wanted to err on the side of caution to avoid cutting off mid-sentence.
+
+I used this nifty [script](https://stackoverflow.com/a/63706587/21856904) to compute a one-sided tolerance interval with 99% coverage and a 99% confidence level.
+
+> Why not use a confidence interval?
+
+Confidence intervals are great for estimating the mean, but a tolerance interval covers a specified proportion of the population, which is better for making sure we capture most of your speech accurately.
+
+> Why 99% and not 95%?
+
+I want to be safe and avoid cutting off your words in the middle.
 
 ### Transcription
 

@@ -1,15 +1,16 @@
 (ns clj.core
   (:gen-class)
-  (:require
-   [libpython-clj2.python :as py]
-   [libpython-clj2.require :refer [require-python]]))
+  (:require [cheshire.core :refer :all]
+            [clj-http.client :as client]
+            [clojure.java.io :as io]
+            [libpython-clj2.python :as py]
+            [libpython-clj2.require :refer [require-python]]))
 
 (py/initialize! :python-executable "../.venv/bin/python")
 
 (require-python '[builtins :as python])
 (require-python '[numpy :as np])
 (require-python 'pyaudio)
-(require-python 'spacy)
 (require-python '[subprocess :as sp])
 (require-python 'torch)
 
@@ -75,9 +76,17 @@
             (process-and-save-audio frames))
           (recur frames vad*)))))
 
-(def nlp (spacy/load "en_core_web_sm"))
-
-(defn segment-sentences [input_text]
-  (let [doc (nlp input_text)
-        sentences (py/get-attr doc "sents")]
-    (map #(py/get-attr % "text") sentences)))
+(defn post-request [api-key]
+  (let [url "https://api.deepgram.com/v1/listen?smart_format=true&model=nova&language=en-US"
+        headers {"Authorization" (str "Token " api-key)}
+        body (io/file filename)]
+    (-> url
+        (client/post {:headers headers :body body})
+        :body
+        (parse-string true)
+        :results
+        :channels
+        first
+        :alternatives
+        first
+        :paragraphs)))

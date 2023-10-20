@@ -10,7 +10,6 @@ numpy = {version = "^1.26.1", python="^3.10,<3.13"}
 python = "^3.10"
 pyaudio = "^0.2.13"
 torchaudio = "^2.1.0"
-spacy = "^3.7.2"
 
 
 [build-system]

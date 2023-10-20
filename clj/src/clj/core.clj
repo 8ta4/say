@@ -1,8 +1,8 @@
 (ns clj.core
   (:gen-class)
-  (:require
-   [libpython-clj2.python :as py]
-   [libpython-clj2.require :refer [require-python]]))
+  (:require [clj-http.client :as client]
+            [libpython-clj2.python :as py]
+            [libpython-clj2.require :refer [require-python]]))
 
 (py/initialize! :python-executable "../.venv/bin/python")
 

@@ -79,7 +79,7 @@
 (defn post-request [api-key]
   (let [url "https://api.deepgram.com/v1/listen?smart_format=true&model=nova&language=en-US"
         headers {"Authorization" (str "Token " api-key)}
-        body (io/file "output.mp3")]
+        body (io/file filename)]
     (client/post url {:headers headers :body body})))
 
 (def nlp (spacy/load "en_core_web_sm"))

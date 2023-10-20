@@ -18,7 +18,6 @@
   [& args]
   (println "Hello, World!"))
 
-; TODO: Evaluate if chunk-size and fs values are optimal for the current use case
 ; https://github.com/snakers4/silero-vad/blob/cb92cdd1e33cc1eb9c4ae3626bf3cd60fc660976/utils_vad.py#L207
 (def chunk-size 1536)
 

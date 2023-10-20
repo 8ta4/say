@@ -11,7 +11,6 @@
 (require-python '[builtins :as python])
 (require-python '[numpy :as np])
 (require-python 'pyaudio)
-(require-python 'spacy)
 (require-python '[subprocess :as sp])
 (require-python 'torch)
 
@@ -91,10 +90,3 @@
         :alternatives
         first
         :paragraphs)))
-
-(def nlp (spacy/load "en_core_web_sm"))
-
-(defn segment-sentences [input_text]
-  (let [doc (nlp input_text)
-        sentences (py/get-attr doc "sents")]
-    (map #(py/get-attr % "text") sentences)))

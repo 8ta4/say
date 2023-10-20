@@ -1,6 +1,6 @@
 (ns clj.core
   (:gen-class)
-  (:require [cheshire.core :refer :all]
+  (:require [cheshire.core :refer [parse-string]]
             [clj-http.client :as client]
             [clojure.java.io :as io]
             [libpython-clj2.python :as py]

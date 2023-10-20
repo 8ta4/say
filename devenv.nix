@@ -6,8 +6,10 @@
 
   # https://devenv.sh/packages/
   packages = [
-    pkgs.leiningen
     pkgs.git
+    pkgs.lame
+    pkgs.leiningen
+    pkgs.portaudio
   ];
 
   # https://devenv.sh/scripts/

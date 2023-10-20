@@ -1,6 +1,7 @@
 (ns clj.core
   (:gen-class)
-  (:require [clj-http.client :as client]
+  (:require [cheshire.core :refer :all]
+            [clj-http.client :as client]
             [clojure.java.io :as io]
             [libpython-clj2.python :as py]
             [libpython-clj2.require :refer [require-python]]))
@@ -80,7 +81,16 @@
   (let [url "https://api.deepgram.com/v1/listen?smart_format=true&model=nova&language=en-US"
         headers {"Authorization" (str "Token " api-key)}
         body (io/file filename)]
-    (client/post url {:headers headers :body body})))
+    (-> url
+        (client/post {:headers headers :body body})
+        :body
+        (parse-string true)
+        :results
+        :channels
+        first
+        :alternatives
+        first
+        :paragraphs)))
 
 (def nlp (spacy/load "en_core_web_sm"))
 

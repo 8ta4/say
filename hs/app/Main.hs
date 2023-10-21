@@ -1,7 +1,8 @@
 module Main (main) where
 
-import Lib
+import Control.Monad (void)
+import System.Process (spawnCommand)
 import Prelude
 
 main :: IO ()
-main = someFunc
+main = void (spawnCommand "cd ../clj && lein run")

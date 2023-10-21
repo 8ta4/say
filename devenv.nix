@@ -14,6 +14,10 @@
 
   # https://devenv.sh/scripts/
   scripts.hello.exec = "echo hello from $GREET";
+  scripts.run.exec = ''
+    cd "$DEVENV_ROOT/hs"
+    ${pkgs.stack}/bin/stack --nix run
+  '';
 
   enterShell = ''
     hello

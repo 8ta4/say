@@ -14,11 +14,6 @@
 (require-python '[subprocess :as sp])
 (require-python 'torch)
 
-(defn -main
-  "I don't do a whole lot ... yet."
-  [& args]
-  (println "Hello, World!"))
-
 ; https://github.com/snakers4/silero-vad/blob/cb92cdd1e33cc1eb9c4ae3626bf3cd60fc660976/utils_vad.py#L207
 (def chunk-size 1536)
 
@@ -90,3 +85,7 @@
         :alternatives
         first
         :paragraphs)))
+
+(defn -main
+  [& args]
+  (continuously-record [] false))

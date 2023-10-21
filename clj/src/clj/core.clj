@@ -62,14 +62,19 @@
         l (sp/Popen ["lame" "-" "-r" "-m" "m" "-s" "16" filename] :stdin sp/PIPE)]
     (py/call-attr-kw l "communicate" [] {:input raw-pcm})))
 
+(defn calculate-duration [frames]
+  (/ (* (count frames) chunk-size) fs))
+
+(def audio-duration-limit 60)
+
 (defn continuously-record [frames vad]
-  (let [chunk (read-chunk)
-        vad* (vad? chunk)]
-    (if vad*
+  (let [chunk (read-chunk)]
+    (if (vad? chunk)
       (recur (conj frames chunk) true)
-      (do (if vad
-            (process-and-save-audio frames))
-          (recur [] false)))))
+      (if (and vad (<= audio-duration-limit (calculate-duration frames)))
+        (do (process-and-save-audio frames)
+            (recur [] false))
+        (recur frames false)))))
 
 (defn post-request [api-key]
   (let [url "https://api.deepgram.com/v1/listen?smart_format=true&model=nova&language=en-US"

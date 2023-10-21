@@ -68,9 +68,9 @@
 (def audio-duration-limit 60)
 
 (defn continuously-record [frames vad]
-  (let [chunk (read-chunk)]
-    (if (vad? chunk)
-      (recur (conj frames chunk) true)
+  (let [chunks (doall (repeatedly 10 read-chunk))]
+    (if (some vad? chunks)
+      (recur (concat frames chunks) true)
       (if (and vad (<= audio-duration-limit (calculate-duration frames)))
         (do (process-and-save-audio frames)
             (recur [] false))

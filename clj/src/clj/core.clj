@@ -66,10 +66,10 @@
   (let [chunk (read-chunk)
         vad* (vad? chunk)]
     (if vad*
-      (recur (conj frames chunk) vad*)
+      (recur (conj frames chunk) true)
       (do (if vad
             (process-and-save-audio frames))
-          (recur frames vad*)))))
+          (recur [] false)))))
 
 (defn post-request [api-key]
   (let [url "https://api.deepgram.com/v1/listen?smart_format=true&model=nova&language=en-US"

@@ -6,6 +6,7 @@
   :dependencies [[cheshire "5.12.0"]
                  [clj-http "3.12.3"]
                  [clj-python/libpython-clj "2.025"]
+                 [com.rpl/specter "1.1.4"]
                  [org.clojure/clojure "1.11.1"]]
   :main ^:skip-aot clj.core
   :target-path "target/%s"

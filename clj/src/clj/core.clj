@@ -3,6 +3,7 @@
   (:require [cheshire.core :refer [parse-string]]
             [clj-http.client :as client]
             [clojure.java.io :as io]
+            [clojure.java.shell :refer [sh]]
             [clojure.string :as str]
             [com.rpl.specter :refer [setval AFTER-ELEM]]
             [libpython-clj2.python :as py]
@@ -125,6 +126,11 @@
          extract-sentences
          (str/join "\n")
          (spit text-filename))))
+
+(defn open-in-vscode []
+  (let [line-count (with-open [rdr (io/reader text-filename)]
+                     (count (line-seq rdr)))]
+    (sh "code" "-g" (str text-filename ":" line-count))))
 
 (defn handler [_]
   (reset! manual-trigger true)

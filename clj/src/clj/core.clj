@@ -3,6 +3,7 @@
   (:require [cheshire.core :refer [parse-string]]
             [clj-http.client :as client]
             [clojure.java.io :as io]
+            [clojure.string :as str]
             [com.rpl.specter :refer [setval AFTER-ELEM]]
             [libpython-clj2.python :as py]
             [libpython-clj2.require :refer [require-python]]
@@ -102,16 +103,18 @@
   (let [url "https://api.deepgram.com/v1/listen?smart_format=true&model=nova&language=en-US"
         headers {"Authorization" (str "Token " api-key)}
         body (io/file filename)]
-    (-> url
-        (client/post {:headers headers :body body})
-        :body
-        (parse-string true)
-        :results
-        :channels
-        first
-        :alternatives
-        first
-        :paragraphs)))
+    (->> (parse-string (:body (client/post url {:headers headers :body body})) true)
+         :results
+         :channels
+         first
+         :alternatives
+         first
+         :paragraphs
+         :paragraphs
+         (mapcat :sentences)
+         (map :text)
+         (str/join "\n")
+         (spit "output.txt"))))
 
 (defn handler [_]
   (reset! manual-trigger true)

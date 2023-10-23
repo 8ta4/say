@@ -75,28 +75,28 @@
 
 (defn continuously-record [main-buffer temp-buffer last-voice-activity]
   (let [audio-chunk (read-chunk)
-        updated-voice-activity-duration (if (voice-activity? audio-chunk)
-                                          0
-                                          (+ last-voice-activity (/ chunk-size fs)))
+        updated-last-voice-activity (if (voice-activity? audio-chunk)
+                                      0
+                                      (+ last-voice-activity (/ chunk-size fs)))
         temp-buffer-with-new-chunk (setval AFTER-ELEM audio-chunk temp-buffer)
         temp-buffer-without-old-chunks (if (< pause-duration-limit (calculate-duration temp-buffer-with-new-chunk))
                                          (rest temp-buffer-with-new-chunk)
                                          temp-buffer-with-new-chunk)
-        updated-main-buffer (if (<= updated-voice-activity-duration pause-duration-limit)
+        updated-main-buffer (if (<= updated-last-voice-activity pause-duration-limit)
                               (concat main-buffer temp-buffer-without-old-chunks)
                               main-buffer)
-        updated-temp-buffer (if (<= updated-voice-activity-duration pause-duration-limit)
+        updated-temp-buffer (if (<= updated-last-voice-activity pause-duration-limit)
                               []
                               temp-buffer-without-old-chunks)]
     (if (and (not-empty updated-main-buffer)
              (or @manual-trigger
                  (and (< audio-duration-limit (calculate-duration updated-main-buffer))
-                      (< pause-duration-limit updated-voice-activity-duration))))
+                      (< pause-duration-limit updated-last-voice-activity))))
       (do
         (reset! manual-trigger false)
         (process-and-save-audio updated-main-buffer)
         (recur [] updated-temp-buffer ##Inf))
-      (recur updated-main-buffer updated-temp-buffer updated-voice-activity-duration))))
+      (recur updated-main-buffer updated-temp-buffer updated-last-voice-activity))))
 
 (defn post-request [api-key]
   (let [url "https://api.deepgram.com/v1/listen?smart_format=true&model=nova&language=en-US"

@@ -2,6 +2,7 @@
   (:gen-class)
   (:require [cheshire.core :refer [parse-string]]
             [clj-http.client :as client]
+            [clojure.core.async :as async]
             [clojure.java.io :as io]
             [clojure.java.shell :refer [sh]]
             [clojure.string :as str]
@@ -77,6 +78,8 @@
 (defn calculate-duration [frames]
   (/ (* (count frames) chunk-size) fs))
 
+(def audio-channel (async/chan))
+
 (defn continuously-record [main-buffer temp-buffer last-voice-activity]
   (let [audio-chunk (read-chunk)
         updated-last-voice-activity (if (voice-activity? audio-chunk)
@@ -98,7 +101,7 @@
                       (< pause-duration-limit updated-last-voice-activity))))
       (do
         (reset! manual-trigger false)
-        (save-audio updated-main-buffer)
+        (async/>!! audio-channel updated-main-buffer)
         (recur [] updated-temp-buffer ##Inf))
       (recur updated-main-buffer updated-temp-buffer updated-last-voice-activity))))
 
@@ -140,4 +143,7 @@
 
 (defn -main [api-key & args]
   (run-jetty handler {:port 8080 :join? false})
+  (async/go
+    (while true
+      (save-audio (async/<! audio-channel))))
   (continuously-record [] [] ##Inf))

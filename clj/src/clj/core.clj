@@ -58,7 +58,7 @@
 
 (def empty-bytes (python/bytes "" "utf-8"))
 
-(defn process-and-save-audio [frames]
+(defn save-audio [frames]
   ; https://stackoverflow.com/a/63794529
   (let [raw-pcm (py/call-attr empty-bytes "join" frames)
         l (sp/Popen ["lame" "-" "-r" "-m" "m" "-s" "16" filename] :stdin sp/PIPE)]
@@ -94,7 +94,7 @@
                       (< pause-duration-limit updated-last-voice-activity))))
       (do
         (reset! manual-trigger false)
-        (process-and-save-audio updated-main-buffer)
+        (save-audio updated-main-buffer)
         (recur [] updated-temp-buffer ##Inf))
       (recur updated-main-buffer updated-temp-buffer updated-last-voice-activity))))
 

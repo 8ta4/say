@@ -3,9 +3,10 @@
   (:require [cheshire.core :refer [parse-string]]
             [clj-http.client :as client]
             [clojure.java.io :as io]
+            [com.rpl.specter :refer [setval AFTER-ELEM]]
             [libpython-clj2.python :as py]
             [libpython-clj2.require :refer [require-python]]
-            [com.rpl.specter :refer [setval AFTER-ELEM]]))
+            [ring.adapter.jetty :refer [run-jetty]]))
 
 (py/initialize! :python-executable "../.venv/bin/python")
 
@@ -63,7 +64,7 @@
         l (sp/Popen ["lame" "-" "-r" "-m" "m" "-s" "16" filename] :stdin sp/PIPE)]
     (py/call-attr-kw l "communicate" [] {:input raw-pcm})))
 
-(def manual-tirgger (atom false))
+(def manual-trigger (atom false))
 
 (def pause-duration-limit 1.5)
 
@@ -88,11 +89,11 @@
                               []
                               temp-buffer-without-old-chunks)]
     (if (and (not-empty updated-main-buffer)
-             (or @manual-tirgger
+             (or @manual-trigger
                  (and (< audio-duration-limit (calculate-duration updated-main-buffer))
                       (< pause-duration-limit updated-voice-activity-duration))))
       (do
-        (reset! manual-tirgger false)
+        (reset! manual-trigger false)
         (process-and-save-audio updated-main-buffer)
         (recur [] updated-temp-buffer ##Inf))
       (recur updated-main-buffer updated-temp-buffer updated-voice-activity-duration))))
@@ -112,6 +113,12 @@
         first
         :paragraphs)))
 
-(defn -main
-  [& args]
+(defn handler [_]
+  (reset! manual-trigger true)
+  {:status 200
+   :headers {"Content-Type" "text/html"}
+   :body "Triggered"})
+
+(defn -main [& args]
+  (run-jetty handler {:port 8080 :join? false})
   (continuously-record [] [] ##Inf))

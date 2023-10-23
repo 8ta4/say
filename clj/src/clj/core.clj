@@ -28,7 +28,9 @@
 ; https://github.com/snakers4/silero-vad/blob/cb92cdd1e33cc1eb9c4ae3626bf3cd60fc660976/utils_vad.py#L207
 (def fs 16000)
 
-(def filename "output.mp3")
+(def audio-filename "output.mp3")
+
+(def text-filename "output.txt")
 
 (def p (pyaudio/PyAudio))
 
@@ -62,7 +64,7 @@
 (defn save-audio [frames]
   ; https://stackoverflow.com/a/63794529
   (let [raw-pcm (py/call-attr empty-bytes "join" frames)
-        l (sp/Popen ["lame" "-" "-r" "-m" "m" "-s" "16" filename] :stdin sp/PIPE)]
+        l (sp/Popen ["lame" "-" "-r" "-m" "m" "-s" "16" audio-filename] :stdin sp/PIPE)]
     (py/call-attr-kw l "communicate" [] {:input raw-pcm})))
 
 (def manual-trigger (atom false))
@@ -118,11 +120,11 @@
   [api-key]
   (let [url "https://api.deepgram.com/v1/listen?smart_format=true&model=nova-2-ea&language=en-US"
         headers {"Authorization" (str "Token " api-key)}
-        body (io/file filename)]
+        body (io/file audio-filename)]
     (->> (parse-string (:body (client/post url {:headers headers :body body})) true)
          extract-sentences
          (str/join "\n")
-         (spit "output.txt"))))
+         (spit text-filename))))
 
 (defn handler [_]
   (reset! manual-trigger true)

@@ -40,7 +40,7 @@
 
 > What's the cost?
 
-`say` is free to use, but it uses the Deepgram API, which might cost you some money. You can check out the prices on [Deepgram’s pricing page](https://deepgram.com/pricing).
+`say` is free to use, but it uses the Deepgram API, which might cost you some money. You can check out the prices on [Deepgram's pricing page](https://deepgram.com/pricing).
 
 > Will I be charged all the time?
 
@@ -100,4 +100,4 @@ Here are some pro tips:
 
 Nope, `say` doesn't store any audio after it's transcribed.
 
-But it uses Deepgram as the transcription service. And Deepgram say they only hold "[audio data for as long as necessary](https://help.deepgram.com/hc/en-us/articles/6126293557399-Data-Security-Privacy-FAQ#:~:text=Deepgram%20holds%20audio%20data%20for%20as%20long%20as%20necessary)" , but who knows what that means.
+But it uses Deepgram as the transcription service. And Deepgram say they only hold "[audio data for as long as necessary](https://help.deepgram.com/hc/en-us/articles/6126293557399-Data-Security-Privacy-FAQ#:~:text=Deepgram%20holds%20audio%20data%20for%20as%20long%20as%20necessary)", but who knows what that means.

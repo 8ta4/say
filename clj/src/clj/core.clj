@@ -3,6 +3,8 @@
   (:require [cheshire.core :refer [parse-string]]
             [clj-http.client :as client]
             [clojure.java.io :as io]
+            [clojure.java.shell :refer [sh]]
+            [clojure.string :as str]
             [com.rpl.specter :refer [setval AFTER-ELEM]]
             [libpython-clj2.python :as py]
             [libpython-clj2.require :refer [require-python]]
@@ -27,7 +29,9 @@
 ; https://github.com/snakers4/silero-vad/blob/cb92cdd1e33cc1eb9c4ae3626bf3cd60fc660976/utils_vad.py#L207
 (def fs 16000)
 
-(def filename "output.mp3")
+(def audio-filename "output.mp3")
+
+(def text-filename "output.txt")
 
 (def p (pyaudio/PyAudio))
 
@@ -58,10 +62,10 @@
 
 (def empty-bytes (python/bytes "" "utf-8"))
 
-(defn process-and-save-audio [frames]
+(defn save-audio [frames]
   ; https://stackoverflow.com/a/63794529
   (let [raw-pcm (py/call-attr empty-bytes "join" frames)
-        l (sp/Popen ["lame" "-" "-r" "-m" "m" "-s" "16" filename] :stdin sp/PIPE)]
+        l (sp/Popen ["lame" "-" "-r" "-m" "m" "-s" "16" audio-filename] :stdin sp/PIPE)]
     (py/call-attr-kw l "communicate" [] {:input raw-pcm})))
 
 (def manual-trigger (atom false))
@@ -94,24 +98,39 @@
                       (< pause-duration-limit updated-last-voice-activity))))
       (do
         (reset! manual-trigger false)
-        (process-and-save-audio updated-main-buffer)
+        (save-audio updated-main-buffer)
         (recur [] updated-temp-buffer ##Inf))
       (recur updated-main-buffer updated-temp-buffer updated-last-voice-activity))))
 
-(defn post-request [api-key]
-  (let [url "https://api.deepgram.com/v1/listen?smart_format=true&model=nova&language=en-US"
+(defn extract-sentences
+  "Extract the sentences from the parsed response."
+  [parsed-response]
+  (->> parsed-response
+       :results
+       :channels
+       first
+       :alternatives
+       first
+       :paragraphs
+       :paragraphs
+       (mapcat :sentences)
+       (map :text)))
+
+(defn transcribe
+  "Make a POST request to the Deepgram API and write the transcribed text to a file."
+  [api-key]
+  (let [url "https://api.deepgram.com/v1/listen?smart_format=true&model=nova-2-ea&language=en-US"
         headers {"Authorization" (str "Token " api-key)}
-        body (io/file filename)]
-    (-> url
-        (client/post {:headers headers :body body})
-        :body
-        (parse-string true)
-        :results
-        :channels
-        first
-        :alternatives
-        first
-        :paragraphs)))
+        body (io/file audio-filename)]
+    (->> (parse-string (:body (client/post url {:headers headers :body body})) true)
+         extract-sentences
+         (str/join "\n")
+         (spit text-filename))))
+
+(defn open-in-vscode []
+  (let [line-count (with-open [rdr (io/reader text-filename)]
+                     (count (line-seq rdr)))]
+    (sh "code" "-g" (str text-filename ":" line-count))))
 
 (defn handler [_]
   (reset! manual-trigger true)
@@ -119,6 +138,6 @@
    :headers {"Content-Type" "text/html"}
    :body "Triggered"})
 
-(defn -main [& args]
+(defn -main [api-key & args]
   (run-jetty handler {:port 8080 :join? false})
   (continuously-record [] [] ##Inf))

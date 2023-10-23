@@ -141,9 +141,11 @@
    :headers {"Content-Type" "text/html"}
    :body "Triggered"})
 
-(defn -main [api-key & args]
+(defn -main [api-key]
   (run-jetty handler {:port 8080 :join? false})
   (async/go
     (while true
-      (save-audio (async/<! audio-channel))))
+      (save-audio (async/<! audio-channel))
+      (transcribe api-key)
+      (open-in-vscode)))
   (continuously-record [] [] ##Inf))

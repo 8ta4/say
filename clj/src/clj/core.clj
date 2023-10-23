@@ -5,7 +5,8 @@
             [clojure.java.io :as io]
             [com.rpl.specter :refer [setval AFTER-ELEM]]
             [libpython-clj2.python :as py]
-            [libpython-clj2.require :refer [require-python]]))
+            [libpython-clj2.require :refer [require-python]]
+            [ring.adapter.jetty :refer [run-jetty]]))
 
 (py/initialize! :python-executable "../.venv/bin/python")
 
@@ -112,6 +113,12 @@
         first
         :paragraphs)))
 
-(defn -main
-  [& args]
+(defn handler [_]
+  (reset! manual-trigger true)
+  {:status 200
+   :headers {"Content-Type" "text/html"}
+   :body "Triggered"})
+
+(defn -main [& args]
+  (run-jetty handler {:port 8080 :join? false})
   (continuously-record [] [] ##Inf))

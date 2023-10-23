@@ -63,7 +63,7 @@
         l (sp/Popen ["lame" "-" "-r" "-m" "m" "-s" "16" filename] :stdin sp/PIPE)]
     (py/call-attr-kw l "communicate" [] {:input raw-pcm})))
 
-(def manual-tirgger (atom false))
+(def manual-trigger (atom false))
 
 (def pause-duration-limit 1.5)
 
@@ -88,11 +88,11 @@
                               []
                               temp-buffer-without-old-chunks)]
     (if (and (not-empty updated-main-buffer)
-             (or @manual-tirgger
+             (or @manual-trigger
                  (and (< audio-duration-limit (calculate-duration updated-main-buffer))
                       (< pause-duration-limit updated-voice-activity-duration))))
       (do
-        (reset! manual-tirgger false)
+        (reset! manual-trigger false)
         (process-and-save-audio updated-main-buffer)
         (recur [] updated-temp-buffer ##Inf))
       (recur updated-main-buffer updated-temp-buffer updated-voice-activity-duration))))

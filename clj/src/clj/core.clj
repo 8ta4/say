@@ -3,9 +3,9 @@
   (:require [cheshire.core :refer [parse-string]]
             [clj-http.client :as client]
             [clojure.java.io :as io]
+            [com.rpl.specter :refer [setval AFTER-ELEM]]
             [libpython-clj2.python :as py]
-            [libpython-clj2.require :refer [require-python]]
-            [com.rpl.specter :refer [setval AFTER-ELEM]]))
+            [libpython-clj2.require :refer [require-python]]))
 
 (py/initialize! :python-executable "../.venv/bin/python")
 

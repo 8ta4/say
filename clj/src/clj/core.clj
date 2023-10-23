@@ -99,20 +99,25 @@
         (recur [] updated-temp-buffer ##Inf))
       (recur updated-main-buffer updated-temp-buffer updated-last-voice-activity))))
 
+(defn extract-sentences [parsed-response]
+  "Extract the sentences from the parsed response."
+  (->> parsed-response
+       :results
+       :channels
+       first
+       :alternatives
+       first
+       :paragraphs
+       :paragraphs
+       (mapcat :sentences)
+       (map :text)))
+
 (defn post-request [api-key]
   (let [url "https://api.deepgram.com/v1/listen?smart_format=true&model=nova&language=en-US"
         headers {"Authorization" (str "Token " api-key)}
         body (io/file filename)]
     (->> (parse-string (:body (client/post url {:headers headers :body body})) true)
-         :results
-         :channels
-         first
-         :alternatives
-         first
-         :paragraphs
-         :paragraphs
-         (mapcat :sentences)
-         (map :text)
+         extract-sentences
          (str/join "\n")
          (spit "output.txt"))))
 

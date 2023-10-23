@@ -116,7 +116,7 @@
 (defn transcribe
   "Make a POST request to the Deepgram API and write the transcribed text to a file."
   [api-key]
-  (let [url "https://api.deepgram.com/v1/listen?smart_format=true&model=nova&language=en-US"
+  (let [url "https://api.deepgram.com/v1/listen?smart_format=true&model=nova-2-ea&language=en-US"
         headers {"Authorization" (str "Token " api-key)}
         body (io/file filename)]
     (->> (parse-string (:body (client/post url {:headers headers :body body})) true)

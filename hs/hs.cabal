@@ -67,6 +67,7 @@ library
   build-depends:
       base >=4.7 && <5
     , bytestring
+    , haskeline
     , http-conduit
     , process
   default-language: Haskell2010
@@ -114,6 +115,7 @@ executable hs-exe
   build-depends:
       base >=4.7 && <5
     , bytestring
+    , haskeline
     , hs
     , http-conduit
     , process
@@ -163,6 +165,7 @@ test-suite hs-test
   build-depends:
       base >=4.7 && <5
     , bytestring
+    , haskeline
     , hs
     , http-conduit
     , process

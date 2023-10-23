@@ -119,6 +119,6 @@
    :headers {"Content-Type" "text/html"}
    :body "Triggered"})
 
-(defn -main [& args]
+(defn -main [api-key & args]
   (run-jetty handler {:port 8080 :join? false})
   (continuously-record [] [] ##Inf))

@@ -4,7 +4,8 @@
             [clj-http.client :as client]
             [clojure.java.io :as io]
             [libpython-clj2.python :as py]
-            [libpython-clj2.require :refer [require-python]]))
+            [libpython-clj2.require :refer [require-python]]
+            [com.rpl.specter :refer [setval AFTER-ELEM]]))
 
 (py/initialize! :python-executable "../.venv/bin/python")
 
@@ -48,7 +49,7 @@
       (py/call-attr sound "__mul__" (/ 1 32768)))
     (py/call-attr sound "squeeze")))
 
-(defn vad? [audio-chunk]
+(defn voice-activity? [audio-chunk]
   (let [audio-int16 (np/frombuffer audio-chunk np/int16)
         audio-float32 (int2float audio-int16)
         confidence (model (torch/from_numpy audio-float32) fs)]
@@ -62,19 +63,39 @@
         l (sp/Popen ["lame" "-" "-r" "-m" "m" "-s" "16" filename] :stdin sp/PIPE)]
     (py/call-attr-kw l "communicate" [] {:input raw-pcm})))
 
-(defn calculate-duration [frames]
-  (/ (* (count frames) chunk-size) fs))
+(def manual-tirgger (atom false))
+
+(def pause-duration-limit 1.5)
 
 (def audio-duration-limit 60)
 
-(defn continuously-record [frames vad]
-  (let [chunks (doall (repeatedly 10 read-chunk))]
-    (if (some vad? chunks)
-      (recur (concat frames chunks) true)
-      (if (and vad (<= audio-duration-limit (calculate-duration frames)))
-        (do (process-and-save-audio frames)
-            (recur [] false))
-        (recur frames false)))))
+(defn calculate-duration [frames]
+  (/ (* (count frames) chunk-size) fs))
+
+(defn continuously-record [main-buffer temp-buffer last-voice-activity]
+  (let [audio-chunk (read-chunk)
+        updated-voice-activity-duration (if (voice-activity? audio-chunk)
+                                          0
+                                          (+ last-voice-activity (/ chunk-size fs)))
+        temp-buffer-with-new-chunk (setval AFTER-ELEM audio-chunk temp-buffer)
+        temp-buffer-without-old-chunks (if (< pause-duration-limit (calculate-duration temp-buffer-with-new-chunk))
+                                         (rest temp-buffer-with-new-chunk)
+                                         temp-buffer-with-new-chunk)
+        updated-main-buffer (if (<= updated-voice-activity-duration pause-duration-limit)
+                              (concat main-buffer temp-buffer-without-old-chunks)
+                              main-buffer)
+        updated-temp-buffer (if (<= updated-voice-activity-duration pause-duration-limit)
+                              []
+                              temp-buffer-without-old-chunks)]
+    (if (and (not-empty updated-main-buffer)
+             (or @manual-tirgger
+                 (and (< audio-duration-limit (calculate-duration updated-main-buffer))
+                      (< pause-duration-limit updated-voice-activity-duration))))
+      (do
+        (reset! manual-tirgger false)
+        (process-and-save-audio updated-main-buffer)
+        (recur [] updated-temp-buffer ##Inf))
+      (recur updated-main-buffer updated-temp-buffer updated-voice-activity-duration))))
 
 (defn post-request [api-key]
   (let [url "https://api.deepgram.com/v1/listen?smart_format=true&model=nova&language=en-US"
@@ -93,4 +114,4 @@
 
 (defn -main
   [& args]
-  (continuously-record [] false))
+  (continuously-record [] [] ##Inf))

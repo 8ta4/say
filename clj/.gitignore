@@ -15,3 +15,5 @@ pom.xml.asc
 
 # Calva
 .calva
+.clj-kondo/*
+!.clj-kondo/config.edn

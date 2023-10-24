@@ -9,5 +9,6 @@ devenv.local.nix
 .pre-commit-config.yaml
 
 # Calva
-.clj-kondo
+.clj-kondo/*
+!.clj-kondo/config.edn
 .lsp

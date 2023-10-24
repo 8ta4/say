@@ -2,6 +2,7 @@
   (:gen-class)
   (:require [cheshire.core :refer [parse-string]]
             [clj-http.client :as client]
+            [clojure.core.async :as async]
             [clojure.java.io :as io]
             [clojure.java.shell :refer [sh]]
             [clojure.string :as str]
@@ -77,6 +78,8 @@
 (defn calculate-duration [frames]
   (/ (* (count frames) chunk-size) fs))
 
+(def audio-channel (async/chan))
+
 (defn continuously-record [main-buffer temp-buffer last-voice-activity]
   (let [audio-chunk (read-chunk)
         updated-last-voice-activity (if (voice-activity? audio-chunk)
@@ -98,12 +101,12 @@
                       (< pause-duration-limit updated-last-voice-activity))))
       (do
         (reset! manual-trigger false)
-        (save-audio updated-main-buffer)
+        (async/>!! audio-channel updated-main-buffer)
         (recur [] updated-temp-buffer ##Inf))
       (recur updated-main-buffer updated-temp-buffer updated-last-voice-activity))))
 
-(defn extract-sentences
-  "Extract the sentences from the parsed response."
+(defn format-transcription
+  "Format the parsed response into a string of sentences."
   [parsed-response]
   (->> parsed-response
        :results
@@ -114,18 +117,26 @@
        :paragraphs
        :paragraphs
        (mapcat :sentences)
-       (map :text)))
+       (map :text)
+       (str/join "\n")
+       (str "\n\n")))
+
+(defn get-headers [api-key]
+  {"Authorization" (str "Token " api-key)})
+
+(def url "https://api.deepgram.com/v1/listen?smart_format=true&model=nova-2-ea&language=en-US")
+
+(defn get-parsed-response
+  "Make a POST request to the Deepgram API and return the parsed response body."
+  [api-key]
+  (-> (client/post url {:headers (get-headers api-key) :body (io/file audio-filename)})
+      :body
+      (parse-string true)))
 
 (defn transcribe
   "Make a POST request to the Deepgram API and write the transcribed text to a file."
   [api-key]
-  (let [url "https://api.deepgram.com/v1/listen?smart_format=true&model=nova-2-ea&language=en-US"
-        headers {"Authorization" (str "Token " api-key)}
-        body (io/file audio-filename)]
-    (->> (parse-string (:body (client/post url {:headers headers :body body})) true)
-         extract-sentences
-         (str/join "\n")
-         (spit text-filename))))
+  (spit text-filename (format-transcription (get-parsed-response api-key)) :append true))
 
 (defn open-in-vscode []
   (let [line-count (with-open [rdr (io/reader text-filename)]
@@ -138,6 +149,11 @@
    :headers {"Content-Type" "text/html"}
    :body "Triggered"})
 
-(defn -main [api-key & args]
+(defn -main [api-key]
   (run-jetty handler {:port 8080 :join? false})
+  (async/go
+    (while true
+      (save-audio (async/<! audio-channel))
+      (transcribe api-key)
+      (open-in-vscode)))
   (continuously-record [] [] ##Inf))

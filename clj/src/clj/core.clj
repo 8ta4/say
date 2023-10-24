@@ -101,7 +101,6 @@
                  (and (< audio-duration-limit (calculate-duration updated-main-buffer))
                       (< pause-duration-limit updated-last-voice-activity))))
       (do
-        (println "saving")
         (reset! manual-trigger false)
         (async/>!! audio-channel updated-main-buffer)
         (recur [] updated-temp-buffer ##Inf))
@@ -145,6 +144,12 @@
                      (count (line-seq rdr)))]
     (sh "code" "-g" (str text-filename ":" line-count))))
 
+(defn process-audio []
+  (while true
+    (save-audio (async/<!! audio-channel))
+    (transcribe (mount/args))
+    (open-in-vscode)))
+
 (defn handler [_]
   (reset! manual-trigger true)
   {:status 200
@@ -156,10 +161,7 @@
   :stop (.stop server))
 
 (defstate audio-processing
-  :start (future (while true
-                   (save-audio (async/<!! audio-channel))
-                   (transcribe (mount/args))
-                   (open-in-vscode)))
+  :start (future (process-audio))
   :stop (future-cancel audio-processing))
 
 (defstate recording

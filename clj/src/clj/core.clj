@@ -9,6 +9,7 @@
             [com.rpl.specter :refer [setval AFTER-ELEM]]
             [libpython-clj2.python :as py]
             [libpython-clj2.require :refer [require-python]]
+            [mount.core :as mount :refer [defstate]]
             [ring.adapter.jetty :refer [run-jetty]]))
 
 (py/initialize! :python-executable "../.venv/bin/python")
@@ -100,6 +101,7 @@
                  (and (< audio-duration-limit (calculate-duration updated-main-buffer))
                       (< pause-duration-limit updated-last-voice-activity))))
       (do
+        (println "saving")
         (reset! manual-trigger false)
         (async/>!! audio-channel updated-main-buffer)
         (recur [] updated-temp-buffer ##Inf))
@@ -149,11 +151,19 @@
    :headers {"Content-Type" "text/html"}
    :body "Triggered"})
 
-(defn -main [api-key]
-  (run-jetty handler {:port 8080 :join? false})
-  (async/go
-    (while true
-      (save-audio (async/<! audio-channel))
-      (transcribe api-key)
-      (open-in-vscode)))
-  (continuously-record [] [] ##Inf))
+(defstate server
+  :start (run-jetty handler {:port 8080 :join? false})
+  :stop (.stop server))
+
+(defstate audio-processing
+  :start (future (while true
+                   (save-audio (async/<!! audio-channel))
+                   (transcribe (mount/args))
+                   (open-in-vscode)))
+  :stop (future-cancel audio-processing))
+
+(defstate recording
+  :start (future (continuously-record [] [] ##Inf))
+  :stop (future-cancel recording))
+
+(def -main mount/start-with-args)

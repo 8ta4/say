@@ -7,6 +7,7 @@
                  [clj-http "3.12.3"]
                  [clj-python/libpython-clj "2.025"]
                  [com.rpl/specter "1.1.4"]
+                 [mount "0.1.17"]
                  [org.clojure/clojure "1.11.1"]
                  [org.clojure/core.async "1.6.681"]
                  [ring "1.10.0"]]

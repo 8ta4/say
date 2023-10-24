@@ -1,0 +1,2 @@
+; https://github.com/clj-kondo/clj-kondo/issues/590#issuecomment-551043258
+{:lint-as {mount.core/defstate clojure.core/def}}

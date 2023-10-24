@@ -9,6 +9,7 @@
             [com.rpl.specter :refer [setval AFTER-ELEM]]
             [libpython-clj2.python :as py]
             [libpython-clj2.require :refer [require-python]]
+            [mount.core :as mount :refer [defstate]]
             [ring.adapter.jetty :refer [run-jetty]]))
 
 (py/initialize! :python-executable "../.venv/bin/python")
@@ -143,17 +144,28 @@
                      (count (line-seq rdr)))]
     (sh "code" "-g" (str text-filename ":" line-count))))
 
+(defn process-audio []
+  (while true
+    (save-audio (async/<!! audio-channel))
+    (transcribe (mount/args))
+    (open-in-vscode)))
+
 (defn handler [_]
   (reset! manual-trigger true)
   {:status 200
    :headers {"Content-Type" "text/html"}
    :body "Triggered"})
 
-(defn -main [api-key]
-  (run-jetty handler {:port 8080 :join? false})
-  (async/go
-    (while true
-      (save-audio (async/<! audio-channel))
-      (transcribe api-key)
-      (open-in-vscode)))
-  (continuously-record [] [] ##Inf))
+(defstate server
+  :start (run-jetty handler {:port 8080 :join? false})
+  :stop (.stop server))
+
+(defstate audio-processing
+  :start (future (process-audio))
+  :stop (future-cancel audio-processing))
+
+(defstate recording
+  :start (future (continuously-record [] [] ##Inf))
+  :stop (future-cancel recording))
+
+(def -main mount/start-with-args)

@@ -17,3 +17,6 @@ pom.xml.asc
 .calva
 .clj-kondo/*
 !.clj-kondo/config.edn
+
+# say
+src/python

@@ -7,18 +7,25 @@
             [clojure.java.shell :refer [sh]]
             [clojure.string :as str]
             [com.rpl.specter :refer [setval AFTER-ELEM]]
+            [libpython-clj2.codegen :as codegen]
             [libpython-clj2.python :as py]
-            [libpython-clj2.require :refer [require-python]]
             [mount.core :as mount :refer [defstate]]
             [ring.adapter.jetty :refer [run-jetty]]))
 
 (py/initialize! :python-executable "../.venv/bin/python")
 
-(require-python '[builtins :as python])
-(require-python '[numpy :as np])
-(require-python 'pyaudio)
-(require-python '[subprocess :as sp])
-(require-python 'torch)
+(codegen/write-namespace! "builtins" {:symbol-name-remaps {"AssertionError" "PyAssertionError"
+                                                           "Exception" "PyException"}})
+(codegen/write-namespace! "numpy")
+(codegen/write-namespace! "pyaudio")
+(codegen/write-namespace! "subprocess")
+(codegen/write-namespace! "torch" {:symbol-name-remaps {"Callable" "PyCallable"}})
+
+(require '[python.builtins :as python])
+(require '[python.numpy :as np])
+(require '[python.pyaudio :as pyaudio])
+(require '[python.subprocess :as sp])
+(require '[python.torch :as torch])
 
 ; https://github.com/snakers4/silero-vad/blob/cb92cdd1e33cc1eb9c4ae3626bf3cd60fc660976/utils_vad.py#L207
 (def chunk-size 1536)

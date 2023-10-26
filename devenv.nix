@@ -6,6 +6,7 @@
 
   # https://devenv.sh/packages/
   packages = [
+    pkgs.jdk
     pkgs.ghcid
     pkgs.git
     pkgs.lame

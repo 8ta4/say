@@ -72,7 +72,7 @@ library
     , process
   default-language: Haskell2010
 
-executable hs-exe
+executable say
   main-is: Main.hs
   other-modules:
       Paths_hs

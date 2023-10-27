@@ -3,24 +3,34 @@
 {
   # https://devenv.sh/basics/
   env.GREET = "devenv";
+  env.PIPENV_VENV_IN_PROJECT = "True";
 
   # https://devenv.sh/packages/
   packages = [
-    pkgs.jdk
+    pkgs.jdk17
     pkgs.ghcid
     pkgs.git
     pkgs.lame
     pkgs.leiningen
+    # I initially used Poetry for managing Python dependencies. However, I encountered a persistent issue when installing the project via Homebrew. The error was related to Poetry's handling of lock files in the PyPI cache directory.
+    pkgs.pipenv
     pkgs.portaudio
   ];
 
   # https://devenv.sh/scripts/
   scripts.hello.exec = "echo hello from $GREET";
-  scripts.ghci.exec = ''
+  scripts.build.exec = ''
+    ${pkgs.pipenv}/bin/pipenv install
+    cd "$DEVENV_ROOT/clj"
+    ${pkgs.leiningen}/bin/lein uberjar
+    cd "$DEVENV_ROOT/hs"
+    ${pkgs.haskellPackages.stack}/bin/stack install --local-bin-path .
+  '';
+  scripts.run.exec = ''
     cd "$DEVENV_ROOT/hs"
     ${pkgs.ghcid}/bin/ghcid --command="${pkgs.stack}/bin/stack ghci" -T="main" --warnings
   '';
-  scripts.run.exec = ''
+  scripts.say.exec = ''
     cd "$DEVENV_ROOT/hs"
     ${pkgs.stack}/bin/stack --nix run
   '';
@@ -32,13 +42,8 @@
 
   # https://devenv.sh/languages/
   # languages.nix.enable = true;
-  languages.clojure.enable = true;
   languages.haskell.enable = true;
-  languages.python = {
-    enable = true;
-    poetry.enable = true;
-    poetry.activate.enable = true;
-  };
+  languages.python.enable = true;
 
   # https://devenv.sh/pre-commit-hooks/
   # pre-commit.hooks.shellcheck.enable = true;

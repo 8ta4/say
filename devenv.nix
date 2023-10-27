@@ -3,6 +3,7 @@
 {
   # https://devenv.sh/basics/
   env.GREET = "devenv";
+  env.PIPENV_VENV_IN_PROJECT = "True";
 
   # https://devenv.sh/packages/
   packages = [

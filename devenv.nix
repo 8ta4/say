@@ -34,7 +34,6 @@
 
   # https://devenv.sh/languages/
   # languages.nix.enable = true;
-  languages.clojure.enable = true;
   languages.haskell.enable = true;
   languages.python.enable = true;
 

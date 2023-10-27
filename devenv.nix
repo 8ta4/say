@@ -11,6 +11,8 @@
     pkgs.git
     pkgs.lame
     pkgs.leiningen
+    # I initially used Poetry for managing Python dependencies. However, I encountered a persistent issue when installing the project via Homebrew. The error was related to Poetry's handling of lock files in the PyPI cache directory.
+    pkgs.pipenv
     pkgs.portaudio
   ];
 
@@ -34,11 +36,7 @@
   # languages.nix.enable = true;
   languages.clojure.enable = true;
   languages.haskell.enable = true;
-  languages.python = {
-    enable = true;
-    poetry.enable = true;
-    poetry.activate.enable = true;
-  };
+  languages.python.enable = true;
 
   # https://devenv.sh/pre-commit-hooks/
   # pre-commit.hooks.shellcheck.enable = true;

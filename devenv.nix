@@ -31,8 +31,7 @@
     ${pkgs.ghcid}/bin/ghcid --command="${pkgs.stack}/bin/stack ghci" -T="main" --warnings
   '';
   scripts.say.exec = ''
-    cd "$DEVENV_ROOT/hs"
-    ${pkgs.stack}/bin/stack --nix run
+    "$DEVENV_ROOT/hs/say"
   '';
 
   enterShell = ''

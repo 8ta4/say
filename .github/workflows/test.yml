@@ -31,5 +31,8 @@ jobs:
         shell: devenv shell bash -e {0}
         run: |
           hello
+          # https://stackoverflow.com/a/75641511
+          nix-channel --add https://nixos.org/channels/nixpkgs-unstable
+          nix-channel --update
 
       - run: devenv shell build

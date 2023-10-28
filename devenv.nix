@@ -24,7 +24,7 @@
     cd "$DEVENV_ROOT/clj"
     ${pkgs.leiningen}/bin/lein uberjar
     cd "$DEVENV_ROOT/hs"
-    ${pkgs.haskellPackages.stack}/bin/stack install --local-bin-path .
+    ${pkgs.haskellPackages.stack}/bin/stack --local-bin-path . --nix install
   '';
   scripts.run.exec = ''
     cd "$DEVENV_ROOT/hs"

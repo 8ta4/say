@@ -32,3 +32,5 @@ jobs:
           nix-channel --update
 
       - run: devenv shell build
+
+      - run: devenv shell package

@@ -67,6 +67,7 @@ library
   build-depends:
       base >=4.7 && <5
     , bytestring
+    , filepath
     , haskeline
     , http-conduit
     , process
@@ -115,6 +116,7 @@ executable say
   build-depends:
       base >=4.7 && <5
     , bytestring
+    , filepath
     , haskeline
     , hs
     , http-conduit
@@ -165,6 +167,7 @@ test-suite hs-test
   build-depends:
       base >=4.7 && <5
     , bytestring
+    , filepath
     , haskeline
     , hs
     , http-conduit

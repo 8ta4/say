@@ -31,3 +31,5 @@ jobs:
         shell: devenv shell bash -e {0}
         run: |
           hello
+
+      - run: devenv shell build

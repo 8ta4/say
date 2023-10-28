@@ -1,5 +1,5 @@
 # https://devenv.sh/integrations/github-actions/#complete-example
-name: "Test"
+name: "Build and Release"
 
 on:
   pull_request:

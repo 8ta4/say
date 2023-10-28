@@ -12,3 +12,6 @@ devenv.local.nix
 .clj-kondo/*
 !.clj-kondo/config.edn
 .lsp
+
+# say
+say.tar.gz

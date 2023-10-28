@@ -30,9 +30,15 @@
     cd "$DEVENV_ROOT"
     tar czf "say.tar.gz" "Pipfile" "Pipfile.lock" "clj/target/uberjar/say.jar" "hs/say"
   '';
-  scripts.run.exec = ''
+  scripts.ghci.exec = ''
+    export DEVELOPMENT=1
     cd "$DEVENV_ROOT/hs"
     ${pkgs.ghcid}/bin/ghcid --command="${pkgs.stack}/bin/stack ghci" -T="main" --warnings
+  '';
+  scripts.run.exec = ''
+    export DEVELOPMENT=1
+    cd "$DEVENV_ROOT/hs"
+    ${pkgs.stack}/bin/stack --nix run
   '';
   scripts.say.exec = ''
     "$DEVENV_ROOT/hs/say"

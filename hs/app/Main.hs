@@ -5,8 +5,8 @@ import Control.Monad (void)
 import Data.ByteString.Lazy (ByteString)
 import Network.HTTP.Simple
 import System.Console.Haskeline
-import System.Environment (getExecutablePath)
-import System.FilePath (takeDirectory, takeFileName)
+import System.Environment (getExecutablePath, lookupEnv)
+import System.FilePath (takeDirectory)
 import System.Process (spawnCommand)
 import Prelude
 
@@ -20,8 +20,9 @@ main = do
         Nothing -> putStrLn "No input received."
         Just input -> do
           executablePath <- getExecutablePath
-          let command = case takeFileName executablePath of
-                "say" -> "cd " <> takeDirectory (takeDirectory executablePath) <> "/clj && java -jar target/uberjar/say.jar " <> input
+          devEnv <- lookupEnv "DEVELOPMENT"
+          let command = case devEnv of
+                Nothing -> "cd " <> takeDirectory (takeDirectory executablePath) <> "/clj && java -jar target/uberjar/say.jar " <> input
                 _ -> "cd ../clj && lein run " <> input
           void $ spawnCommand command
     Right _ -> pure ()

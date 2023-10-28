@@ -1,5 +1,5 @@
 # https://devenv.sh/integrations/github-actions/#complete-example
-name: "Test"
+name: "Build and Release"
 
 on:
   pull_request:
@@ -32,8 +32,6 @@ jobs:
           nix-channel --update
 
       - run: devenv shell build
-
-      - run: devenv shell package
 
       # https://github.com/softprops/action-gh-release/blob/c9b46fe7aad9f02afd89b12450b780f52dacfb2d/README.md?plain=1#L45-L47
       - name: Release

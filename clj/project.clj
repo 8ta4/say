@@ -10,7 +10,8 @@
                  [mount "0.1.17"]
                  [org.clojure/clojure "1.11.1"]
                  [org.clojure/core.async "1.6.681"]
-                 [ring "1.10.0"]]
+                 [ring "1.10.0"]
+                 [tick "0.7.5"]]
   :main ^:skip-aot clj.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all

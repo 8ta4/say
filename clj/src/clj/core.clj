@@ -10,7 +10,8 @@
             [libpython-clj2.codegen :as codegen]
             [libpython-clj2.python :as py]
             [mount.core :as mount :refer [defstate]]
-            [ring.adapter.jetty :refer [run-jetty]]))
+            [ring.adapter.jetty :refer [run-jetty]]
+            [tick.core :as t]))
 
 (py/initialize! :python-executable "../.venv/bin/python")
 
@@ -39,8 +40,6 @@
 (def fs 16000)
 
 (def audio-filename (str (System/getProperty "java.io.tmpdir") "/output.mp3"))
-
-(def text-filename (str (System/getProperty "user.home") "/output.txt"))
 
 (def p (pyaudio/PyAudio))
 
@@ -141,21 +140,26 @@
       :body
       (parse-string true)))
 
+(defn get-transcript-path []
+  (str (System/getProperty "user.home") "/.local/share/say/" (t/format (t/formatter "yyyy/MM/dd") (t/date)) ".txt"))
+
 (defn transcribe
   "Make a POST request to the Deepgram API and write the transcribed text to a file."
-  [api-key]
-  (spit text-filename (format-transcription (get-parsed-response api-key)) :append true))
+  [transcript-path api-key]
+  (io/make-parents transcript-path)
+  (spit transcript-path (format-transcription (get-parsed-response api-key)) :append true))
 
-(defn open-in-vscode []
-  (let [line-count (with-open [rdr (io/reader text-filename)]
+(defn open-in-vscode [transcript-path]
+  (let [line-count (with-open [rdr (io/reader transcript-path)]
                      (count (line-seq rdr)))]
-    (sh "code" "-g" (str text-filename ":" line-count))))
+    (sh "code" "-g" (str transcript-path ":" line-count))))
 
 (defn process-audio []
   (while true
     (save-audio (async/<!! audio-channel))
-    (transcribe (mount/args))
-    (open-in-vscode)))
+    (let [transcript-path (get-transcript-path)]
+      (transcribe transcript-path (mount/args))
+      (open-in-vscode transcript-path))))
 
 (defn handler [_]
   (reset! manual-trigger true)

@@ -20,7 +20,6 @@
   # https://devenv.sh/scripts/
   scripts.hello.exec = "echo hello from $GREET";
   scripts.build.exec = ''
-    ${pkgs.pipenv}/bin/pipenv install
     cd "$DEVENV_ROOT/clj"
     ${pkgs.leiningen}/bin/lein uberjar
     cd "$DEVENV_ROOT/hs"
@@ -45,6 +44,11 @@
   enterShell = ''
     hello
     git --version
+    ${pkgs.pipenv}/bin/pipenv install
+    cd "$DEVENV_ROOT/clj"
+    ${pkgs.leiningen}/bin/lein deps
+    cd "$DEVENV_ROOT/hs"
+    ${pkgs.haskellPackages.stack}/bin/stack build --fast
   '';
 
   # https://devenv.sh/languages/

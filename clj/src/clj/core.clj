@@ -11,7 +11,8 @@
             [libpython-clj2.python :as py]
             [mount.core :as mount :refer [defstate]]
             [ring.adapter.jetty :refer [run-jetty]]
-            [tick.core :as t]))
+            [tick.core :as t])
+  (:import [java.nio.file Files StandardCopyOption]))
 
 (py/initialize! :python-executable "../.venv/bin/python")
 
@@ -142,6 +143,11 @@
 
 (defn get-transcript-path []
   (str (System/getProperty "user.home") "/.local/share/say/" (t/format (t/formatter "yyyy/MM/dd") (t/date)) ".txt"))
+
+(defn atomic-rename [source-path target-path]
+  (Files/move (.toPath (io/file source-path))
+              (.toPath (io/file target-path))
+              (into-array StandardCopyOption [StandardCopyOption/ATOMIC_MOVE])))
 
 (defn transcribe
   "Make a POST request to the Deepgram API and write the transcribed text to a file."

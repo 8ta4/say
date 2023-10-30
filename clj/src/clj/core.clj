@@ -11,7 +11,8 @@
             [libpython-clj2.python :as py]
             [mount.core :as mount :refer [defstate]]
             [ring.adapter.jetty :refer [run-jetty]]
-            [tick.core :as t]))
+            [tick.core :as t])
+  (:import [java.nio.file Files StandardCopyOption]))
 
 (py/initialize! :python-executable "../.venv/bin/python")
 
@@ -39,7 +40,7 @@
 ; https://github.com/snakers4/silero-vad/blob/cb92cdd1e33cc1eb9c4ae3626bf3cd60fc660976/utils_vad.py#L207
 (def fs 16000)
 
-(def audio-filename (str (System/getProperty "java.io.tmpdir") "/output.mp3"))
+(def audio-filepath (str (System/getProperty "java.io.tmpdir") "/output.mp3"))
 
 (def p (pyaudio/PyAudio))
 
@@ -73,7 +74,7 @@
 (defn save-audio [frames]
   ; https://stackoverflow.com/a/63794529
   (let [raw-pcm (py/call-attr empty-bytes "join" frames)
-        l (sp/Popen ["lame" "-" "-r" "-m" "m" "-s" "16" audio-filename] :stdin sp/PIPE)]
+        l (sp/Popen ["lame" "-" "-r" "-m" "m" "-s" "16" audio-filepath] :stdin sp/PIPE)]
     (py/call-attr-kw l "communicate" [] {:input raw-pcm})))
 
 (def manual-trigger (atom false))
@@ -136,12 +137,17 @@
 (defn get-parsed-response
   "Make a POST request to the Deepgram API and return the parsed response body."
   [api-key]
-  (-> (client/post url {:headers (get-headers api-key) :body (io/file audio-filename)})
+  (-> (client/post url {:headers (get-headers api-key) :body (io/file audio-filepath)})
       :body
       (parse-string true)))
 
 (defn get-transcript-path []
   (str (System/getProperty "user.home") "/.local/share/say/" (t/format (t/formatter "yyyy/MM/dd") (t/date)) ".txt"))
+
+(defn atomic-rename [source-path target-path]
+  (Files/move (.toPath (io/file source-path))
+              (.toPath (io/file target-path))
+              (into-array StandardCopyOption [StandardCopyOption/ATOMIC_MOVE])))
 
 (defn transcribe
   "Make a POST request to the Deepgram API and write the transcribed text to a file."

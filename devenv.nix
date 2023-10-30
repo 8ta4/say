@@ -25,7 +25,7 @@
     cd "$DEVENV_ROOT/hs"
     ${pkgs.haskellPackages.stack}/bin/stack --local-bin-path . --nix install
     cd "$DEVENV_ROOT"
-    tar czf "say.tar.gz" "Pipfile" "Pipfile.lock" "clj" "hs/say"
+    tar czf say.tar.gz Pipfile Pipfile.lock clj hs
   '';
   scripts.ghci.exec = ''
     export DEVELOPMENT=1

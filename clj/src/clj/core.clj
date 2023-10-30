@@ -40,7 +40,7 @@
 ; https://github.com/snakers4/silero-vad/blob/cb92cdd1e33cc1eb9c4ae3626bf3cd60fc660976/utils_vad.py#L207
 (def fs 16000)
 
-(def audio-filename (str (System/getProperty "java.io.tmpdir") "/output.mp3"))
+(def audio-filepath (str (System/getProperty "java.io.tmpdir") "/output.mp3"))
 
 (def p (pyaudio/PyAudio))
 
@@ -74,7 +74,7 @@
 (defn save-audio [frames]
   ; https://stackoverflow.com/a/63794529
   (let [raw-pcm (py/call-attr empty-bytes "join" frames)
-        l (sp/Popen ["lame" "-" "-r" "-m" "m" "-s" "16" audio-filename] :stdin sp/PIPE)]
+        l (sp/Popen ["lame" "-" "-r" "-m" "m" "-s" "16" audio-filepath] :stdin sp/PIPE)]
     (py/call-attr-kw l "communicate" [] {:input raw-pcm})))
 
 (def manual-trigger (atom false))
@@ -137,7 +137,7 @@
 (defn get-parsed-response
   "Make a POST request to the Deepgram API and return the parsed response body."
   [api-key]
-  (-> (client/post url {:headers (get-headers api-key) :body (io/file audio-filename)})
+  (-> (client/post url {:headers (get-headers api-key) :body (io/file audio-filepath)})
       :body
       (parse-string true)))
 

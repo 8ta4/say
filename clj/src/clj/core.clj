@@ -14,7 +14,7 @@
             [tick.core :as t])
   (:import [java.nio.file Files StandardCopyOption]))
 
-(py/initialize! :python-executable "../.venv/bin/python")
+(py/initialize!)
 
 (codegen/write-namespace! "builtins" {:symbol-name-remaps {"AssertionError" "PyAssertionError"
                                                            "Exception" "PyException"}})

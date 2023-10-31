@@ -44,6 +44,7 @@
   enterShell = ''
     hello
     git --version
+    source "$DEVENV_ROOT/.venv/bin/activate"
     ${pkgs.pipenv}/bin/pipenv install
     cd "$DEVENV_ROOT/clj"
     ${pkgs.leiningen}/bin/lein deps

@@ -42,6 +42,8 @@
 
 (def audio-filepath (str (System/getProperty "java.io.tmpdir") "/output.mp3"))
 
+(def text-filepath (str (System/getProperty "java.io.tmpdir") "/output.txt"))
+
 (def p (pyaudio/PyAudio))
 
 (def stream (py/call-attr-kw p "open" [] {:format sample-format
@@ -153,7 +155,9 @@
   "Make a POST request to the Deepgram API and write the transcribed text to a file."
   [transcript-path api-key]
   (io/make-parents transcript-path)
-  (spit transcript-path (format-transcription (get-parsed-response api-key)) :append true))
+  (io/copy (io/file transcript-path) (io/file text-filepath))
+  (spit text-filepath (format-transcription (get-parsed-response api-key)) :append true)
+  (atomic-rename text-filepath transcript-path))
 
 (defn open-in-vscode [transcript-path]
   (let [line-count (with-open [rdr (io/reader transcript-path)]

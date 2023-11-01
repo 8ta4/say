@@ -38,7 +38,7 @@
 (def channels 1)
 
 ; https://github.com/snakers4/silero-vad/blob/cb92cdd1e33cc1eb9c4ae3626bf3cd60fc660976/utils_vad.py#L207
-(def fs 16000)
+(def window-size-samples 16000)
 
 (def audio-filepath (str (System/getProperty "java.io.tmpdir") "/output.mp3"))
 
@@ -48,7 +48,7 @@
 
 (def stream (py/call-attr-kw p "open" [] {:format sample-format
                                           :channels channels
-                                          :rate fs
+                                          :rate window-size-samples
                                           :frames_per_buffer chunk-size
                                           :input true}))
 
@@ -68,7 +68,7 @@
 (defn voice-activity? [audio-chunk]
   (let [audio-int16 (np/frombuffer audio-chunk np/int16)
         audio-float32 (int2float audio-int16)
-        confidence (model (torch/from_numpy audio-float32) fs)]
+        confidence (model (torch/from_numpy audio-float32) window-size-samples)]
     (<= 0.5 (py/call-attr confidence "item"))))
 
 (def empty-bytes (python/bytes "" "utf-8"))
@@ -86,7 +86,7 @@
 (def audio-duration-limit 60)
 
 (defn calculate-duration [frames]
-  (/ (* (count frames) chunk-size) fs))
+  (/ (* (count frames) chunk-size) window-size-samples))
 
 (def audio-channel (async/chan))
 
@@ -94,7 +94,7 @@
   (let [audio-chunk (read-chunk)
         updated-last-voice-activity (if (voice-activity? audio-chunk)
                                       0
-                                      (+ last-voice-activity (/ chunk-size fs)))
+                                      (+ last-voice-activity (/ chunk-size window-size-samples)))
         temp-buffer-with-new-chunk (setval AFTER-ELEM audio-chunk temp-buffer)
         temp-buffer-without-old-chunks (if (< pause-duration-limit (calculate-duration temp-buffer-with-new-chunk))
                                          (rest temp-buffer-with-new-chunk)

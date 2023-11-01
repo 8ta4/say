@@ -30,30 +30,16 @@
 (require '[python.torch :as torch])
 
 ; https://github.com/snakers4/silero-vad/blob/cb92cdd1e33cc1eb9c4ae3626bf3cd60fc660976/utils_vad.py#L207
-(def chunk-size 1536)
-
-; 16 bits per sample
-(def sample-format pyaudio/paInt16)
-
-(def channels 1)
+(def frames_per_buffer 1536)
 
 ; https://github.com/snakers4/silero-vad/blob/cb92cdd1e33cc1eb9c4ae3626bf3cd60fc660976/utils_vad.py#L207
-(def fs 16000)
+(def rate 16000)
 
 (def audio-filepath (str (System/getProperty "java.io.tmpdir") "/output.mp3"))
 
 (def text-filepath (str (System/getProperty "java.io.tmpdir") "/output.txt"))
 
 (def p (pyaudio/PyAudio))
-
-(def stream (py/call-attr-kw p "open" [] {:format sample-format
-                                          :channels channels
-                                          :rate fs
-                                          :frames_per_buffer chunk-size
-                                          :input true}))
-
-(defn read-chunk []
-  (py/call-attr stream "read" chunk-size))
 
 (def model (first (py/call-attr torch/hub "load" "snakers4/silero-vad" "silero_vad")))
 
@@ -68,7 +54,7 @@
 (defn voice-activity? [audio-chunk]
   (let [audio-int16 (np/frombuffer audio-chunk np/int16)
         audio-float32 (int2float audio-int16)
-        confidence (model (torch/from_numpy audio-float32) fs)]
+        confidence (model (torch/from_numpy audio-float32) rate)]
     (<= 0.5 (py/call-attr confidence "item"))))
 
 (def empty-bytes (python/bytes "" "utf-8"))
@@ -86,34 +72,43 @@
 (def audio-duration-limit 60)
 
 (defn calculate-duration [frames]
-  (/ (* (count frames) chunk-size) fs))
+  (/ (* (count frames) frames_per_buffer) rate))
 
 (def audio-channel (async/chan))
 
-(defn continuously-record [main-buffer temp-buffer last-voice-activity]
-  (let [audio-chunk (read-chunk)
-        updated-last-voice-activity (if (voice-activity? audio-chunk)
-                                      0
-                                      (+ last-voice-activity (/ chunk-size fs)))
-        temp-buffer-with-new-chunk (setval AFTER-ELEM audio-chunk temp-buffer)
-        temp-buffer-without-old-chunks (if (< pause-duration-limit (calculate-duration temp-buffer-with-new-chunk))
-                                         (rest temp-buffer-with-new-chunk)
-                                         temp-buffer-with-new-chunk)
-        updated-main-buffer (if (<= updated-last-voice-activity pause-duration-limit)
-                              (concat main-buffer temp-buffer-without-old-chunks)
-                              main-buffer)
-        updated-temp-buffer (if (<= updated-last-voice-activity pause-duration-limit)
-                              []
-                              temp-buffer-without-old-chunks)]
-    (if (and (not-empty updated-main-buffer)
-             (or @manual-trigger
-                 (and (< audio-duration-limit (calculate-duration updated-main-buffer))
-                      (< pause-duration-limit updated-last-voice-activity))))
-      (do
-        (reset! manual-trigger false)
-        (async/>!! audio-channel updated-main-buffer)
-        (recur [] updated-temp-buffer ##Inf))
-      (recur updated-main-buffer updated-temp-buffer updated-last-voice-activity))))
+(defn record []
+  ; The stream initialization has been moved to this location to prevent an OSError: [Errno -9981] Input overflowed
+  (let [stream (py/call-attr-kw p "open" [] {:format pyaudio/paInt16
+                                             :channels 1
+                                             :rate rate
+                                             :frames_per_buffer frames_per_buffer
+                                             :input true})
+        read-chunk #(py/call-attr stream "read" frames_per_buffer)]
+    (letfn [(record* [main-buffer temp-buffer last-voice-activity]
+              (let [audio-chunk (read-chunk)
+                    updated-last-voice-activity (if (voice-activity? audio-chunk)
+                                                  0
+                                                  (+ last-voice-activity (/ frames_per_buffer rate)))
+                    temp-buffer-with-new-chunk (setval AFTER-ELEM audio-chunk temp-buffer)
+                    temp-buffer-without-old-chunks (if (< pause-duration-limit (calculate-duration temp-buffer-with-new-chunk))
+                                                     (rest temp-buffer-with-new-chunk)
+                                                     temp-buffer-with-new-chunk)
+                    updated-main-buffer (if (<= updated-last-voice-activity pause-duration-limit)
+                                          (concat main-buffer temp-buffer-without-old-chunks)
+                                          main-buffer)
+                    updated-temp-buffer (if (<= updated-last-voice-activity pause-duration-limit)
+                                          []
+                                          temp-buffer-without-old-chunks)]
+                (if (and (not-empty updated-main-buffer)
+                         (or @manual-trigger
+                             (and (< audio-duration-limit (calculate-duration updated-main-buffer))
+                                  (< pause-duration-limit updated-last-voice-activity))))
+                  (do
+                    (reset! manual-trigger false)
+                    (async/>!! audio-channel updated-main-buffer)
+                    (record* [] updated-temp-buffer ##Inf))
+                  (record* updated-main-buffer updated-temp-buffer updated-last-voice-activity))))]
+      (record* [] [] ##Inf))))
 
 (defn format-transcription
   "Format the parsed response into a string of sentences."
@@ -128,8 +123,7 @@
        :paragraphs
        (mapcat :sentences)
        (map :text)
-       (str/join "\n")
-       (str "\n\n")))
+       (str/join "\n")))
 
 (defn get-headers [api-key]
   {"Authorization" (str "Token " api-key)})
@@ -155,7 +149,11 @@
   "Make a POST request to the Deepgram API and write the transcribed text to a file."
   [transcript-path api-key]
   (io/make-parents transcript-path)
-  (io/copy (io/file transcript-path) (io/file text-filepath))
+  (if (.exists (io/file transcript-path))
+    (do
+      (io/copy (io/file transcript-path) (io/file text-filepath))
+      (spit text-filepath "\n\n" :append true))
+    (spit text-filepath ""))
   (spit text-filepath (format-transcription (get-parsed-response api-key)) :append true)
   (atomic-rename text-filepath transcript-path))
 
@@ -182,11 +180,15 @@
   :stop (.stop server))
 
 (defstate audio-processing
-  :start (future (process-audio))
+  :start (future (try (process-audio)
+                      (catch Exception e
+                        (println e))))
   :stop (future-cancel audio-processing))
 
 (defstate recording
-  :start (future (continuously-record [] [] ##Inf))
+  :start (future (try (record)
+                      (catch Exception e
+                        (println e))))
   :stop (future-cancel recording))
 
 (def -main mount/start-with-args)

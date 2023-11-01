@@ -41,15 +41,6 @@
 
 (def p (pyaudio/PyAudio))
 
-(def stream (py/call-attr-kw p "open" [] {:format pyaudio/paInt16
-                                          :channels 1
-                                          :rate rate
-                                          :frames_per_buffer frames_per_buffer
-                                          :input true}))
-
-(defn read-chunk []
-  (py/call-attr stream "read" frames_per_buffer))
-
 (def model (first (py/call-attr torch/hub "load" "snakers4/silero-vad" "silero_vad")))
 
 ; https://github.com/snakers4/silero-vad/blob/cb92cdd1e33cc1eb9c4ae3626bf3cd60fc660976/examples/pyaudio-streaming/pyaudio-streaming-examples.ipynb?short_path=da46792#L117-L123
@@ -85,30 +76,38 @@
 
 (def audio-channel (async/chan))
 
-(defn continuously-record [main-buffer temp-buffer last-voice-activity]
-  (let [audio-chunk (read-chunk)
-        updated-last-voice-activity (if (voice-activity? audio-chunk)
-                                      0
-                                      (+ last-voice-activity (/ frames_per_buffer rate)))
-        temp-buffer-with-new-chunk (setval AFTER-ELEM audio-chunk temp-buffer)
-        temp-buffer-without-old-chunks (if (< pause-duration-limit (calculate-duration temp-buffer-with-new-chunk))
-                                         (rest temp-buffer-with-new-chunk)
-                                         temp-buffer-with-new-chunk)
-        updated-main-buffer (if (<= updated-last-voice-activity pause-duration-limit)
-                              (concat main-buffer temp-buffer-without-old-chunks)
-                              main-buffer)
-        updated-temp-buffer (if (<= updated-last-voice-activity pause-duration-limit)
-                              []
-                              temp-buffer-without-old-chunks)]
-    (if (and (not-empty updated-main-buffer)
-             (or @manual-trigger
-                 (and (< audio-duration-limit (calculate-duration updated-main-buffer))
-                      (< pause-duration-limit updated-last-voice-activity))))
-      (do
-        (reset! manual-trigger false)
-        (async/>!! audio-channel updated-main-buffer)
-        (recur [] updated-temp-buffer ##Inf))
-      (recur updated-main-buffer updated-temp-buffer updated-last-voice-activity))))
+(defn record []
+  (let [stream (py/call-attr-kw p "open" [] {:format pyaudio/paInt16
+                                             :channels 1
+                                             :rate rate
+                                             :frames_per_buffer frames_per_buffer
+                                             :input true})
+        read-chunk #(py/call-attr stream "read" frames_per_buffer)]
+    (letfn [(record* [main-buffer temp-buffer last-voice-activity]
+              (let [audio-chunk (read-chunk)
+                    updated-last-voice-activity (if (voice-activity? audio-chunk)
+                                                  0
+                                                  (+ last-voice-activity (/ frames_per_buffer rate)))
+                    temp-buffer-with-new-chunk (setval AFTER-ELEM audio-chunk temp-buffer)
+                    temp-buffer-without-old-chunks (if (< pause-duration-limit (calculate-duration temp-buffer-with-new-chunk))
+                                                     (rest temp-buffer-with-new-chunk)
+                                                     temp-buffer-with-new-chunk)
+                    updated-main-buffer (if (<= updated-last-voice-activity pause-duration-limit)
+                                          (concat main-buffer temp-buffer-without-old-chunks)
+                                          main-buffer)
+                    updated-temp-buffer (if (<= updated-last-voice-activity pause-duration-limit)
+                                          []
+                                          temp-buffer-without-old-chunks)]
+                (if (and (not-empty updated-main-buffer)
+                         (or @manual-trigger
+                             (and (< audio-duration-limit (calculate-duration updated-main-buffer))
+                                  (< pause-duration-limit updated-last-voice-activity))))
+                  (do
+                    (reset! manual-trigger false)
+                    (async/>!! audio-channel updated-main-buffer)
+                    (record* [] updated-temp-buffer ##Inf))
+                  (record* updated-main-buffer updated-temp-buffer updated-last-voice-activity))))]
+      (record* [] [] ##Inf))))
 
 (defn format-transcription
   "Format the parsed response into a string of sentences."
@@ -177,11 +176,15 @@
   :stop (.stop server))
 
 (defstate audio-processing
-  :start (future (process-audio))
+  :start (future (try (process-audio)
+                      (catch Exception e
+                        (println e))))
   :stop (future-cancel audio-processing))
 
 (defstate recording
-  :start (future (continuously-record [] [] ##Inf))
+  :start (future (try (record)
+                      (catch Exception e
+                        (println e))))
   :stop (future-cancel recording))
 
 (def -main mount/start-with-args)

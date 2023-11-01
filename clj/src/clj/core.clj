@@ -123,8 +123,7 @@
        :paragraphs
        (mapcat :sentences)
        (map :text)
-       (str/join "\n")
-       (str "\n\n")))
+       (str/join "\n")))
 
 (defn get-headers [api-key]
   {"Authorization" (str "Token " api-key)})
@@ -150,7 +149,11 @@
   "Make a POST request to the Deepgram API and write the transcribed text to a file."
   [transcript-path api-key]
   (io/make-parents transcript-path)
-  (io/copy (io/file transcript-path) (io/file text-filepath))
+  (if (.exists (io/file transcript-path))
+    (do
+      (io/copy (io/file transcript-path) (io/file text-filepath))
+      (spit text-filepath "\n\n" :append true))
+    (spit text-filepath ""))
   (spit text-filepath (format-transcription (get-parsed-response api-key)) :append true)
   (atomic-rename text-filepath transcript-path))
 

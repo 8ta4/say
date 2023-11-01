@@ -35,8 +35,6 @@
 ; 16 bits per sample
 (def sample-format pyaudio/paInt16)
 
-(def channels 1)
-
 ; https://github.com/snakers4/silero-vad/blob/cb92cdd1e33cc1eb9c4ae3626bf3cd60fc660976/utils_vad.py#L207
 (def fs 16000)
 
@@ -47,7 +45,7 @@
 (def p (pyaudio/PyAudio))
 
 (def stream (py/call-attr-kw p "open" [] {:format sample-format
-                                          :channels channels
+                                          :channels 1
                                           :rate fs
                                           :frames_per_buffer chunk-size
                                           :input true}))

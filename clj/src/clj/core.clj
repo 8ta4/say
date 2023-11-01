@@ -1,6 +1,7 @@
 (ns clj.core
   (:gen-class)
-  (:require [cheshire.core :refer [parse-string]]
+  (:require [babashka.fs :as fs]
+            [cheshire.core :refer [parse-string]]
             [clj-http.client :as client]
             [clojure.core.async :as async]
             [clojure.java.io :as io]
@@ -11,8 +12,7 @@
             [libpython-clj2.python :as py]
             [mount.core :as mount :refer [defstate]]
             [ring.adapter.jetty :refer [run-jetty]]
-            [tick.core :as t])
-  (:import [java.nio.file Files StandardCopyOption]))
+            [tick.core :as t]))
 
 (py/initialize!)
 
@@ -140,22 +140,18 @@
 (defn get-transcript-path []
   (str (System/getProperty "user.home") "/.local/share/say/" (t/format (t/formatter "yyyy/MM/dd") (t/date)) ".txt"))
 
-(defn atomic-rename [source-path target-path]
-  (Files/move (.toPath (io/file source-path))
-              (.toPath (io/file target-path))
-              (into-array StandardCopyOption [StandardCopyOption/ATOMIC_MOVE])))
-
 (defn transcribe
   "Make a POST request to the Deepgram API and write the transcribed text to a file."
   [transcript-path api-key]
   (io/make-parents transcript-path)
-  (if (.exists (io/file transcript-path))
+  (if (fs/exists? transcript-path)
     (do
-      (io/copy (io/file transcript-path) (io/file text-filepath))
+      (fs/copy transcript-path text-filepath {:replace-existing true})
       (spit text-filepath "\n\n" :append true))
     (spit text-filepath ""))
   (spit text-filepath (format-transcription (get-parsed-response api-key)) :append true)
-  (atomic-rename text-filepath transcript-path))
+  (fs/move text-filepath transcript-path {:replace-existing true
+                                          :atomic-move true}))
 
 (defn open-in-vscode [transcript-path]
   (let [line-count (with-open [rdr (io/reader transcript-path)]

@@ -77,6 +77,7 @@
 (def audio-channel (async/chan))
 
 (defn record []
+  ; The stream initialization has been moved to this location to prevent an OSError: [Errno -9981] Input overflowed
   (let [stream (py/call-attr-kw p "open" [] {:format pyaudio/paInt16
                                              :channels 1
                                              :rate rate

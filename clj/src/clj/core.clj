@@ -74,7 +74,7 @@
 (defn calculate-duration [frames]
   (/ (* (count frames) frames_per_buffer) rate))
 
-(def audio-channel (async/chan))
+(def audio-channel (async/chan 1))
 
 (defn record []
   ; The stream initialization has been moved to this location to prevent an OSError: [Errno -9981] Input overflowed
@@ -105,8 +105,9 @@
                                   (< pause-duration-limit updated-last-voice-activity))))
                   (do
                     (reset! manual-trigger false)
-                    (async/>!! audio-channel updated-main-buffer)
-                    (record* [] updated-temp-buffer ##Inf))
+                    (if (async/offer! audio-channel updated-main-buffer)
+                      (record* [] updated-temp-buffer ##Inf)
+                      (record* updated-main-buffer updated-temp-buffer updated-last-voice-activity)))
                   (record* updated-main-buffer updated-temp-buffer updated-last-voice-activity))))]
       (record* [] [] ##Inf))))
 
@@ -143,15 +144,17 @@
 (defn transcribe
   "Make a POST request to the Deepgram API and write the transcribed text to a file."
   [transcript-path api-key]
-  (io/make-parents transcript-path)
-  (if (fs/exists? transcript-path)
-    (do
-      (fs/copy transcript-path text-filepath {:replace-existing true})
-      (spit text-filepath "\n\n" :append true))
-    (spit text-filepath ""))
-  (spit text-filepath (format-transcription (get-parsed-response api-key)) :append true)
-  (fs/move text-filepath transcript-path {:replace-existing true
-                                          :atomic-move true}))
+  (let [transcription (format-transcription (get-parsed-response api-key))]
+    (when-not (str/blank? transcription)
+      (io/make-parents transcript-path)
+      (if (fs/exists? transcript-path)
+        (do
+          (fs/copy transcript-path text-filepath {:replace-existing true})
+          (spit text-filepath "\n\n" :append true))
+        (spit text-filepath ""))
+      (spit text-filepath transcription :append true)
+      (fs/move text-filepath transcript-path {:replace-existing true
+                                              :atomic-move true}))))
 
 (defn open-in-vscode [transcript-path]
   (let [line-count (with-open [rdr (io/reader transcript-path)]

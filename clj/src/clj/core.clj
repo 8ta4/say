@@ -142,6 +142,14 @@
 (defn get-transcript-path []
   (str (System/getProperty "user.home") "/.local/share/say/" (t/format (t/formatter "yyyy/MM/dd") (t/date)) ".txt"))
 
+(defn set-writable
+  [path]
+  (.setWritable (io/file path) true))
+
+(defn set-readonly
+  [path]
+  (.setReadOnly (io/file path)))
+
 (defn transcribe
   "Make a POST request to the Deepgram API and write the transcribed text to a file."
   [transcript-path api-key]
@@ -151,9 +159,11 @@
       (if (fs/exists? transcript-path)
         (do
           (fs/copy transcript-path text-filepath {:replace-existing true})
+          (set-writable text-filepath)
           (spit text-filepath "\n\n" :append true))
         (spit text-filepath ""))
       (spit text-filepath transcription :append true)
+      (set-readonly text-filepath)
       (fs/move text-filepath transcript-path {:replace-existing true
                                               :atomic-move true}))))
 
@@ -179,16 +189,19 @@
   :start (run-jetty handler {:port 8080 :join? false})
   :stop (.stop server))
 
+(defn start-thread [f]
+  (let [t (Thread. #(try (f)
+                         (catch Exception e
+                           (println e))))]
+    (.start t)
+    t))
+
 (defstate audio-processing
-  :start (future (try (process-audio)
-                      (catch Exception e
-                        (println e))))
-  :stop (future-cancel audio-processing))
+  :start (start-thread process-audio)
+  :stop (.stop audio-processing))
 
 (defstate recording
-  :start (future (try (record)
-                      (catch Exception e
-                        (println e))))
-  :stop (future-cancel recording))
+  :start (start-thread record)
+  :stop (.stop recording))
 
 (def -main mount/start-with-args)

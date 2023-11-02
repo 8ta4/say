@@ -159,9 +159,11 @@
       (if (fs/exists? transcript-path)
         (do
           (fs/copy transcript-path text-filepath {:replace-existing true})
+          (set-writable text-filepath)
           (spit text-filepath "\n\n" :append true))
         (spit text-filepath ""))
       (spit text-filepath transcription :append true)
+      (set-readonly text-filepath)
       (fs/move text-filepath transcript-path {:replace-existing true
                                               :atomic-move true}))))
 

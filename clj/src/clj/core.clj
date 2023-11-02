@@ -142,6 +142,14 @@
 (defn get-transcript-path []
   (str (System/getProperty "user.home") "/.local/share/say/" (t/format (t/formatter "yyyy/MM/dd") (t/date)) ".txt"))
 
+(defn set-writable
+  [path]
+  (.setWritable (io/file path) true))
+
+(defn set-readonly
+  [path]
+  (.setReadOnly (io/file path)))
+
 (defn transcribe
   "Make a POST request to the Deepgram API and write the transcribed text to a file."
   [transcript-path api-key]

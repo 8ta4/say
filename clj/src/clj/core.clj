@@ -45,11 +45,12 @@
 
 ; https://github.com/snakers4/silero-vad/blob/cb92cdd1e33cc1eb9c4ae3626bf3cd60fc660976/examples/pyaudio-streaming/pyaudio-streaming-examples.ipynb?short_path=da46792#L117-L123
 (defn int2float [sound]
-  (let [abs-max (py/call-attr sound "max")
-        sound (py/call-attr sound "astype" "float32")]
-    (if (> abs-max 0)
-      (py/call-attr sound "__mul__" (/ 1 32768)))
-    (py/call-attr sound "squeeze")))
+  (let [abs-max (py/call-attr (np/abs sound) "max")
+        sound* (py/call-attr sound "astype" "float32")]
+    (py/call-attr (if (> abs-max 0)
+                    (py/call-attr sound* "__mul__" (/ 1 32768))
+                    sound*)
+                  "squeeze")))
 
 (defn voice-activity? [audio-chunk]
   (let [audio-int16 (np/frombuffer audio-chunk np/int16)

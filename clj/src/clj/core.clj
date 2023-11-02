@@ -179,16 +179,19 @@
   :start (run-jetty handler {:port 8080 :join? false})
   :stop (.stop server))
 
+(defn start-thread [f]
+  (let [t (Thread. #(try (f)
+                         (catch Exception e
+                           (println e))))]
+    (.start t)
+    t))
+
 (defstate audio-processing
-  :start (future (try (process-audio)
-                      (catch Exception e
-                        (println e))))
-  :stop (future-cancel audio-processing))
+  :start (start-thread process-audio)
+  :stop (.stop audio-processing))
 
 (defstate recording
-  :start (future (try (record)
-                      (catch Exception e
-                        (println e))))
-  :stop (future-cancel recording))
+  :start (start-thread record)
+  :stop (.stop recording))
 
 (def -main mount/start-with-args)

@@ -107,9 +107,9 @@
                   (do
                     (reset! manual-trigger false)
                     (if (async/offer! audio-channel updated-main-buffer)
-                      (record* [] updated-temp-buffer ##Inf)
-                      (record* updated-main-buffer updated-temp-buffer updated-last-voice-activity)))
-                  (record* updated-main-buffer updated-temp-buffer updated-last-voice-activity))))]
+                      (recur [] updated-temp-buffer ##Inf)
+                      (recur updated-main-buffer updated-temp-buffer updated-last-voice-activity)))
+                  (recur updated-main-buffer updated-temp-buffer updated-last-voice-activity))))]
       (record* [] [] ##Inf))))
 
 (defn format-transcription

@@ -178,7 +178,7 @@ The choice of a 1.5-second pause was statistically derived from storytelling and
 
 I chose the storytelling pause duration.
 
-> Why was storytelling chosen ?
+> Why was storytelling chosen?
 
 I chose storytelling because its pause duration is longer, and I wanted to err on the side of caution to avoid cutting off mid-sentence.
 

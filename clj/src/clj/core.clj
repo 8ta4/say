@@ -74,7 +74,7 @@
 (defn calculate-duration [frames]
   (/ (* (count frames) frames_per_buffer) rate))
 
-(def audio-channel (async/chan))
+(def audio-channel (async/chan 1))
 
 (defn record []
   ; The stream initialization has been moved to this location to prevent an OSError: [Errno -9981] Input overflowed
@@ -105,8 +105,9 @@
                                   (< pause-duration-limit updated-last-voice-activity))))
                   (do
                     (reset! manual-trigger false)
-                    (async/>!! audio-channel updated-main-buffer)
-                    (record* [] updated-temp-buffer ##Inf))
+                    (if (async/offer! audio-channel updated-main-buffer)
+                      (record* [] updated-temp-buffer ##Inf)
+                      (record* updated-main-buffer updated-temp-buffer updated-last-voice-activity)))
                   (record* updated-main-buffer updated-temp-buffer updated-last-voice-activity))))]
       (record* [] [] ##Inf))))
 

@@ -104,9 +104,9 @@
                          (or @manual-trigger
                              (and (< audio-duration-limit (calculate-duration updated-main-buffer))
                                   (< pause-duration-limit updated-last-voice-activity))))
-                  (do
+                  (let [should-open @manual-trigger]
                     (reset! manual-trigger false)
-                    (if (async/offer! audio-channel updated-main-buffer)
+                    (if (async/offer! audio-channel [updated-main-buffer should-open])
                       (recur [] updated-temp-buffer ##Inf)
                       (recur updated-main-buffer updated-temp-buffer updated-last-voice-activity)))
                   (recur updated-main-buffer updated-temp-buffer updated-last-voice-activity))))]
@@ -174,10 +174,12 @@
 
 (defn process-audio []
   (while true
-    (save-audio (async/<!! audio-channel))
-    (let [transcript-path (get-transcript-path)]
+    (let [[frames should-open] (async/<!! audio-channel)
+          transcript-path (get-transcript-path)]
+      (save-audio frames)
       (transcribe transcript-path (mount/args))
-      (open-in-vscode transcript-path))))
+      (when should-open
+        (open-in-vscode transcript-path)))))
 
 (defn handler [_]
   (reset! manual-trigger true)

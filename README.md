@@ -44,6 +44,8 @@
 
 1. When `say` asks for the API key, paste it in.
 
+1. If prompted, let your terminal access your mic.
+
 ## Cost
 
 > What's the cost?

@@ -44,7 +44,9 @@
 
 1. When `say` asks for the API key, paste it in.
 
-1. If prompted, let your terminal access your mic.
+1. If asked, let your terminal access your mic.
+
+1. If asked, allow Visual Studio Code to open.
 
 ## Cost
 

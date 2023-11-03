@@ -25,7 +25,7 @@
 1. Update your `skhd` config file to include a keyboard shortcut for `say`:
 
    ```
-   shift - s : say
+   shift - space : say
    ```
 
 1. Enter this command in your terminal:

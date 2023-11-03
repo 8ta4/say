@@ -10,15 +10,23 @@
 
 > How do I set up this tool?
 
-`say` might configure some third-party tools during its initial run. Just keep an eye on the log if you're curious.
-
 1. Make sure you're using a Mac.
 
 1. Be located in the continental US to minimize latency, as "[[a]ll Deepgram data is processed inside of the continental US](https://help.deepgram.com/hc/en-us/articles/6126293557399-Data-Security-Privacy-FAQ#:~:text=all%20deepgram%20data%20is%20processed%20inside%20of%20the%20continental%20us..)."
 
 1. Check that you have an internet connection with an upload bandwidth of at least 1 Gbps.
 
-1. Grab [Homebrew](https://brew.sh/#install).
+1. Install [Homebrew](https://brew.sh/#install).
+
+1. Get [Visual Studio Code](https://code.visualstudio.com/).
+
+1. Tweak VS Code to [respect those read-only file settings](https://code.visualstudio.com/docs/getstarted/settings#:~:text=//%20Marks%20files%20as%20read%2Donly%20when%20their%20file%20permissions%20indicate%20as%20such.%20This%20can%20be%20overridden%20via%20%60files.readonlyInclude%60%20and%20%60files.readonlyExclude%60%20settings.%0A%20%20%22files.readonlyFromPermissions%22%3A%20false%2C).
+
+1. Update your `skhd` config file to include a keyboard shortcut for `say`:
+
+   ```
+   shift - s : say
+   ```
 
 1. Enter this command in your terminal:
 
@@ -32,7 +40,7 @@
    say
    ```
 
-1. Head over to the [Deepgram website](https://deepgram.com/) and snag a Deepgram API key.
+1. Head over to the [Deepgram website](https://deepgram.com/) and grab a Deepgram API key.
 
 1. When `say` asks for the API key, paste it in.
 

@@ -34,6 +34,8 @@
    brew install 8ta4/say/say
    ```
 
+1. Open a new terminal session for the next step.
+
 1. To launch `say`, type:
 
    ```sh

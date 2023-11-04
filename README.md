@@ -20,7 +20,7 @@
 
 1. Get [Visual Studio Code](https://code.visualstudio.com/).
 
-1. Tweak VS Code to [respect those read-only file settings](https://code.visualstudio.com/docs/getstarted/settings#:~:text=//%20Marks%20files%20as%20read%2Donly%20when%20their%20file%20permissions%20indicate%20as%20such.%20This%20can%20be%20overridden%20via%20%60files.readonlyInclude%60%20and%20%60files.readonlyExclude%60%20settings.%0A%20%20%22files.readonlyFromPermissions%22%3A%20false%2C).
+1. Tweak Visual Studio Code to [respect read-only file settings](https://code.visualstudio.com/docs/getstarted/settings#:~:text=//%20Marks%20files%20as%20read%2Donly%20when%20their%20file%20permissions%20indicate%20as%20such.%20This%20can%20be%20overridden%20via%20%60files.readonlyInclude%60%20and%20%60files.readonlyExclude%60%20settings.%0A%20%20%22files.readonlyFromPermissions%22%3A%20false%2C).
 
 1. Update your `skhd` config file to include a keyboard shortcut for `say`:
 
@@ -34,7 +34,7 @@
    brew install 8ta4/say/say
    ```
 
-1. Open a new terminal session for the next step.
+1. [Open a new terminal session in Visual Studio Code](https://code.visualstudio.com/docs/terminal/basics#:~:text=You%20can%20open,the%20%E2%8C%83%E2%87%A7%60%20keyboard%20shortcut.) for the next step.
 
 1. To launch `say`, type:
 
@@ -46,9 +46,7 @@
 
 1. When `say` asks for the API key, paste it in.
 
-1. If asked, let your terminal access your mic.
-
-1. If asked, allow Visual Studio Code to open.
+1. If asked, allow Visual Studio Code to access your mic.
 
 ## Cost
 

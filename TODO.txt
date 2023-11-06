@@ -1,2 +1,3 @@
+Change the keyboard shortcut key to avoid conflict with Excel's Shift + Space.
 Address the occasional 408 error from Deepgram.
 Provide feedback when manual transcription triggers but there's nothing to transcribe.

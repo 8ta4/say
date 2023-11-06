@@ -88,7 +88,7 @@ If you want to annotate or edit something, copy the content to a new file and wo
 
 > How do I back up my transcripts?
 
-You can back up the `~/.local/share/say/` directory using your preferred backup or cloud storage method.
+You can back up the `~/.local/share/say/` directory using your preferred method.
 
 > How do I secure my transcripts?
 

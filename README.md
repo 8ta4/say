@@ -22,7 +22,7 @@
 
 1. Tweak Visual Studio Code to [respect read-only file settings](https://code.visualstudio.com/docs/getstarted/settings#:~:text=//%20Marks%20files%20as%20read%2Donly%20when%20their%20file%20permissions%20indicate%20as%20such.%20This%20can%20be%20overridden%20via%20%60files.readonlyInclude%60%20and%20%60files.readonlyExclude%60%20settings.%0A%20%20%22files.readonlyFromPermissions%22%3A%20false%2C).
 
-1. Update your `skhd` config file to include a keyboard shortcut for `say`:
+1. Update your [`skhd` config file](https://github.com/koekeishiya/skhd#configuration) to include a keyboard shortcut for `say`:
 
    ```
    shift - space : say

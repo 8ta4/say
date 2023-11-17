@@ -46,7 +46,7 @@ Not all words are created equal. Getting named entities and trendy terms right i
 
 With `say`, you can turn speech into text in a flash, ready for whatever you need it for - writing, editing, sharing.
 
-`say`’s user interface is optimized to reduce perceived latency.
+`say`'s user interface is optimized to reduce perceived latency.
 
 > Why not aim for latency below 0.1 seconds?
 
@@ -96,7 +96,7 @@ And I couldn't do it for you, because that would break [Homebrew's policy](https
 
 `say` is a macOS background process. This design reduces cloud dependency and gives your privacy a boost.
 
-Plus, it’s a breeze to develop and test `say` using Mac.
+Plus, it's a breeze to develop and test `say` using Mac.
 
 > Why not use a dedicated recording device?
 
@@ -118,7 +118,7 @@ Plus, using the macOS `say` while this tool is active might mess up the recordin
 
 > How does this tool store the API key?
 
-It doesn’t store it on disk, only in memory. This keeps the code simple and secure.
+It doesn't store it on disk, only in memory. This keeps the code simple and secure.
 
 Designed for continuous operation, `say` ideally requires the API key to be entered just once.
 
@@ -242,7 +242,7 @@ Each sentence in `say` gets its own line. That way, you can easily move up and d
 
 > Does this tool do application-level encryption?
 
-No. Encryption would mean dealing with decryption keys or passphrases, and that’s no fun.
+No. Encryption would mean dealing with decryption keys or passphrases, and that's no fun.
 
 If you lose your key or something goes wrong with the encryption, you might lose your data.
 

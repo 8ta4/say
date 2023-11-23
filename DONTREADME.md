@@ -118,9 +118,7 @@ Plus, using the macOS `say` while this tool is active might mess up the recordin
 
 > How does this tool store the API key?
 
-It doesn't store it on disk, only in memory. This keeps the code simple and secure.
-
-Designed for continuous operation, `say` ideally requires the API key to be entered just once.
+The API key is stored in ~/.config/say/key. This way, you can easily update it as needed.
 
 ### Recording
 

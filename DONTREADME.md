@@ -204,9 +204,9 @@ Confidence intervals are great for estimating the mean, but a tolerance interval
 
 I want to be safe and avoid cutting off your words in the middle.
 
-> Why the ONNX model and not PyTorch?
+> Why use ONNX instead of PyTorch?
 
-Speed, my friend! The ONNX model [may even run up to 4-5x faster](https://github.com/snakers4/silero-vad).
+Speed, my friend! The ONNX model [may even run up to 4-5x faster](https://github.com/snakers4/silero-vad), which means less CPU usage. That's awesome for `say`, since it's always on.
 
 ### Transcription
 

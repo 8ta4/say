@@ -102,6 +102,10 @@ Plus, it's a breeze to develop and test `say` using Mac.
 
 I wanted to make `say` easy to try out.
 
+> Why not a standalone iPhone app?
+
+Because iOS won't let you do continuous real-time voice detection and transcription in the background, as [iOS's general-purpose background execution has certain limitations](https://developer.apple.com/forums/thread/685525).
+
 ## Functionality
 
 ### Background Process

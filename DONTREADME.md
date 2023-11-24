@@ -168,7 +168,7 @@ If you want to document everything, you might consider recording video. But this
 
 > When does `say` start transcribing automatically?
 
-The automatic trigger is based on voice activity. `say` listens to you and waits for a pause before it starts transcribing.
+The automatic trigger is based on voice activity. `say` listens to you and waits for a pause before it starts transcribing. It's all thanks to the Silero VAD's ONNX model that detects your voice activity.
 
 > Why does this tool wait for a pause?
 
@@ -203,6 +203,10 @@ Confidence intervals are great for estimating the mean, but a tolerance interval
 > Why 99% and not 95%?
 
 I want to be safe and avoid cutting off your words in the middle.
+
+> Why the ONNX model and not PyTorch?
+
+Speed, my friend! The ONNX model [may even run up to 4-5x faster](https://github.com/snakers4/silero-vad).
 
 ### Transcription
 

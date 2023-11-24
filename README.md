@@ -22,31 +22,23 @@
 
 1. Tweak Visual Studio Code to [respect read-only file settings](https://code.visualstudio.com/docs/getstarted/settings#:~:text=//%20Marks%20files%20as%20read%2Donly%20when%20their%20file%20permissions%20indicate%20as%20such.%20This%20can%20be%20overridden%20via%20%60files.readonlyInclude%60%20and%20%60files.readonlyExclude%60%20settings.%0A%20%20%22files.readonlyFromPermissions%22%3A%20false%2C).
 
-1. Update your [`skhd` config file](https://github.com/koekeishiya/skhd#configuration) to include a keyboard shortcut for `say`:
-
-   ```
-   shift - space : say
-   ```
-
 1. Enter this command in your terminal:
 
    ```sh
    brew install 8ta4/say/say
    ```
 
-1. [Open a new terminal session in Visual Studio Code](https://code.visualstudio.com/docs/terminal/basics#:~:text=You%20can%20open,the%20%E2%8C%83%E2%87%A7%60%20keyboard%20shortcut.) for the next step.
+1. Open `Finder`.
 
-1. To launch `say`, type:
+1. Go to `Applications`.
 
-   ```sh
-   say
-   ```
+1. Control-click `say` and choose Open, as this will [bypass Apple's security](https://support.apple.com/guide/mac-help/open-a-mac-app-from-an-unidentified-developer-mh40616/mac) that might block you.
 
 1. Head over to the [Deepgram website](https://deepgram.com/) and grab a Deepgram API key.
 
 1. When `say` asks for the API key, paste it in.
 
-1. If asked, allow Visual Studio Code to access your mic.
+1. If asked, allow `say` to access your mic.
 
 ## Cost
 

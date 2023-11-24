@@ -122,17 +122,17 @@ The API key is in `~/.config/say/key`.
 
 Nope. It's plain text. This way, you can easily update it as needed.
 
-> What happens to this tool after a system reboot?
+> Does this tool run automatically after a system reboot?
 
-`say` springs back to life automatically using macOS Launch Agents.
+Yes, `say` uses macOS Launch Agents to start itself automatically.
 
 > What happens if this tool stops unexpectedly?
 
-`say` is set to auto-revive using macOS Launch Agents.
+`say` also uses macOS Launch Agents to restart itself automatically.
 
-> Why use Launch Agents?
+> Why not use Login Items?
 
-Because Launch Agents can be configured using a plist file.
+Login Items only work when you log in. They won't help you if `say` stops working for some reason.
 
 ### Recording
 

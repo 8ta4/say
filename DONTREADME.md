@@ -100,7 +100,7 @@ Plus, it's a breeze to develop and test `say` using Mac.
 
 > Why not use a dedicated recording device?
 
-I wanted to make say easy to try out.
+I wanted to make `say` easy to try out.
 
 ## Functionality
 

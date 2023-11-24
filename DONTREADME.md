@@ -120,6 +120,18 @@ Plus, using the macOS `say` while this tool is active might mess up the recordin
 
 The API key is stored in ~/.config/say/key. This way, you can easily update it as needed.
 
+> What happens to this tool after a system reboot?
+
+`say` springs back to life automatically using macOS Launch Agents.
+
+> What happens if this tool stops unexpectedly?
+
+`say` is set to auto-revive using macOS Launch Agents.
+
+> Why pick Launch Agents?
+
+Because Launch Agents can be configured using a plist file.
+
 ### Recording
 
 > Why doesn't this tool store my audio after transcribing?

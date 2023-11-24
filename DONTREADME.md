@@ -110,9 +110,17 @@ Because iOS won't let you do continuous real-time voice detection and transcript
 
 ### Background Process
 
-> How does this tool store the API key?
+> Where does this tool store the API key?
 
-The API key is stored in ~/.config/say/key. This way, you can easily update it as needed.
+The API key is in `~/.config/say/key`.
+
+> Why not `Application Support`?
+
+`~/.config` is the standard config folder for Unix systems. It's easier to access from the command line.
+
+> Is the API key encrypted?
+
+Nope. It's plain text. This way, you can easily update it as needed.
 
 > What happens to this tool after a system reboot?
 
@@ -122,7 +130,7 @@ The API key is stored in ~/.config/say/key. This way, you can easily update it a
 
 `say` is set to auto-revive using macOS Launch Agents.
 
-> Why pick Launch Agents?
+> Why use Launch Agents?
 
 Because Launch Agents can be configured using a plist file.
 

@@ -104,17 +104,7 @@ I wanted to make say easy to try out.
 
 ## Functionality
 
-### CLI
-
-> Does this tool conflict with the macOS built-in `say` command?
-
-Yes, `say` intentionally replaces the macOS built-in `say`.
-
-> Why not use an alias to avoid conflict?
-
-I wanted to keep installation and usage simple.
-
-Plus, using the macOS `say` while this tool is active might mess up the recording and transcription.
+### Background Process
 
 > How does this tool store the API key?
 

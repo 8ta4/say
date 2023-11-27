@@ -86,7 +86,7 @@ You can protect your data using device-level encryption.
 
 > Does the tool filter out other voices?
 
-No, the `say` tool does not possess speaker identification capabilities. If there are multiple speakers, consider a fancy mic with:
+No, `say` doesn't possess speaker identification capabilities. If there are multiple speakers, consider a fancy mic with:
 
 - Noise cancellation to isolate your voice
 - Proximity to the mouth for better sound capture

@@ -150,21 +150,13 @@ If you want to document everything, you might consider recording video. But this
 
 ### Trigger
 
-#### Manual
+> Why does this tool use `⌘ + ;` to trigger transcription?
 
-> Why does this tool use `Shift + Space` to trigger transcription?
+``⌘`` is the easiest modifier to reach, and `;` is the only home position key that doesn't clash with major shortcuts.
 
-`Shift + Space` is to press and it doesn't clash with anything.
+For example, `⌘ + ;` conflicts with the next spelling and grammar check, which is not very handy without a shortcut to go back.
 
-> Why doesn't this tool use `⌘ + Space` to trigger transcription?
-
-`⌘ + Space` is used by Spotlight or other launchers.
-
-> Why doesn't this tool use `Ctrl + Space` to trigger transcription?
-
-`Ctrl + Space` triggers auto-suggestions in IDEs, like VS Code.
-
-#### Automatic
+Also, `⌘ + ;` conflicts with Excel's time insertion, but that's not very common.
 
 > When does `say` start transcribing automatically?
 

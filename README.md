@@ -84,9 +84,22 @@ You can back up the `~/.local/share/say/` directory using your preferred method.
 
 You can protect your data using device-level encryption.
 
-> How accurate are the transcriptions?
+> Does the tool filter out other voices?
 
-`say` aims to capture your thoughts anytime, but it's not magic. If a human can't understand you, `say` will probably struggle too.
+No, the `say` tool does not possess speaker identification capabilities. If there are multiple speakers, consider a fancy mic with:
+
+- Noise cancellation to isolate your voice
+- Proximity to the mouth for better sound capture
+- Wireless capability for easy movement
+- Ergonomic design for long-term comfort
+- Long battery life for continuous use
+
+However, if there is only one speaker, your built-in mic should do the trick, saving you from:
+
+- Noise cancellation glitches
+- Connectivity issues
+- Discomfort
+- Battery life concerns
 
 Here are some pro tips:
 
@@ -97,6 +110,10 @@ Here are some pro tips:
 - Try to avoid background noise like music or movies.
 - Living alone could be an option... if you're really serious about clean recordings.
 - And if all else fails... well, there's always divorce.
+
+> How does the intensity of sound change as the microphone is moved further away?
+
+The sound intensity is inversely proportional to the square of the distance.
 
 > Does this tool keep a record of the audio?
 

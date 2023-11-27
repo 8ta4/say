@@ -88,11 +88,11 @@ You can protect your data using device-level encryption.
 
 No, `say` doesn't possess speaker identification capabilities. If there are multiple speakers, consider a fancy mic with:
 
-- Noise cancellation to isolate your voice
-- Proximity to the mouth for better sound capture
-- Wireless capability for easy movement
-- Ergonomic design for long-term comfort
-- Long battery life for continuous use
+- Noise cancellation
+- Proximity to the mouth
+- Wireless capability
+- Ergonomic design
+- Long battery life
 
 However, if there is only one speaker, your built-in mic should do the trick, saving you from:
 

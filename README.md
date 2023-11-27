@@ -54,9 +54,7 @@ To save some bucks, `say` uses voice activity detection (VAD) to cut down on unn
 
 > How do I access recent transcriptions?
 
-To access today's transcriptions, hit `Shift + Space`.
-
-Think of it like this: "Say", "Shift", "Space" all start with "S". Just like you hit space at the end of a sentence, `Shift + Space` signals the end of your thought.
+To access today's transcriptions, hit `⌘ + ;`.
 
 > How are my transcriptions organized?
 

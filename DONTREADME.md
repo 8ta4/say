@@ -152,7 +152,7 @@ If you want to document everything, you might consider recording video. But this
 
 > Why does this tool use `⌘ + ;` to trigger transcription?
 
-``⌘`` is the easiest modifier to reach, and `;` is the only home position key that doesn't clash with major shortcuts.
+`⌘` is the easiest modifier to reach, and `;` is the only home position key that doesn't clash with major shortcuts.
 
 For example, `⌘ + ;` conflicts with the next spelling and grammar check, which is not very handy without a shortcut to go back.
 

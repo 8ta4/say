@@ -1,5 +1,5 @@
 // https://www.electronjs.org/docs/latest/tutorial/quick-start#create-a-web-page
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, globalShortcut } = require("electron");
 
 const createWindow = () => {
   const win = new BrowserWindow({
@@ -12,4 +12,8 @@ const createWindow = () => {
 
 app.whenReady().then(() => {
   createWindow();
+
+  globalShortcut.register("Command+;", () => {
+    console.log("Command+; is pressed");
+  });
 });

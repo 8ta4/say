@@ -22,6 +22,7 @@
   # pre-commit.hooks.shellcheck.enable = true;
   pre-commit.hooks = {
     nixpkgs-fmt.enable = true;
+    prettier.enable = true;
   };
 
   # https://devenv.sh/processes/

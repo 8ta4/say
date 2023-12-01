@@ -1,3 +1,4 @@
+// https://www.electronjs.org/docs/latest/tutorial/quick-start#create-a-web-page
 const { app, BrowserWindow } = require("electron");
 
 const createWindow = () => {

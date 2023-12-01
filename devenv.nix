@@ -5,7 +5,10 @@
   env.GREET = "devenv";
 
   # https://devenv.sh/packages/
-  packages = [ pkgs.git ];
+  packages = [
+    pkgs.git
+    pkgs.gitleaks
+  ];
 
   # https://devenv.sh/scripts/
   scripts.hello.exec = "echo hello from $GREET";
@@ -21,6 +24,11 @@
   # https://devenv.sh/pre-commit-hooks/
   # pre-commit.hooks.shellcheck.enable = true;
   pre-commit.hooks = {
+    gitleaks = {
+      enable = true;
+      # https://github.com/gitleaks/gitleaks/blob/8de8938ad425d11edb0986c38890116525a36035/.pre-commit-hooks.yaml#L4C10-L4C54
+      entry = "${pkgs.gitleaks}/bin/gitleaks protect --verbose --redact --staged";
+    };
     nixpkgs-fmt.enable = true;
     prettier.enable = true;
     # https://github.com/cachix/pre-commit-hooks.nix/issues/31#issuecomment-744657870

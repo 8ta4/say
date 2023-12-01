@@ -12,6 +12,10 @@
 
   # https://devenv.sh/scripts/
   scripts.hello.exec = "echo hello from $GREET";
+  scripts.build.exec = ''
+    ${pkgs.nodePackages.npm}/bin/npm install
+    ${pkgs.spago}/bin/spago build
+  '';
 
   enterShell = ''
     hello

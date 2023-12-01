@@ -16,6 +16,9 @@
     ${pkgs.nodePackages.npm}/bin/npm install
     ${pkgs.spago}/bin/spago build
   '';
+  scripts.run.exec = ''
+    ${pkgs.nodePackages.npm}/bin/npm start
+  '';
 
   enterShell = ''
     hello

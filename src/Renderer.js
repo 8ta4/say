@@ -5,5 +5,5 @@ export async function record() {
   const source = context.createMediaStreamSource(stream);
   const processor = new AudioWorkletNode(context, "processor");
   source.connect(processor);
-  processor.connect(context.destination);
+  processor.port.onmessage = (event) => {};
 }

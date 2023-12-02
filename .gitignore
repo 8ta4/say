@@ -1,5 +1,4 @@
-
-# Devenv
+### Devenv
 .devenv*
 devenv.local.nix
 
@@ -21,3 +20,7 @@ node_modules
 # Generated files
 .psci
 output
+
+### PureScript IDE
+# https://github.com/nwolverson/vscode-ide-purescript/blob/236f4caf8d56263fdbe6653cdd98b9a9edb522ad/.gitignore#L10
+.psc-ide-port

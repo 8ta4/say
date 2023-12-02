@@ -1,0 +1,1 @@
+Upgrade Electron to the stable version once it's released.

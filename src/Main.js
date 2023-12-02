@@ -14,14 +14,21 @@ const createWindow = () => {
   win.loadFile("index.html");
 };
 
-export function launch() {
+export const launch = (record) => (process) => () => {
   app.whenReady().then(() => {
     createWindow();
 
     globalShortcut.register("Command+;", () => {
       console.log("Command+; is pressed");
+      process();
     });
 
-    ipcMain.on("audio", (_, data) => {});
+    ipcMain.on("audio", (_, data) => {
+      record(data)();
+    });
   });
-}
+};
+
+export const foo = (buffer) => () => {
+  console.log(buffer);
+};

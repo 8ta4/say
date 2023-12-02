@@ -1,3 +1,5 @@
+const { ipcRenderer } = require("electron");
+
 export async function record() {
   const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
   const context = new AudioContext();
@@ -5,5 +7,7 @@ export async function record() {
   const source = context.createMediaStreamSource(stream);
   const processor = new AudioWorkletNode(context, "processor");
   source.connect(processor);
-  processor.port.onmessage = (event) => {};
+  processor.port.onmessage = (event) => {
+    ipcRenderer.send("audio", event.data);
+  };
 }

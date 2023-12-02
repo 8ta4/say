@@ -1,10 +1,14 @@
 // https://www.electronjs.org/docs/latest/tutorial/quick-start#create-a-web-page
-import { app, BrowserWindow, globalShortcut } from "electron";
+import { app, BrowserWindow, globalShortcut, ipcMain } from "electron";
 
 const createWindow = () => {
   const win = new BrowserWindow({
     width: 800,
     height: 600,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+    },
   });
 
   win.loadFile("index.html");
@@ -17,5 +21,7 @@ export function launch() {
     globalShortcut.register("Command+;", () => {
       console.log("Command+; is pressed");
     });
+
+    ipcMain.on("audio", (_, data) => {});
   });
 }

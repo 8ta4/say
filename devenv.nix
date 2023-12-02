@@ -12,17 +12,16 @@
 
   # https://devenv.sh/scripts/
   scripts.hello.exec = "echo hello from $GREET";
-  scripts.build.exec = ''
-    ${pkgs.nodePackages.npm}/bin/npm install
-    ${pkgs.spago}/bin/spago build
-  '';
   scripts.run.exec = ''
+    ${pkgs.spago}/bin/spago build
     ${pkgs.nodePackages.npm}/bin/npm start
   '';
 
   enterShell = ''
     hello
     git --version
+    ${pkgs.nodePackages.npm}/bin/npm install
+    ${pkgs.spago}/bin/spago build
   '';
 
   # https://devenv.sh/languages/

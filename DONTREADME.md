@@ -148,6 +148,16 @@ Even the sound of typing can sometimes reveal what you're typing. This is risky 
 
 If you want to document everything, you might consider recording video. But this has its own risks, such as accidentally capturing yourself naked.
 
+> So, does this tool store any audio at all?
+
+Yep, `say` does temporarily store audio, but it uses the Opus format.
+
+> Why Opus and not MP3?
+
+Opus gives you a small file size but still maintains high quality.
+
+Plus, Opus allows real-time compression. MP3, on the other hand, needs the complete audio file to achieve optimal encoding.
+
 ### Trigger
 
 > Why does this tool use `⌘ + ;` to trigger transcription?

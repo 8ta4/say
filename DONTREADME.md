@@ -232,7 +232,7 @@ Speed, my friend! The ONNX model [may even run up to 4-5x faster](https://github
 
 `say` uses a powerful API that can transcribe speech cheap, fast, and accurately. Deepgram seems to be the best one right now.
 
-With [Deepgram's Pay-as-You-Go at $0.0043/min](https://deepgram.com/pricing#:~:text=Deepgram%20Nova%2D2,at%20%240.0043/min), here's a quick math:
+With [Deepgram's Pay-as-You-Go at $0.0043/min](https://deepgram.com/pricing#:~:text=Nova%2D2,%240.0043/min), here's a quick math:
 
 An average month has about 30.44 days.
 

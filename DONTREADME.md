@@ -224,7 +224,7 @@ I want to be safe and avoid cutting off your words in the middle.
 
 > Why use ONNX instead of PyTorch?
 
-Speed, my friend! The ONNX model [may even run up to 4-5x faster](https://github.com/snakers4/silero-vad), which means less CPU usage. That's awesome for `say`, since it's always on.
+Speed, my friend! The ONNX model [may even run up to 4-5x faster](https://github.com/snakers4/silero-vad/blob/5e7ee10ee065ab2b98751dd82b28e3c6360e19aa/README.md?plain=1#L37), which means less CPU usage. That's awesome for `say`, since it's always on.
 
 ### Transcription
 

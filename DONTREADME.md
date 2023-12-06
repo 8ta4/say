@@ -158,7 +158,7 @@ Opus is pretty cool because it allows real-time compression. MP3 needs the whole
 
 Plus, Opus gives you a small file size but still keeps the quality high.
 
-For MP3, it's recommended to use 128 kbps for [audiobooks](https://support.google.com/books/partner/answer/7504302#file-formats:~:text=mp3%20(cbr%20preferred)%2C%20%3E%3D128kbps%20(mono))/[podcasts](https://learn.acast.com/en/articles/3505536-which-audio-file-format-should-i-use-for-my-podcast#sharing:~:text=we%20recommend%20uploading%20mp3%20files%20with%20a%20bitrate%20of%20128kbps.). But if you're using Opus, you can get away with just 24 Kbps for [audiobooks/podcasts](https://wiki.xiph.org/Opus_Recommended_Settings#Recommended_Bitrates:~:text=down%20this%20page.-,Audiobooks%20%2F%20Podcasts,24,-Bitrates%20from%20here).
+For MP3, it's recommended to use 128 kbps for [audiobooks](<https://support.google.com/books/partner/answer/7504302#file-formats:~:text=mp3%20(cbr%20preferred)%2C%20%3E%3D128kbps%20(mono)>)/[podcasts](https://learn.acast.com/en/articles/3505536-which-audio-file-format-should-i-use-for-my-podcast#sharing:~:text=we%20recommend%20uploading%20mp3%20files%20with%20a%20bitrate%20of%20128kbps.). But if you're using Opus, you can get away with just 24 Kbps for [audiobooks/podcasts](https://wiki.xiph.org/Opus_Recommended_Settings#Recommended_Bitrates:~:text=down%20this%20page.-,Audiobooks%20%2F%20Podcasts,24,-Bitrates%20from%20here).
 
 > How many times larger is a 128 kbps MP3 file than a 24 kbps Opus file?
 

@@ -2,9 +2,10 @@ module Main where
 
 import Prelude
 
-import Data.ArrayBuffer.Types (ArrayViewType, Float32)
 import Effect (Effect)
 import Effect.Ref (modify_, new, read)
+
+foreign import data Float32Array :: Type
 
 main :: Effect Unit
 main = do
@@ -18,10 +19,6 @@ main = do
   launch record process
 
 foreign import launch :: (Float32Array -> Effect Unit) -> Effect Unit -> Effect Unit
-
-foreign import data ArrayView :: ArrayViewType -> Type
-
-type Float32Array = ArrayView Float32
 
 foreign import appendFloat32Array :: Float32Array -> Float32Array -> Float32Array
 

@@ -29,6 +29,15 @@ export const launch = (record) => (process) => () => {
   });
 };
 
+export const appendFloat32Array = (first) => (second) => {
+  const combined = new Float32Array(first.length + second.length);
+  combined.set(first);
+  combined.set(second, first.length);
+  return combined;
+};
+
+export const memptyFloat32Array = new Float32Array();
+
 export const foo = (buffer) => () => {
   console.log(buffer);
 };

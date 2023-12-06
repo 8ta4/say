@@ -12,8 +12,7 @@ to generate this file without the comments in this block.
 -}
 { name = "my-project"
 , dependencies =
-  [ "arraybuffer-types"
-  , "console"
+  [ "console"
   , "effect"
   , "prelude"
   , "refs"

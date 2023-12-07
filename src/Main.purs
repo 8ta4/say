@@ -12,9 +12,9 @@ foreign import data Float32Array :: Type
 main :: Effect Unit
 main = do
   let stream = newReadable
-  ref <- new $ { buffer: mempty :: Float32Array, stream: stream }
+  ref <- new { buffer: mempty :: Float32Array, stream: stream }
   ffmpeg <- spawn "ffmpeg" [ "-f", "f32le", "-i", "pipe:0", "output.opus" ] defaultSpawnOptions
-  _ <- pipe stream (stdin ffmpeg)
+  _ <- pipe stream $ stdin ffmpeg
   let
     record = \audio -> do
       state <- read ref

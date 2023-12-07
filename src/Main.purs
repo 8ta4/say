@@ -4,13 +4,17 @@ import Prelude
 
 import Effect (Effect)
 import Effect.Ref (new, read, write)
-import Node.Stream (Readable)
+import Node.ChildProcess (defaultSpawnOptions, spawn, stdin)
+import Node.Stream (Readable, pipe)
 
 foreign import data Float32Array :: Type
 
 main :: Effect Unit
 main = do
-  ref <- new $ { buffer: mempty :: Float32Array, stream: newReadable }
+  let stream = newReadable
+  ref <- new $ { buffer: mempty :: Float32Array, stream: stream }
+  ffmpeg <- spawn "ffmpeg" [ "-f", "f32le", "-i", "pipe:0", "output.opus" ] defaultSpawnOptions
+  _ <- pipe stream (stdin ffmpeg)
   let
     record = \audio -> do
       state <- read ref

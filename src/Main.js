@@ -1,6 +1,6 @@
 // https://www.electronjs.org/docs/latest/tutorial/quick-start#create-a-web-page
 import { app, BrowserWindow, globalShortcut, ipcMain } from "electron";
-import stream from "stream";
+import { Readable } from "stream";
 
 const createWindow = () => {
   const win = new BrowserWindow({
@@ -30,7 +30,13 @@ export const launch = (record) => (process) => () => {
   });
 };
 
-export const newReadable = new stream.Readable();
+export const newReadable = new Readable({
+  read() {},
+});
+
+export const pushAudioToStream = (stream) => (float32Array) => () => {
+  stream.push(Buffer.from(float32Array.buffer));
+};
 
 export const appendFloat32Array = (first) => (second) => {
   const combined = new Float32Array(first.length + second.length);

@@ -9,12 +9,17 @@ import Node.Stream (Readable, pipe)
 
 foreign import data Float32Array :: Type
 
-main :: Effect Unit
-main = do
+createStream :: Effect (Readable ())
+createStream = do
   stream <- newReadable
-  ref <- new { buffer: mempty :: Float32Array, stream: stream }
   ffmpeg <- spawn "ffmpeg" [ "-y", "-f", "f32le", "-i", "pipe:0", "output.opus" ] defaultSpawnOptions
   _ <- pipe stream $ stdin ffmpeg
+  pure stream
+
+main :: Effect Unit
+main = do
+  stream <- createStream
+  ref <- new { buffer: mempty :: Float32Array, stream: stream }
   let
     record = \audio -> do
       state <- read ref
@@ -25,7 +30,7 @@ main = do
     process = do
       state <- read ref
       end state.stream
-      newStream <- newReadable
+      newStream <- createStream
       write (state { stream = newStream }) ref
       -- TODO: Add your audio processing logic here
       foo state.buffer

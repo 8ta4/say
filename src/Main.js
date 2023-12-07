@@ -51,7 +51,3 @@ export const launch = (record) => (process) => () => {
     });
   });
 };
-
-export const foo = (buffer) => () => {
-  console.log(buffer);
-};

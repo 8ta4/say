@@ -2,6 +2,7 @@ module Main where
 
 import Prelude
 
+import Debug (traceM)
 import Effect (Effect)
 import Effect.Ref (new, read, write)
 import Node.ChildProcess (defaultSpawnOptions, spawn, stdin)
@@ -26,7 +27,7 @@ main = do
       newStream <- createStream
       write (state { stream = newStream }) ref
       -- TODO: Add your audio processing logic here
-      foo state.buffer
+      traceM state.buffer
   launch record process
 
 createStream :: Effect (Readable ())
@@ -53,5 +54,3 @@ instance monoidFloat32Array :: Monoid Float32Array where
 foreign import end :: Readable () -> Effect Unit
 
 foreign import launch :: (Float32Array -> Effect Unit) -> Effect Unit -> Effect Unit
-
-foreign import foo :: Float32Array -> Effect Unit

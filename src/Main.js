@@ -30,12 +30,17 @@ export const launch = (record) => (process) => () => {
   });
 };
 
-export const newReadable = new Readable({
-  read() {},
-});
+export const newReadable = () =>
+  new Readable({
+    read() {},
+  });
 
-export const pushAudioToStream = (stream) => (float32Array) => () => {
+export const pushAudio = (stream) => (float32Array) => () => {
   stream.push(Buffer.from(float32Array.buffer));
+};
+
+export const end = (stream) => () => {
+  stream.push(null);
 };
 
 export const appendFloat32Array = (first) => (second) => {

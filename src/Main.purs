@@ -9,7 +9,7 @@ foreign import data Float32Array :: Type
 
 main :: Effect Unit
 main = do
-  bufferRef <- new (mempty :: Float32Array)
+  bufferRef <- new mempty
   let record = \audio -> modify_ (\buffer -> buffer <> audio) bufferRef
   let
     process = do

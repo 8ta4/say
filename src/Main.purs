@@ -14,7 +14,7 @@ foreign import data Float32Array :: Type
 main :: Effect Unit
 main = do
   stream <- createStream
-  ref <- new { raw: mempty, temporary: mempty :: Array Float32Array, stream: stream }
+  ref <- new { raw: mempty, temporary: mempty, stream: stream }
   let
     record = \audio -> do
       state <- read ref

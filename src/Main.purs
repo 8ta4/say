@@ -18,8 +18,11 @@ main = do
   let
     record = \audio -> do
       state <- read ref
+
       -- TODO: Add your audio recording logic here
       let newRaw = state.raw <> audio
+
+      -- https://github.com/snakers4/silero-vad/blob/5e7ee10ee065ab2b98751dd82b28e3c6360e19aa/utils_vad.py#L207
       if length newRaw == 1536 then
         write (state { raw = mempty, temporary = snoc state.temporary newRaw }) ref
       else
@@ -31,6 +34,7 @@ main = do
       end state.stream
       newStream <- createStream
       write (state { stream = newStream }) ref
+
       -- TODO: Add your audio processing logic here
       traceM state.temporary
   launch record process

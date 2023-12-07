@@ -7,6 +7,10 @@ export const newReadable = () =>
     read() {},
   });
 
+export const length = (float32Array) => {
+  return float32Array.length;
+};
+
 export const push = (stream) => (float32Array) => () => {
   stream.push(Buffer.from(float32Array.buffer));
 };

@@ -2,6 +2,7 @@ module Main where
 
 import Prelude
 
+import Data.Array (snoc)
 import Debug (traceM)
 import Effect (Effect)
 import Effect.Ref (new, read, write)
@@ -13,13 +14,17 @@ foreign import data Float32Array :: Type
 main :: Effect Unit
 main = do
   stream <- createStream
-  ref <- new { buffer: mempty, stream: stream }
+  ref <- new { raw: mempty, temporary: mempty :: Array Float32Array, stream: stream }
   let
     record = \audio -> do
       state <- read ref
       -- TODO: Add your audio recording logic here
+      let newRaw = state.raw <> audio
+      if length newRaw == 1536 then
+        write (state { raw = mempty, temporary = snoc state.temporary newRaw }) ref
+      else
+        write (state { raw = newRaw }) ref
       push state.stream audio
-      write (state { buffer = state.buffer <> audio }) ref
   let
     process = do
       state <- read ref
@@ -27,7 +32,7 @@ main = do
       newStream <- createStream
       write (state { stream = newStream }) ref
       -- TODO: Add your audio processing logic here
-      traceM state.buffer
+      traceM state.temporary
   launch record process
 
 createStream :: Effect (Readable ())
@@ -36,6 +41,8 @@ createStream = do
   ffmpeg <- spawn "ffmpeg" [ "-y", "-f", "f32le", "-ar", "16000", "-i", "pipe:0", "-ar", "16000", "output.opus" ] defaultSpawnOptions
   _ <- pipe stream $ stdin ffmpeg
   pure stream
+
+foreign import length :: Float32Array -> Int
 
 foreign import newReadable :: Effect (Readable ())
 

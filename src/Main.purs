@@ -19,7 +19,7 @@ createStream = do
 main :: Effect Unit
 main = do
   stream <- createStream
-  ref <- new { buffer: mempty :: Float32Array, stream: stream }
+  ref <- new { buffer: mempty, stream: stream }
   let
     record = \audio -> do
       state <- read ref

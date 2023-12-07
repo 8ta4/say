@@ -24,7 +24,7 @@ main = do
     record = \audio -> do
       state <- read ref
       -- TODO: Add your audio recording logic here
-      pushAudioToStream state.stream audio
+      pushAudio state.stream audio
       write (state { buffer = state.buffer <> audio }) ref
   let
     process = do
@@ -38,7 +38,7 @@ main = do
 
 foreign import newReadable :: Effect (Readable ())
 
-foreign import pushAudioToStream :: Readable () -> Float32Array -> Effect Unit
+foreign import pushAudio :: Readable () -> Float32Array -> Effect Unit
 
 foreign import end :: Readable () -> Effect Unit
 

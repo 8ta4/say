@@ -35,7 +35,7 @@ export const newReadable = () =>
     read() {},
   });
 
-export const pushAudioToStream = (stream) => (float32Array) => () => {
+export const pushAudio = (stream) => (float32Array) => () => {
   stream.push(Buffer.from(float32Array.buffer));
 };
 

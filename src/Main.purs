@@ -11,7 +11,7 @@ foreign import data Float32Array :: Type
 
 main :: Effect Unit
 main = do
-  let stream = newReadable
+  stream <- newReadable
   ref <- new { buffer: mempty :: Float32Array, stream: stream }
   ffmpeg <- spawn "ffmpeg" [ "-f", "f32le", "-i", "pipe:0", "output.opus" ] defaultSpawnOptions
   _ <- pipe stream $ stdin ffmpeg
@@ -24,13 +24,18 @@ main = do
   let
     process = do
       state <- read ref
+      end state.stream
+      newStream <- newReadable
+      write (state { stream = newStream }) ref
       -- TODO: Add your audio processing logic here
       foo state.buffer
   launch record process
 
-foreign import newReadable :: Readable ()
+foreign import newReadable :: Effect (Readable ())
 
 foreign import pushAudioToStream :: Readable () -> Float32Array -> Effect Unit
+
+foreign import end :: Readable () -> Effect Unit
 
 foreign import launch :: (Float32Array -> Effect Unit) -> Effect Unit -> Effect Unit
 

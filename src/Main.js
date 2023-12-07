@@ -2,6 +2,28 @@
 import { app, BrowserWindow, globalShortcut, ipcMain } from "electron";
 import { Readable } from "stream";
 
+export const newReadable = () =>
+  new Readable({
+    read() {},
+  });
+
+export const push = (stream) => (float32Array) => () => {
+  stream.push(Buffer.from(float32Array.buffer));
+};
+
+export const appendFloat32Array = (first) => (second) => {
+  const combined = new Float32Array(first.length + second.length);
+  combined.set(first);
+  combined.set(second, first.length);
+  return combined;
+};
+
+export const memptyFloat32Array = new Float32Array();
+
+export const end = (stream) => () => {
+  stream.push(null);
+};
+
 const createWindow = () => {
   const win = new BrowserWindow({
     width: 800,
@@ -29,28 +51,6 @@ export const launch = (record) => (process) => () => {
     });
   });
 };
-
-export const newReadable = () =>
-  new Readable({
-    read() {},
-  });
-
-export const push = (stream) => (float32Array) => () => {
-  stream.push(Buffer.from(float32Array.buffer));
-};
-
-export const end = (stream) => () => {
-  stream.push(null);
-};
-
-export const appendFloat32Array = (first) => (second) => {
-  const combined = new Float32Array(first.length + second.length);
-  combined.set(first);
-  combined.set(second, first.length);
-  return combined;
-};
-
-export const memptyFloat32Array = new Float32Array();
 
 export const foo = (buffer) => () => {
   console.log(buffer);

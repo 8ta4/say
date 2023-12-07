@@ -4,19 +4,23 @@ import Prelude
 
 import Effect (Effect)
 import Effect.Ref (modify_, new, read)
+import Node.Stream (Readable)
 
 foreign import data Float32Array :: Type
 
 main :: Effect Unit
 main = do
-  bufferRef <- new (mempty :: Float32Array)
-  let record = \audio -> modify_ (\buffer -> buffer <> audio) bufferRef
+  ref <- new $ { buffer: mempty :: Float32Array, stream: newReadable }
+  pure unit
+  let record = \audio -> modify_ (\state -> (state { buffer = state.buffer <> audio })) ref
   let
     process = do
-      buffer <- read bufferRef
+      state <- read ref
       -- TODO: Add your audio processing logic here
-      foo buffer
+      foo state.buffer
   launch record process
+
+foreign import newReadable :: Readable ()
 
 foreign import launch :: (Float32Array -> Effect Unit) -> Effect Unit -> Effect Unit
 

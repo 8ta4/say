@@ -3,6 +3,8 @@ import { app, BrowserWindow, globalShortcut, ipcMain } from "electron";
 import { InferenceSession } from "onnxruntime-node";
 import { Readable } from "stream";
 
+const session = await InferenceSession.create("vad.onnx");
+
 export const newReadable = () =>
   new Readable({
     read() {},

@@ -5,9 +5,12 @@ import Prelude
 import Data.Array (snoc)
 import Debug (traceM)
 import Effect (Effect)
+import Effect.Aff (launchAff_)
+import Effect.Class (liftEffect)
 import Effect.Ref (new, read, write)
 import Node.ChildProcess (defaultSpawnOptions, spawn, stdin)
 import Node.Stream (Readable, pipe)
+import Promise.Aff (Promise, toAffE)
 
 foreign import data Tensor :: Type
 
@@ -25,8 +28,9 @@ main = do
       let raw' = state.raw <> audio
 
       -- https://github.com/snakers4/silero-vad/blob/5e7ee10ee065ab2b98751dd82b28e3c6360e19aa/utils_vad.py#L207
-      if length raw' == 1536 then
-        write (state { raw = mempty, temporary = snoc state.temporary raw' }) ref
+      if length raw' == 1536 then launchAff_ do
+        result <- toAffE $ run raw' state.h state.c
+        liftEffect $ write (state { raw = mempty, temporary = snoc state.temporary raw', h = result.h, c = result.c }) ref
       else
         write (state { raw = raw' }) ref
       push state.stream audio
@@ -47,6 +51,8 @@ createStream = do
   ffmpeg <- spawn "ffmpeg" [ "-y", "-f", "f32le", "-ar", "16000", "-i", "pipe:0", "-b:a", "24k", "output.opus" ] defaultSpawnOptions
   _ <- pipe stream $ stdin ffmpeg
   pure stream
+
+foreign import run :: Float32Array -> Tensor -> Tensor -> Effect (Promise { probability :: Number, h :: Tensor, c :: Tensor })
 
 foreign import tensor :: Tensor
 

@@ -10,6 +10,7 @@ import Effect.Class (liftEffect)
 import Effect.Ref (new, read, write)
 import Node.ChildProcess (defaultSpawnOptions, spawn, stdin)
 import Node.Stream (Readable, pipe)
+import Promise (then_)
 import Promise.Aff (Promise, toAffE)
 
 foreign import data Tensor :: Type
@@ -31,7 +32,7 @@ main = do
       if length raw' >= windowSizeSamples then launchAff_ do
         let splitRaw' = splitAt windowSizeSamples raw'
         result <- toAffE $ run splitRaw'.before state.h state.c
-        liftEffect $ write (state { raw = splitRaw'.after, temporary = state.temporary <> raw', h = result.h, c = result.c }) ref
+        liftEffect $ write (state { raw = splitRaw'.after, temporary = state.temporary <> splitRaw'.before, h = result.h, c = result.c }) ref
       else
         write (state { raw = raw' }) ref
       push state.stream audio

@@ -2,7 +2,6 @@ module Main where
 
 import Prelude
 
-import Data.Array (snoc)
 import Debug (traceM)
 import Effect (Effect)
 import Effect.Aff (launchAff_)
@@ -30,7 +29,7 @@ main = do
       -- https://github.com/snakers4/silero-vad/blob/5e7ee10ee065ab2b98751dd82b28e3c6360e19aa/utils_vad.py#L207
       if length raw' == 1536 then launchAff_ do
         result <- toAffE $ run raw' state.h state.c
-        liftEffect $ write (state { raw = mempty, temporary = snoc state.temporary raw', h = result.h, c = result.c }) ref
+        liftEffect $ write (state { raw = mempty, temporary = state.temporary <> raw', h = result.h, c = result.c }) ref
       else
         write (state { raw = raw' }) ref
       push state.stream audio

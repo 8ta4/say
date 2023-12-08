@@ -2,6 +2,7 @@ module Main where
 
 import Prelude
 
+import Data.Function.Uncurried (Fn3, runFn3)
 import Debug (traceM)
 import Effect (Effect)
 import Effect.Aff (launchAff_)
@@ -26,10 +27,10 @@ main = do
       -- TODO: Add your audio recording logic here
       let raw' = state.raw <> audio
 
-      -- https://github.com/snakers4/silero-vad/blob/5e7ee10ee065ab2b98751dd82b28e3c6360e19aa/utils_vad.py#L207
-      if length raw' == 1536 then launchAff_ do
-        result <- toAffE $ run raw' state.h state.c
-        liftEffect $ write (state { raw = mempty, temporary = state.temporary <> raw', h = result.h, c = result.c }) ref
+      if length raw' >= windowSizeSamples then launchAff_ do
+        let splitRaw' = splitAt windowSizeSamples raw'
+        result <- toAffE $ run splitRaw'.before state.h state.c
+        liftEffect $ write (state { raw = splitRaw'.after, temporary = state.temporary <> raw', h = result.h, c = result.c }) ref
       else
         write (state { raw = raw' }) ref
       push state.stream audio
@@ -70,6 +71,22 @@ foreign import memptyFloat32Array :: Float32Array
 
 instance monoidFloat32Array :: Monoid Float32Array where
   mempty = memptyFloat32Array
+
+-- https://github.com/snakers4/silero-vad/blob/5e7ee10ee065ab2b98751dd82b28e3c6360e19aa/utils_vad.py#L207
+windowSizeSamples :: Int
+windowSizeSamples = 1536
+
+-- https://github.com/purescript/purescript-arrays/blob/6554b3d9c1ebb871477ffa88c2f3850d714b42b0/src/Data/Array.purs#L713-L715
+splitAt :: Int -> Float32Array -> { before :: Float32Array, after :: Float32Array }
+splitAt i xs | i <= 0 = { before: mempty, after: xs }
+splitAt i xs = { before: slice 0 i xs, after: slice i (length xs) xs }
+
+-- https://github.com/purescript/purescript-arrays/blob/6554b3d9c1ebb871477ffa88c2f3850d714b42b0/src/Data/Array.purs#L929C30-L930
+slice :: Int -> Int -> Float32Array -> Float32Array
+slice = runFn3 sliceImpl
+
+-- https://github.com/purescript/purescript-arrays/blob/6554b3d9c1ebb871477ffa88c2f3850d714b42b0/src/Data/Array.purs#L932
+foreign import sliceImpl :: Fn3 Int Int Float32Array Float32Array
 
 foreign import end :: Readable () -> Effect Unit
 

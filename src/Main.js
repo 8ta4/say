@@ -37,6 +37,11 @@ export const appendFloat32Array = (first) => (second) => {
 
 export const memptyFloat32Array = new Float32Array();
 
+// https://github.com/purescript/purescript-arrays/blob/6554b3d9c1ebb871477ffa88c2f3850d714b42b0/src/Data/Array.js#L255-L257
+export const sliceImpl = function (s, e, l) {
+  return l.slice(s, e);
+};
+
 export const end = (stream) => () => {
   stream.push(null);
 };

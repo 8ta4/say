@@ -2,6 +2,8 @@ module Main where
 
 import Prelude
 
+import Data.Array (snoc)
+import Debug (traceM)
 import Effect (Effect)
 import Effect.Ref (new, read, write)
 import Node.ChildProcess (defaultSpawnOptions, spawn, stdin)
@@ -9,40 +11,46 @@ import Node.Stream (Readable, pipe)
 
 foreign import data Float32Array :: Type
 
-createStream :: Effect (Readable ())
-createStream = do
-  stream <- newReadable
-  ffmpeg <- spawn "ffmpeg" [ "-y", "-f", "f32le", "-ar", "16000", "-i", "pipe:0", "-ar", "16000", "output.opus" ] defaultSpawnOptions
-  _ <- pipe stream $ stdin ffmpeg
-  pure stream
-
 main :: Effect Unit
 main = do
   stream <- createStream
-  ref <- new { buffer: mempty :: Float32Array, stream: stream }
+  ref <- new { raw: mempty, temporary: mempty, stream: stream }
   let
     record = \audio -> do
       state <- read ref
+
       -- TODO: Add your audio recording logic here
-      pushAudio state.stream audio
-      write (state { buffer = state.buffer <> audio }) ref
+      let newRaw = state.raw <> audio
+
+      -- https://github.com/snakers4/silero-vad/blob/5e7ee10ee065ab2b98751dd82b28e3c6360e19aa/utils_vad.py#L207
+      if length newRaw == 1536 then
+        write (state { raw = mempty, temporary = snoc state.temporary newRaw }) ref
+      else
+        write (state { raw = newRaw }) ref
+      push state.stream audio
   let
     process = do
       state <- read ref
       end state.stream
       newStream <- createStream
       write (state { stream = newStream }) ref
+
       -- TODO: Add your audio processing logic here
-      foo state.buffer
+      traceM state.temporary
   launch record process
+
+createStream :: Effect (Readable ())
+createStream = do
+  stream <- newReadable
+  ffmpeg <- spawn "ffmpeg" [ "-y", "-f", "f32le", "-ar", "16000", "-i", "pipe:0", "-b:a", "24k", "output.opus" ] defaultSpawnOptions
+  _ <- pipe stream $ stdin ffmpeg
+  pure stream
+
+foreign import length :: Float32Array -> Int
 
 foreign import newReadable :: Effect (Readable ())
 
-foreign import pushAudio :: Readable () -> Float32Array -> Effect Unit
-
-foreign import end :: Readable () -> Effect Unit
-
-foreign import launch :: (Float32Array -> Effect Unit) -> Effect Unit -> Effect Unit
+foreign import push :: Readable () -> Float32Array -> Effect Unit
 
 foreign import appendFloat32Array :: Float32Array -> Float32Array -> Float32Array
 
@@ -54,4 +62,6 @@ foreign import memptyFloat32Array :: Float32Array
 instance monoidFloat32Array :: Monoid Float32Array where
   mempty = memptyFloat32Array
 
-foreign import foo :: Float32Array -> Effect Unit
+foreign import end :: Readable () -> Effect Unit
+
+foreign import launch :: (Float32Array -> Effect Unit) -> Effect Unit -> Effect Unit

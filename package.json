@@ -8,5 +8,8 @@
     "nodemon": "^3.0.2"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "onnxruntime-node": "^1.16.3"
+  }
 }

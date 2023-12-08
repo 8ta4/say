@@ -1,5 +1,6 @@
 // https://www.electronjs.org/docs/latest/tutorial/quick-start#create-a-web-page
 import { app, BrowserWindow, globalShortcut, ipcMain } from "electron";
+import { InferenceSession } from "onnxruntime-node";
 import { Readable } from "stream";
 
 export const newReadable = () =>

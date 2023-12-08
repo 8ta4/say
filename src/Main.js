@@ -12,7 +12,7 @@ const sr = new Tensor(new BigInt64Array([16000n]));
 export const run = (audio) => (h) => (c) => async () => {
   const input = new Tensor(audio, [1, audio.length]);
   const result = await session.run({ input: input, sr: sr, h: h, c: c });
-  return { bar: result.output.data[0], h: result.hn, c: result.cn };
+  return { probability: result.output.data[0], h: result.hn, c: result.cn };
 };
 
 export const newReadable = () =>

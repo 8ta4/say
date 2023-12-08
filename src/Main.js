@@ -7,6 +7,8 @@ const session = await InferenceSession.create("vad.onnx");
 
 export const tensor = new Tensor(new Float32Array(2 * 1 * 64), [2, 1, 64]);
 
+const sr = new Tensor(new BigInt64Array([16000n]));
+
 export const newReadable = () =>
   new Readable({
     read() {},

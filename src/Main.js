@@ -1,9 +1,11 @@
 // https://www.electronjs.org/docs/latest/tutorial/quick-start#create-a-web-page
 import { app, BrowserWindow, globalShortcut, ipcMain } from "electron";
-import { InferenceSession } from "onnxruntime-node";
+import { InferenceSession, Tensor } from "onnxruntime-node";
 import { Readable } from "stream";
 
 const session = await InferenceSession.create("vad.onnx");
+
+export const tensor = new Tensor(new Float32Array(2 * 1 * 64), [2, 1, 64]);
 
 export const newReadable = () =>
   new Readable({

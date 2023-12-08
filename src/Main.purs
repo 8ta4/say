@@ -9,12 +9,14 @@ import Effect.Ref (new, read, write)
 import Node.ChildProcess (defaultSpawnOptions, spawn, stdin)
 import Node.Stream (Readable, pipe)
 
+foreign import data Tensor :: Type
+
 foreign import data Float32Array :: Type
 
 main :: Effect Unit
 main = do
   stream <- createStream
-  ref <- new { raw: mempty, temporary: mempty, stream: stream }
+  ref <- new { raw: mempty, temporary: mempty, stream: stream, h: tensor, c: tensor }
   let
     record = \audio -> do
       state <- read ref
@@ -45,6 +47,8 @@ createStream = do
   ffmpeg <- spawn "ffmpeg" [ "-y", "-f", "f32le", "-ar", "16000", "-i", "pipe:0", "-b:a", "24k", "output.opus" ] defaultSpawnOptions
   _ <- pipe stream $ stdin ffmpeg
   pure stream
+
+foreign import tensor :: Tensor
 
 foreign import length :: Float32Array -> Int
 

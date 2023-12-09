@@ -27,9 +27,9 @@ main = do
   ref <- new { stream: stream, pause: mempty, streamLength: 0, raw: mempty, h: tensor, c: tensor }
   let
     record = \audio -> do
-      state <- read ref
 
       -- TODO: Add your audio recording logic here
+      state <- read ref
       let raw = state.raw <> audio
 
       -- https://developer.mozilla.org/en-US/docs/Web/API/AudioWorkletProcessor/process#sect1
@@ -41,12 +41,13 @@ main = do
         write (state { raw = raw }) ref
   let
     process = do
+      -- TODO: Add your audio processing logic here
+
       state <- read ref
+      push state.stream $ state.pause <> state.raw
       end state.stream
       stream' <- createStream appTempDirectory
-      write (state { stream = stream', streamLength = 0 }) ref
-
-      -- TODO: Add your audio processing logic here
+      write (state { stream = stream', pause = mempty, raw = mempty, streamLength = 0 }) ref
       traceM state.streamLength
   launch record process
 

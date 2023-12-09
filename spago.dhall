@@ -16,6 +16,8 @@ to generate this file without the comments in this block.
   , "console"
   , "debug"
   , "effect"
+  , "functions"
+  , "integers"
   , "js-promise-aff"
   , "node-child-process"
   , "node-streams"

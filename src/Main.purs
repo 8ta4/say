@@ -30,11 +30,12 @@ main = do
         let splitRaw' = splitAt windowSizeSamples raw'
         result <- toAffE $ run splitRaw'.before state.h state.c
         let state' = state { raw = splitRaw'.after, h = result.h, c = result.c }
+        let temporary' = state.temporary <> splitRaw'.before
         if result.probability > 0.5 then do
           liftEffect $ write (state' { temporary = mempty, audioLength = state.audioLength + length state.temporary }) ref
-          liftEffect $ push stream $ state.temporary <> splitRaw'.before
+          liftEffect $ push stream $ temporary'
         else
-          liftEffect $ write (state' { temporary = state.temporary <> splitRaw'.before }) ref
+          liftEffect $ write (state' { temporary = temporary' }) ref
       else
         write (state { raw = raw' }) ref
   let

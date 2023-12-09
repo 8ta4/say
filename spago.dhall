@@ -25,6 +25,7 @@ to generate this file without the comments in this block.
   , "node-streams"
   , "prelude"
   , "refs"
+  , "uuid"
   ]
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]

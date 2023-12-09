@@ -27,7 +27,6 @@ main = do
       let raw' = state.raw <> audio
 
       -- https://developer.mozilla.org/en-US/docs/Web/API/AudioWorkletProcessor/process#sect1
-      traceM state.temporary
       if length raw' >= windowSizeSamples then launchAff_ do
         let splitRaw' = splitAt windowSizeSamples raw'
         result <- toAffE $ run splitRaw'.before state.h state.c

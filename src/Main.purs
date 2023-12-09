@@ -7,9 +7,13 @@ import Debug (traceM)
 import Effect (Effect)
 import Effect.Aff (launchAff_)
 import Effect.Class (liftEffect)
+import Effect.Console (log)
 import Effect.Ref (new, read, write)
 import Float32Array (Float32Array, length, splitAt, takeEnd)
 import Node.ChildProcess (defaultSpawnOptions, spawn, stdin)
+import Node.FS.Async (appendTextFile)
+import Node.FS.Sync (mkdtemp)
+import Node.OS (tmpdir)
 import Node.Stream (Readable, pipe)
 import Promise.Aff (Promise, toAffE)
 
@@ -27,12 +31,11 @@ main = do
       let raw' = state.raw <> audio
 
       -- https://developer.mozilla.org/en-US/docs/Web/API/AudioWorkletProcessor/process#sect1
-      traceM state.temporary
       if length raw' >= windowSizeSamples then launchAff_ do
-        let splitRaw' = splitAt windowSizeSamples raw'
-        result <- toAffE $ run splitRaw'.before state.h state.c
-        let state' = state { raw = splitRaw'.after, h = result.h, c = result.c }
-        let temporary' = state.temporary <> splitRaw'.before
+        let { before, after } = splitAt windowSizeSamples raw'
+        result <- toAffE $ run before state.h state.c
+        let state' = state { raw = after, h = result.h, c = result.c }
+        let temporary' = state.temporary <> before
         if result.probability > 0.5 then do
           liftEffect $ write (state' { temporary = mempty, audioLength = state.audioLength + length state.temporary }) ref
           liftEffect $ push stream $ temporary'
@@ -53,8 +56,12 @@ main = do
 
 createStream :: Effect (Readable ())
 createStream = do
+  tempDirectory <- tmpdir
+  -- https://nodejs.org/api/fs.html#fspromisesmkdtempprefix-options:~:text=mkdtemp(join(tmpdir()%2C%20%27foo%2D%27))
+  appTempDirectory <- mkdtemp $ tempDirectory <> "/say-"
+  log appTempDirectory
   stream <- newReadable
-  ffmpeg <- spawn "ffmpeg" [ "-y", "-f", "f32le", "-ar", show ar, "-i", "pipe:0", "-b:a", "24k", "output.opus" ] defaultSpawnOptions
+  ffmpeg <- spawn "ffmpeg" [ "-y", "-f", "f32le", "-ar", show ar, "-i", "pipe:0", "-b:a", "24k", appTempDirectory <> "/output.opus" ] defaultSpawnOptions
   _ <- pipe stream $ stdin ffmpeg
   pure stream
 

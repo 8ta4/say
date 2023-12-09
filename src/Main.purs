@@ -53,6 +53,32 @@ main = do
       traceM state.streamLength
   launch record process
 
+createStream :: String -> Effect (Readable ())
+createStream appTempDirectory = do
+  stream <- newReadable
+  uuid <- genUUID
+  let filepath = appTempDirectory <> "/" <> toString uuid <> ".opus"
+  traceM filepath
+  ffmpeg <- spawn "ffmpeg" [ "-f", "f32le", "-ar", show ar, "-i", "pipe:0", "-b:a", "24k", filepath ] defaultSpawnOptions
+  _ <- pipe stream $ stdin ffmpeg
+  handleClose ffmpeg
+  pure stream
+
+foreign import tensor :: Tensor
+
+foreign import newReadable :: Effect (Readable ())
+
+ar :: Int
+ar = 16000
+
+foreign import handleClose :: ChildProcess -> Effect Unit
+
+pauseDuration :: Number
+pauseDuration = 1.5
+
+samplesInPause :: Int
+samplesInPause = floor $ toNumber ar * pauseDuration
+
 detect :: forall r. StateRef r -> Float32Array -> Aff Unit
 detect ref audio = do
   state <- liftEffect $ read ref
@@ -66,33 +92,7 @@ detect ref audio = do
   else
     liftEffect $ write state' ref
 
-createStream :: String -> Effect (Readable ())
-createStream appTempDirectory = do
-  stream <- newReadable
-  uuid <- genUUID
-  let filepath = appTempDirectory <> "/" <> toString uuid <> ".opus"
-  traceM filepath
-  ffmpeg <- spawn "ffmpeg" [ "-f", "f32le", "-ar", show ar, "-i", "pipe:0", "-b:a", "24k", filepath ] defaultSpawnOptions
-  _ <- pipe stream $ stdin ffmpeg
-  handleClose ffmpeg
-  pure stream
-
 foreign import run :: Float32Array -> Tensor -> Tensor -> Effect (Promise { probability :: Number, h :: Tensor, c :: Tensor })
-
-foreign import tensor :: Tensor
-
-foreign import newReadable :: Effect (Readable ())
-
-foreign import handleClose :: ChildProcess -> Effect Unit
-
-ar :: Int
-ar = 16000
-
-pauseDuration :: Number
-pauseDuration = 1.5
-
-samplesInPause :: Int
-samplesInPause = floor $ toNumber ar * pauseDuration
 
 foreign import push :: Readable () -> Float32Array -> Effect Unit
 

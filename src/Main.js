@@ -20,6 +20,12 @@ export const newReadable = () =>
     read() {},
   });
 
+export const handleClose = (ffmpeg) => () => {
+  ffmpeg.on("close", () => {
+    console.log("closed");
+  });
+};
+
 export const push = (stream) => (float32Array) => () => {
   stream.push(Buffer.from(float32Array.buffer));
 };

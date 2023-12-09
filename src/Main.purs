@@ -50,10 +50,10 @@ main = do
       state <- read ref
       end state.stream
       stream' <- createStream appTempDirectory
-      write (state { stream = stream' }) ref
+      write (state { stream = stream', audioLength = 0 }) ref
 
       -- TODO: Add your audio processing logic here
-      traceM state.temporary
+      traceM state.audioLength
   launch record process
 
 createStream :: String -> Effect (Readable ())

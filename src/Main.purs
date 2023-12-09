@@ -43,8 +43,8 @@ main = do
         write (state { raw = raw }) ref
   let
     process = do
-      -- TODO: Add your audio processing logic here
 
+      -- TODO: Add your audio processing logic here
       state <- read ref
       push state.stream $ state.pause <> state.raw
       end state.stream

@@ -32,11 +32,12 @@ main = do
       if length raw' >= windowSizeSamples then launchAff_ do
         let splitRaw' = splitAt windowSizeSamples raw'
         result <- toAffE $ run splitRaw'.before state.h state.c
+        let state' = state { raw = splitRaw'.after, h = result.h, c = result.c }
         if result.probability > 0.5 then do
-          liftEffect $ write (state { raw = splitRaw'.after, temporary = mempty, h = result.h, c = result.c }) ref
+          liftEffect $ write (state' { temporary = mempty }) ref
           liftEffect $ push stream $ state.temporary <> splitRaw'.before
         else
-          liftEffect $ write (state { raw = splitRaw'.after, temporary = state.temporary <> splitRaw'.before, h = result.h, c = result.c }) ref
+          liftEffect $ write (state' { temporary = state.temporary <> splitRaw'.before }) ref
       else
         write (state { raw = raw' }) ref
   let

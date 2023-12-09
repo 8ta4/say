@@ -16,6 +16,8 @@ import Node.OS (tmpdir)
 import Node.Stream (Read, Readable, Stream, pipe)
 import Promise.Aff (Promise, toAffE)
 
+type StateRef r = Ref { stream :: Stream (read :: Read), streamLength :: Int, pause :: Float32Array, h :: Tensor, c :: Tensor | r }
+
 foreign import data Tensor :: Type
 
 main :: Effect Unit
@@ -50,8 +52,6 @@ main = do
       write (state { stream = stream', pause = mempty, raw = mempty, streamLength = 0 }) ref
       traceM state.streamLength
   launch record process
-
-type StateRef r = Ref { stream :: Stream (read :: Read), streamLength :: Int, pause :: Float32Array, h :: Tensor, c :: Tensor | r }
 
 detect :: forall r. StateRef r -> Float32Array -> Aff Unit
 detect ref audio = do

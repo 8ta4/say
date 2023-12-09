@@ -57,9 +57,12 @@ detect :: forall r. StateRef r -> Float32Array -> Aff Unit
 detect ref audio = do
   state <- liftEffect $ read ref
   result <- toAffE $ run audio state.h state.c
-  when (result.probability > 0.5) do
-    liftEffect $ write (state { streamLength = state.streamLength + length state.pause, pause = mempty, h = result.h, c = result.c }) ref
+  let state' = state { h = result.h, c = result.c }
+  if (result.probability > 0.5) then do
+    liftEffect $ write (state' { streamLength = state.streamLength + length state.pause, pause = mempty }) ref
     liftEffect $ push state.stream $ state.pause
+  else
+    liftEffect $ write state' ref
 
 createStream :: String -> Effect (Readable ())
 createStream appTempDirectory = do

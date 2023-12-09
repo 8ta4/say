@@ -2,12 +2,13 @@ module Main where
 
 import Prelude
 
+import Data.Int (floor, toNumber)
 import Debug (traceM)
 import Effect (Effect)
 import Effect.Aff (launchAff_)
 import Effect.Class (liftEffect)
 import Effect.Ref (new, read, write)
-import Float32Array (Float32Array, length, splitAt)
+import Float32Array (Float32Array, length, splitAt, takeEnd)
 import Node.ChildProcess (defaultSpawnOptions, spawn, stdin)
 import Node.Stream (Readable, pipe)
 import Promise.Aff (Promise, toAffE)
@@ -26,6 +27,7 @@ main = do
       let raw' = state.raw <> audio
 
       -- https://developer.mozilla.org/en-US/docs/Web/API/AudioWorkletProcessor/process#sect1
+      traceM state.temporary
       if length raw' >= windowSizeSamples then launchAff_ do
         let splitRaw' = splitAt windowSizeSamples raw'
         result <- toAffE $ run splitRaw'.before state.h state.c
@@ -35,7 +37,7 @@ main = do
           liftEffect $ write (state' { temporary = mempty, audioLength = state.audioLength + length state.temporary }) ref
           liftEffect $ push stream $ temporary'
         else
-          liftEffect $ write (state' { temporary = temporary' }) ref
+          liftEffect $ write (state' { temporary = takeEnd samplesInPause temporary' }) ref
       else
         write (state { raw = raw' }) ref
   let
@@ -64,6 +66,12 @@ foreign import newReadable :: Effect (Readable ())
 
 ar :: Int
 ar = 16000
+
+pauseDuration :: Number
+pauseDuration = 1.5
+
+samplesInPause :: Int
+samplesInPause = floor $ toNumber ar * pauseDuration
 
 foreign import push :: Readable () -> Float32Array -> Effect Unit
 

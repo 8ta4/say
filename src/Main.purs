@@ -10,7 +10,7 @@ import Effect.Aff (Aff, launchAff_)
 import Effect.Class (liftEffect)
 import Effect.Ref (Ref, new, read, write)
 import Float32Array (Float32Array, length, splitAt, takeEnd)
-import Node.ChildProcess (defaultSpawnOptions, spawn, stdin)
+import Node.ChildProcess (ChildProcess, defaultSpawnOptions, spawn, stdin)
 import Node.FS.Sync (mkdtemp)
 import Node.OS (tmpdir)
 import Node.Stream (Read, Readable, Stream, pipe)
@@ -74,6 +74,7 @@ createStream appTempDirectory = do
   traceM filepath
   ffmpeg <- spawn "ffmpeg" [ "-f", "f32le", "-ar", show ar, "-i", "pipe:0", "-b:a", "24k", filepath ] defaultSpawnOptions
   _ <- pipe stream $ stdin ffmpeg
+  handleClose ffmpeg
   pure stream
 
 foreign import run :: Float32Array -> Tensor -> Tensor -> Effect (Promise { probability :: Number, h :: Tensor, c :: Tensor })
@@ -81,6 +82,8 @@ foreign import run :: Float32Array -> Tensor -> Tensor -> Effect (Promise { prob
 foreign import tensor :: Tensor
 
 foreign import newReadable :: Effect (Readable ())
+
+foreign import handleClose :: ChildProcess -> Effect Unit
 
 ar :: Int
 ar = 16000

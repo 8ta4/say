@@ -62,7 +62,7 @@ createStream appTempDirectory = do
   uuid <- genUUID
   let filepath = appTempDirectory <> "/" <> toString uuid <> ".opus"
   traceM filepath
-  ffmpeg <- spawn "ffmpeg" [ "-y", "-f", "f32le", "-ar", show ar, "-i", "pipe:0", "-b:a", "24k", filepath ] defaultSpawnOptions
+  ffmpeg <- spawn "ffmpeg" [ "-f", "f32le", "-ar", show ar, "-i", "pipe:0", "-b:a", "24k", filepath ] defaultSpawnOptions
   _ <- pipe stream $ stdin ffmpeg
   pure stream
 

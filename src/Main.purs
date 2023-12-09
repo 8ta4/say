@@ -24,7 +24,7 @@ main = do
   -- https://nodejs.org/api/fs.html#fspromisesmkdtempprefix-options:~:text=mkdtemp(join(tmpdir()%2C%20%27foo%2D%27))
   appTempDirectory <- mkdtemp $ tempDirectory <> "/say-"
   stream <- createStream appTempDirectory
-  ref <- new { raw: mempty, temporary: mempty, stream: stream, audioLength: 0, h: tensor, c: tensor }
+  ref <- new { raw: mempty, pause: mempty, stream: stream, audioLength: 0, h: tensor, c: tensor }
   let
     record = \audio -> do
       state <- read ref
@@ -37,12 +37,12 @@ main = do
         let { before, after } = splitAt windowSizeSamples raw'
         result <- toAffE $ run before state.h state.c
         let state' = state { raw = after, h = result.h, c = result.c }
-        let temporary' = state.temporary <> before
+        let pause' = state.pause <> before
         if result.probability > 0.5 then do
-          liftEffect $ write (state' { temporary = mempty, audioLength = state.audioLength + length state.temporary }) ref
-          liftEffect $ push stream $ temporary'
+          liftEffect $ write (state' { pause = mempty, audioLength = state.audioLength + length state.pause }) ref
+          liftEffect $ push stream $ pause'
         else
-          liftEffect $ write (state' { temporary = takeEnd samplesInPause temporary' }) ref
+          liftEffect $ write (state' { pause = takeEnd samplesInPause pause' }) ref
       else
         write (state { raw = raw' }) ref
   let

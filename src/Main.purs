@@ -10,7 +10,6 @@ import Effect.Class (liftEffect)
 import Effect.Ref (new, read, write)
 import Node.ChildProcess (defaultSpawnOptions, spawn, stdin)
 import Node.Stream (Readable, pipe)
-import Promise (then_)
 import Promise.Aff (Promise, toAffE)
 
 foreign import data Tensor :: Type
@@ -20,7 +19,7 @@ foreign import data Float32Array :: Type
 main :: Effect Unit
 main = do
   stream <- createStream
-  ref <- new { raw: mempty, temporary: mempty, stream: stream, h: tensor, c: tensor }
+  ref <- new { raw: mempty, temporary: mempty, stream: stream, audioLength: 0, h: tensor, c: tensor }
   let
     record = \audio -> do
       state <- read ref
@@ -34,7 +33,7 @@ main = do
         result <- toAffE $ run splitRaw'.before state.h state.c
         let state' = state { raw = splitRaw'.after, h = result.h, c = result.c }
         if result.probability > 0.5 then do
-          liftEffect $ write (state' { temporary = mempty }) ref
+          liftEffect $ write (state' { temporary = mempty, audioLength = state.audioLength + length state.temporary }) ref
           liftEffect $ push stream $ state.temporary <> splitRaw'.before
         else
           liftEffect $ write (state' { temporary = state.temporary <> splitRaw'.before }) ref

@@ -6,14 +6,14 @@ import Data.Int (floor, toNumber)
 import Data.UUID (genUUID, toString)
 import Debug (traceM)
 import Effect (Effect)
-import Effect.Aff (launchAff_)
+import Effect.Aff (Aff, launchAff_)
 import Effect.Class (liftEffect)
-import Effect.Ref (new, read, write)
+import Effect.Ref (Ref, new, read, write)
 import Float32Array (Float32Array, length, splitAt, takeEnd)
 import Node.ChildProcess (defaultSpawnOptions, spawn, stdin)
 import Node.FS.Sync (mkdtemp)
 import Node.OS (tmpdir)
-import Node.Stream (Readable, pipe)
+import Node.Stream (Read, Readable, Stream, pipe)
 import Promise.Aff (Promise, toAffE)
 
 foreign import data Tensor :: Type
@@ -24,37 +24,41 @@ main = do
   -- https://nodejs.org/api/fs.html#fspromisesmkdtempprefix-options:~:text=mkdtemp(join(tmpdir()%2C%20%27foo%2D%27))
   appTempDirectory <- mkdtemp $ tempDirectory <> "/say-"
   stream <- createStream appTempDirectory
-  ref <- new { raw: mempty, pause: mempty, stream: stream, audioLength: 0, h: tensor, c: tensor }
+  ref <- new { stream: stream, pause: mempty, streamLength: 0, raw: mempty, h: tensor, c: tensor }
   let
     record = \audio -> do
       state <- read ref
 
       -- TODO: Add your audio recording logic here
-      let raw' = state.raw <> audio
+      let raw = state.raw <> audio
 
       -- https://developer.mozilla.org/en-US/docs/Web/API/AudioWorkletProcessor/process#sect1
-      if length raw' >= windowSizeSamples then launchAff_ do
-        let { before, after } = splitAt windowSizeSamples raw'
-        result <- toAffE $ run before state.h state.c
-        let state' = state { raw = after, h = result.h, c = result.c }
-        let pause' = state.pause <> before
-        if result.probability > 0.5 then do
-          liftEffect $ write (state' { pause = mempty, audioLength = state.audioLength + length state.pause }) ref
-          liftEffect $ push stream $ pause'
-        else
-          liftEffect $ write (state' { pause = takeEnd samplesInPause pause' }) ref
+      if length raw >= windowSizeSamples then do
+        let { before, after } = splitAt windowSizeSamples raw
+        write (state { raw = after, pause = takeEnd samplesInPause $ state.pause <> before }) ref
+        launchAff_ $ detect ref before
       else
-        write (state { raw = raw' }) ref
+        write (state { raw = raw }) ref
   let
     process = do
       state <- read ref
       end state.stream
       stream' <- createStream appTempDirectory
-      write (state { stream = stream', audioLength = 0 }) ref
+      write (state { stream = stream', streamLength = 0 }) ref
 
       -- TODO: Add your audio processing logic here
-      traceM state.audioLength
+      traceM state.streamLength
   launch record process
+
+type StateRef r = Ref { stream :: Stream (read :: Read), streamLength :: Int, pause :: Float32Array, h :: Tensor, c :: Tensor | r }
+
+detect :: forall r. StateRef r -> Float32Array -> Aff Unit
+detect ref audio = do
+  state <- liftEffect $ read ref
+  result <- toAffE $ run audio state.h state.c
+  when (result.probability > 0.5) do
+    liftEffect $ write (state { streamLength = state.streamLength + length state.pause, pause = mempty, h = result.h, c = result.c }) ref
+    liftEffect $ push state.stream $ state.pause
 
 createStream :: String -> Effect (Readable ())
 createStream appTempDirectory = do

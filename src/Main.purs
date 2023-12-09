@@ -7,9 +7,12 @@ import Debug (traceM)
 import Effect (Effect)
 import Effect.Aff (launchAff_)
 import Effect.Class (liftEffect)
+import Effect.Console (log)
 import Effect.Ref (new, read, write)
 import Float32Array (Float32Array, length, splitAt, takeEnd)
 import Node.ChildProcess (defaultSpawnOptions, spawn, stdin)
+import Node.FS.Async (appendTextFile)
+import Node.FS.Sync (mkdtemp)
 import Node.OS (tmpdir)
 import Node.Stream (Readable, pipe)
 import Promise.Aff (Promise, toAffE)
@@ -54,8 +57,11 @@ main = do
 createStream :: Effect (Readable ())
 createStream = do
   tempDirectory <- tmpdir
+  -- https://nodejs.org/api/fs.html#fspromisesmkdtempprefix-options:~:text=mkdtemp(join(tmpdir()%2C%20%27foo%2D%27))
+  appTempDirectory <- mkdtemp $ tempDirectory <> "/say-"
+  log appTempDirectory
   stream <- newReadable
-  ffmpeg <- spawn "ffmpeg" [ "-y", "-f", "f32le", "-ar", show ar, "-i", "pipe:0", "-b:a", "24k", tempDirectory <> "/output.opus" ] defaultSpawnOptions
+  ffmpeg <- spawn "ffmpeg" [ "-y", "-f", "f32le", "-ar", show ar, "-i", "pipe:0", "-b:a", "24k", appTempDirectory <> "/output.opus" ] defaultSpawnOptions
   _ <- pipe stream $ stdin ffmpeg
   pure stream
 

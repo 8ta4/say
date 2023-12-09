@@ -10,6 +10,7 @@ import Effect.Class (liftEffect)
 import Effect.Ref (new, read, write)
 import Float32Array (Float32Array, length, splitAt, takeEnd)
 import Node.ChildProcess (defaultSpawnOptions, spawn, stdin)
+import Node.OS (tmpdir)
 import Node.Stream (Readable, pipe)
 import Promise.Aff (Promise, toAffE)
 
@@ -52,8 +53,9 @@ main = do
 
 createStream :: Effect (Readable ())
 createStream = do
+  tempDirectory <- tmpdir
   stream <- newReadable
-  ffmpeg <- spawn "ffmpeg" [ "-y", "-f", "f32le", "-ar", show ar, "-i", "pipe:0", "-b:a", "24k", "output.opus" ] defaultSpawnOptions
+  ffmpeg <- spawn "ffmpeg" [ "-y", "-f", "f32le", "-ar", show ar, "-i", "pipe:0", "-b:a", "24k", tempDirectory <> "/output.opus" ] defaultSpawnOptions
   _ <- pipe stream $ stdin ffmpeg
   pure stream
 

@@ -20,6 +20,7 @@ to generate this file without the comments in this block.
   , "integers"
   , "js-promise-aff"
   , "node-child-process"
+  , "node-os"
   , "node-streams"
   , "prelude"
   , "refs"

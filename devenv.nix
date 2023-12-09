@@ -14,6 +14,9 @@
   # https://devenv.sh/scripts/
   scripts.hello.exec = "echo hello from $GREET";
   scripts.build.exec = ''
+    ${pkgs.spago}/bin/spago build
+  '';
+  scripts.watch.exec = ''
     ${pkgs.spago}/bin/spago build --watch
   '';
   scripts.run.exec = ''
@@ -24,7 +27,7 @@
     hello
     git --version
     ${pkgs.nodePackages.npm}/bin/npm install
-    ${pkgs.spago}/bin/spago build
+    build
   '';
 
   # https://devenv.sh/languages/

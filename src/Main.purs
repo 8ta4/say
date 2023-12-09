@@ -28,10 +28,10 @@ main = do
 
       -- https://developer.mozilla.org/en-US/docs/Web/API/AudioWorkletProcessor/process#sect1
       if length raw' >= windowSizeSamples then launchAff_ do
-        let splitRaw' = splitAt windowSizeSamples raw'
-        result <- toAffE $ run splitRaw'.before state.h state.c
-        let state' = state { raw = splitRaw'.after, h = result.h, c = result.c }
-        let temporary' = state.temporary <> splitRaw'.before
+        let { before, after } = splitAt windowSizeSamples raw'
+        result <- toAffE $ run before state.h state.c
+        let state' = state { raw = after, h = result.h, c = result.c }
+        let temporary' = state.temporary <> before
         if result.probability > 0.5 then do
           liftEffect $ write (state' { temporary = mempty, audioLength = state.audioLength + length state.temporary }) ref
           liftEffect $ push stream $ temporary'

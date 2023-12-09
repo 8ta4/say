@@ -53,7 +53,7 @@ main = do
 createStream :: Effect (Readable ())
 createStream = do
   stream <- newReadable
-  ffmpeg <- spawn "ffmpeg" [ "-y", "-f", "f32le", "-ar", "16000", "-i", "pipe:0", "-b:a", "24k", "output.opus" ] defaultSpawnOptions
+  ffmpeg <- spawn "ffmpeg" [ "-y", "-f", "f32le", "-ar", show ar, "-i", "pipe:0", "-b:a", "24k", "output.opus" ] defaultSpawnOptions
   _ <- pipe stream $ stdin ffmpeg
   pure stream
 
@@ -64,6 +64,9 @@ foreign import tensor :: Tensor
 foreign import length :: Float32Array -> Int
 
 foreign import newReadable :: Effect (Readable ())
+
+ar :: Int
+ar = 16000
 
 foreign import push :: Readable () -> Float32Array -> Effect Unit
 

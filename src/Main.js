@@ -1,5 +1,4 @@
 // https://www.electronjs.org/docs/latest/tutorial/quick-start#create-a-web-page
-import { createClient } from "@deepgram/sdk";
 import { app, BrowserWindow, globalShortcut, ipcMain } from "electron";
 import { InferenceSession, Tensor } from "onnxruntime-node";
 import { Readable } from "stream";
@@ -32,7 +31,7 @@ export const push = (stream) => (float32Array) => () =>
 
 export const end = (stream) => () => stream.push(null);
 
-export const createDeepgram = (key) => createClient(key);
+export { createClient } from "@deepgram/sdk";
 
 const createWindow = () => {
   const win = new BrowserWindow({

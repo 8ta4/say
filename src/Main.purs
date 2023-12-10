@@ -82,7 +82,9 @@ main = do
       launchAff_ do
         traceM "process"
         liftEffect $ modify_ (\state -> state { processing = false }) ref
-    deepgram = createDeepgram key
+
+    -- https://github.com/deepgram/deepgram-node-sdk/blob/7c416605fc5953c8777b3685e014cf874c08eecf/README.md?plain=1#L123
+    deepgram = createClient key
   stream' <- createStream
   modify_ (\state -> state { stream = stream' }) ref
   launch record save
@@ -118,6 +120,6 @@ foreign import end :: Readable () -> Effect Unit
 
 foreign import handleClose :: ChildProcess -> Effect Unit -> Effect Unit
 
-foreign import createDeepgram :: String -> Deepgram
+foreign import createClient :: String -> Deepgram
 
 foreign import launch :: (Float32Array -> Effect Unit) -> Effect Unit -> Effect Unit

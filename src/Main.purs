@@ -75,13 +75,13 @@ main = do
       traceM filepath
       ffmpeg <- spawn "ffmpeg" [ "-f", "f32le", "-ar", show ar, "-i", "pipe:0", "-b:a", "24k", filepath ] defaultSpawnOptions
       _ <- pipe stream' $ stdin ffmpeg
-      handleClose ffmpeg process
+      handleClose ffmpeg do
+        modify_ (\state -> state { processing = true }) ref
+        launchAff_ do
+          transcript <- toAffE $ transcribe deepgram filepath
+          traceM transcript
+          liftEffect $ modify_ (\state -> state { processing = false }) ref
       pure stream'
-    process = do
-      modify_ (\state -> state { processing = true }) ref
-      launchAff_ do
-        traceM "process"
-        liftEffect $ modify_ (\state -> state { processing = false }) ref
 
     -- https://github.com/deepgram/deepgram-node-sdk/blob/7c416605fc5953c8777b3685e014cf874c08eecf/README.md?plain=1#L123
     deepgram = createClient key
@@ -121,5 +121,7 @@ foreign import end :: Readable () -> Effect Unit
 foreign import handleClose :: ChildProcess -> Effect Unit -> Effect Unit
 
 foreign import createClient :: String -> Deepgram
+
+foreign import transcribe :: Deepgram -> String -> Effect (Promise String)
 
 foreign import launch :: (Float32Array -> Effect Unit) -> Effect Unit -> Effect Unit

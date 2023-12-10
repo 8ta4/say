@@ -33,6 +33,8 @@ export const end = (stream) => () => stream.push(null);
 
 export { createClient } from "@deepgram/sdk";
 
+export const transcribe = (deepgram) => (filepath) => async () => {};
+
 const createWindow = () => {
   const win = new BrowserWindow({
     width: 800,

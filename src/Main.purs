@@ -36,6 +36,14 @@ main = do
   stream <- createStream
   ref <- new { stream: stream, pause: mempty, streamLength: 0, raw: mempty, h: tensor, c: tensor }
   let
+    process' = do
+      state <- read ref
+      push state.stream $ state.pause <> state.raw
+      end state.stream
+      stream' <- createStream
+      write (state { stream = stream', pause = mempty, raw = mempty, streamLength = 0 }) ref
+      traceM state.streamLength
+  let
     detect audio = do
       state <- liftEffect $ read ref
       result <- toAffE $ run audio state.h state.c
@@ -45,8 +53,9 @@ main = do
       if (0.5 < result.probability) then do
         liftEffect $ write (state' { streamLength = state.streamLength + length state.pause, pause = mempty }) ref
         liftEffect $ push state.stream $ state.pause
-      else
-        liftEffect $ write state' ref
+      else if samplesInStream < state.streamLength && samplesInPause < length state.pause then do
+        liftEffect process'
+      else liftEffect $ write state' ref
   let
     record audio = do
 
@@ -65,12 +74,7 @@ main = do
     process = do
 
       -- TODO: Add your audio processing logic here
-      state <- read ref
-      push state.stream $ state.pause <> state.raw
-      end state.stream
-      stream' <- createStream
-      write (state { stream = stream', pause = mempty, raw = mempty, streamLength = 0 }) ref
-      traceM state.streamLength
+      process'
   launch record process
 
 foreign import tensor :: Tensor
@@ -81,6 +85,12 @@ ar :: Int
 ar = 16000
 
 foreign import handleClose :: ChildProcess -> Effect Unit
+
+streamDuration :: Int
+streamDuration = 60
+
+samplesInStream :: Int
+samplesInStream = ar * streamDuration
 
 pauseDuration :: Number
 pauseDuration = 1.5

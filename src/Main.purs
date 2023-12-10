@@ -8,7 +8,7 @@ import Debug (traceM)
 import Effect (Effect)
 import Effect.Aff (launchAff_)
 import Effect.Class (liftEffect)
-import Effect.Ref (new, read, write)
+import Effect.Ref (modify_, new, read, write)
 import Float32Array (Float32Array, length, splitAt, takeEnd)
 import Node.ChildProcess (ChildProcess, defaultSpawnOptions, spawn, stdin)
 import Node.Encoding (Encoding(..))
@@ -26,25 +26,24 @@ main = do
   appTempDirectory <- mkdtemp $ tempDirectory <> "/say-"
   homeDirectory <- homedir
   key <- readTextFile UTF8 $ homeDirectory <> "/.config/say/key"
+  stream <- newReadable
+  ref <- new { stream: stream, pause: mempty, streamLength: 0, raw: mempty, h: tensor, c: tensor }
   let
-    createStream = do
-      stream <- newReadable
+    initializeStream = do
+      stream' <- newReadable
+      modify_ (\state -> state { stream = stream' }) ref
       uuid <- genUUID
       let filepath = appTempDirectory <> "/" <> toString uuid <> ".opus"
       traceM filepath
       ffmpeg <- spawn "ffmpeg" [ "-f", "f32le", "-ar", show ar, "-i", "pipe:0", "-b:a", "24k", filepath ] defaultSpawnOptions
       _ <- pipe stream $ stdin ffmpeg
       handleClose ffmpeg
-      pure stream
-  stream <- createStream
-  ref <- new { stream: stream, pause: mempty, streamLength: 0, raw: mempty, h: tensor, c: tensor }
-  let
     process' = do
       state <- read ref
       push state.stream $ state.pause <> state.raw
       end state.stream
-      stream' <- createStream
-      write (state { stream = stream', pause = mempty, raw = mempty, streamLength = 0 }) ref
+      initializeStream
+      write (state { pause = mempty, raw = mempty, streamLength = 0 }) ref
       traceM state.streamLength
     detect audio = do
       state <- liftEffect $ read ref
@@ -74,6 +73,7 @@ main = do
 
       -- TODO: Add your audio processing logic here
       process'
+  initializeStream
   launch record process
 
 foreign import tensor :: Tensor

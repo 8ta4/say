@@ -53,8 +53,7 @@ main = do
       if (0.5 < result.probability) then do
         liftEffect $ write (state' { streamLength = state.streamLength + length state.pause, pause = mempty }) ref
         liftEffect $ push state.stream $ state.pause
-      else if samplesInStream < state.streamLength && samplesInPause < length state.pause then do
-        liftEffect process'
+      else if samplesInStream < state.streamLength && samplesInPause < length state.pause then liftEffect process'
       else liftEffect $ write state' ref
   let
     record audio = do

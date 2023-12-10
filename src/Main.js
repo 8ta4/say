@@ -43,6 +43,7 @@ export const transcribe = (deepgram) => (filepath) => async () => {
     }
   );
   console.log(error);
+  return result.results.channels[0].alternatives[0].transcript;
 };
 
 const createWindow = () => {

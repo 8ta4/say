@@ -39,7 +39,7 @@ export const transcribe = (deepgram) => (filepath) => async () => {
   const { result, error } = await deepgram.listen.prerecorded.transcribeFile(
     readFileSync(filepath),
     {
-      model: "nova",
+      model: "nova-2",
     }
   );
   console.log(error);

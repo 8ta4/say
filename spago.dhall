@@ -19,6 +19,7 @@ to generate this file without the comments in this block.
   , "functions"
   , "integers"
   , "js-promise-aff"
+  , "node-buffer"
   , "node-child-process"
   , "node-fs"
   , "node-os"

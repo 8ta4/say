@@ -8,7 +8,7 @@ import Debug (traceM)
 import Effect (Effect)
 import Effect.Aff (launchAff_)
 import Effect.Class (liftEffect)
-import Effect.Ref (new, read, write)
+import Effect.Ref (modify_, new, read, write)
 import Float32Array (Float32Array, length, splitAt, takeEnd)
 import Node.ChildProcess (ChildProcess, defaultSpawnOptions, spawn, stdin)
 import Node.Encoding (Encoding(..))
@@ -26,37 +26,9 @@ main = do
   appTempDirectory <- mkdtemp $ tempDirectory <> "/say-"
   homeDirectory <- homedir
   key <- readTextFile UTF8 $ homeDirectory <> "/.config/say/key"
+  stream <- newReadable
+  ref <- new { stream: stream, pause: mempty, streamLength: 0, raw: mempty, h: tensor, c: tensor, processing: false }
   let
-    createStream = do
-      stream <- newReadable
-      uuid <- genUUID
-      let filepath = appTempDirectory <> "/" <> toString uuid <> ".opus"
-      traceM filepath
-      ffmpeg <- spawn "ffmpeg" [ "-f", "f32le", "-ar", show ar, "-i", "pipe:0", "-b:a", "24k", filepath ] defaultSpawnOptions
-      _ <- pipe stream $ stdin ffmpeg
-      handleClose ffmpeg
-      pure stream
-  stream <- createStream
-  ref <- new { stream: stream, pause: mempty, streamLength: 0, raw: mempty, h: tensor, c: tensor }
-  let
-    process' = do
-      state <- read ref
-      push state.stream $ state.pause <> state.raw
-      end state.stream
-      stream' <- createStream
-      write (state { stream = stream', pause = mempty, raw = mempty, streamLength = 0 }) ref
-      traceM state.streamLength
-    detect audio = do
-      state <- liftEffect $ read ref
-      result <- toAffE $ run audio state.h state.c
-      let state' = state { h = result.h, c = result.c }
-
-      -- https://github.com/snakers4/silero-vad/blob/5e7ee10ee065ab2b98751dd82b28e3c6360e19aa/utils_vad.py#L187-L188
-      if (0.5 < result.probability) then do
-        liftEffect $ write (state' { streamLength = state.streamLength + length state.pause, pause = mempty }) ref
-        liftEffect $ push state.stream $ state.pause
-      else if samplesInStream < state.streamLength && samplesInPause == length state.pause then liftEffect process'
-      else liftEffect $ write state' ref
     record audio = do
 
       -- TODO: Add your audio recording logic here
@@ -70,10 +42,41 @@ main = do
         launchAff_ $ detect before
       else
         write (state { raw = raw }) ref
+    detect audio = do
+      state <- liftEffect $ read ref
+      result <- toAffE $ run audio state.h state.c
+      liftEffect do
+        state' <- read ref
+        let state'' = state' { h = result.h, c = result.c }
+
+        -- https://github.com/snakers4/silero-vad/blob/5e7ee10ee065ab2b98751dd82b28e3c6360e19aa/utils_vad.py#L187-L188
+        if (0.5 < result.probability) then do
+          write (state'' { streamLength = state'.streamLength + length state'.pause, pause = mempty }) ref
+          push state'.stream $ state'.pause
+        else if samplesInStream < state'.streamLength && samplesInPause == length state'.pause then process'
+        else write state'' ref
     process = do
 
       -- TODO: Add your audio processing logic here
       process'
+    process' = do
+      state <- read ref
+      push state.stream $ state.pause <> state.raw
+      end state.stream
+      stream' <- createStream
+      write (state { stream = stream', pause = mempty, raw = mempty, streamLength = 0 }) ref
+      traceM state.streamLength
+    createStream = do
+      stream' <- newReadable
+      uuid <- genUUID
+      let filepath = appTempDirectory <> "/" <> toString uuid <> ".opus"
+      traceM filepath
+      ffmpeg <- spawn "ffmpeg" [ "-f", "f32le", "-ar", show ar, "-i", "pipe:0", "-b:a", "24k", filepath ] defaultSpawnOptions
+      _ <- pipe stream $ stdin ffmpeg
+      handleClose ffmpeg $ \processing' -> modify_ (\state -> state { processing = processing' }) ref
+      pure stream'
+  stream' <- createStream
+  modify_ (\state -> state { stream = stream' }) ref
   launch record process
 
 foreign import tensor :: Tensor
@@ -83,7 +86,7 @@ foreign import newReadable :: Effect (Readable ())
 ar :: Int
 ar = 16000
 
-foreign import handleClose :: ChildProcess -> Effect Unit
+foreign import handleClose :: ChildProcess -> (Boolean -> Effect Unit) -> Effect Unit
 
 streamDuration :: Int
 streamDuration = 60

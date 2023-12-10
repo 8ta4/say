@@ -48,7 +48,7 @@ main = do
       else
         liftEffect $ write state' ref
   let
-    record = \audio -> do
+    record audio = do
 
       -- TODO: Add your audio recording logic here
       state <- read ref

@@ -1,5 +1,6 @@
 // https://www.electronjs.org/docs/latest/tutorial/quick-start#create-a-web-page
 import { app, BrowserWindow, globalShortcut, ipcMain } from "electron";
+import { readFileSync } from "fs";
 import { InferenceSession, Tensor } from "onnxruntime-node";
 import { Readable } from "stream";
 
@@ -33,7 +34,16 @@ export const end = (stream) => () => stream.push(null);
 
 export { createClient } from "@deepgram/sdk";
 
-export const transcribe = (deepgram) => (filepath) => async () => {};
+export const transcribe = (deepgram) => (filepath) => async () => {
+  // https://github.com/deepgram/deepgram-node-sdk/blob/7c416605fc5953c8777b3685e014cf874c08eecf/README.md?plain=1#L194-L199
+  const { result, error } = await deepgram.listen.prerecorded.transcribeFile(
+    readFileSync(filepath),
+    {
+      model: "nova",
+    }
+  );
+  console.log(error);
+};
 
 const createWindow = () => {
   const win = new BrowserWindow({

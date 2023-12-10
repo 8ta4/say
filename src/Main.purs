@@ -66,6 +66,11 @@ main = do
       stream' <- createStream
       write (state { stream = stream', pause = mempty, raw = mempty, streamLength = 0 }) ref
       traceM state.streamLength
+    process = do
+      modify_ (\state -> state { processing = true }) ref
+      launchAff_ do
+        traceM "process"
+        liftEffect $ modify_ (\state -> state { processing = false }) ref
     createStream = do
       stream' <- newReadable
       uuid <- genUUID
@@ -73,7 +78,7 @@ main = do
       traceM filepath
       ffmpeg <- spawn "ffmpeg" [ "-f", "f32le", "-ar", show ar, "-i", "pipe:0", "-b:a", "24k", filepath ] defaultSpawnOptions
       _ <- pipe stream $ stdin ffmpeg
-      handleClose ffmpeg $ \processing' -> modify_ (\state -> state { processing = processing' }) ref
+      handleClose ffmpeg process
       pure stream'
   stream' <- createStream
   modify_ (\state -> state { stream = stream' }) ref
@@ -86,7 +91,7 @@ foreign import newReadable :: Effect (Readable ())
 ar :: Int
 ar = 16000
 
-foreign import handleClose :: ChildProcess -> (Boolean -> Effect Unit) -> Effect Unit
+foreign import handleClose :: ChildProcess -> Effect Unit -> Effect Unit
 
 streamDuration :: Int
 streamDuration = 60

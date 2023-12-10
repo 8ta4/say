@@ -20,11 +20,10 @@ export const newReadable = () =>
     read() {},
   });
 
-export const handleClose = (ffmpeg) => (setProcessing) => () => {
+export const handleClose = (ffmpeg) => (process) => () => {
   ffmpeg.on("close", () => {
-    setProcessing(true);
     console.log("closed");
-    setProcessing(false);
+    process();
   });
 };
 

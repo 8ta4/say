@@ -29,33 +29,6 @@ main = do
   stream <- newReadable
   ref <- new { stream: stream, pause: mempty, streamLength: 0, raw: mempty, h: tensor, c: tensor }
   let
-    initializeStream = do
-      stream' <- newReadable
-      modify_ (\state -> state { stream = stream' }) ref
-      uuid <- genUUID
-      let filepath = appTempDirectory <> "/" <> toString uuid <> ".opus"
-      traceM filepath
-      ffmpeg <- spawn "ffmpeg" [ "-f", "f32le", "-ar", show ar, "-i", "pipe:0", "-b:a", "24k", filepath ] defaultSpawnOptions
-      _ <- pipe stream $ stdin ffmpeg
-      handleClose ffmpeg
-    process' = do
-      state <- read ref
-      push state.stream $ state.pause <> state.raw
-      end state.stream
-      initializeStream
-      write (state { pause = mempty, raw = mempty, streamLength = 0 }) ref
-      traceM state.streamLength
-    detect audio = do
-      state <- liftEffect $ read ref
-      result <- toAffE $ run audio state.h state.c
-      let state' = state { h = result.h, c = result.c }
-
-      -- https://github.com/snakers4/silero-vad/blob/5e7ee10ee065ab2b98751dd82b28e3c6360e19aa/utils_vad.py#L187-L188
-      if (0.5 < result.probability) then do
-        liftEffect $ write (state' { streamLength = state.streamLength + length state.pause, pause = mempty }) ref
-        liftEffect $ push state.stream $ state.pause
-      else if samplesInStream < state.streamLength && samplesInPause == length state.pause then liftEffect process'
-      else liftEffect $ write state' ref
     record audio = do
 
       -- TODO: Add your audio recording logic here
@@ -69,10 +42,37 @@ main = do
         launchAff_ $ detect before
       else
         write (state { raw = raw }) ref
+    detect audio = do
+      state <- liftEffect $ read ref
+      result <- toAffE $ run audio state.h state.c
+      let state' = state { h = result.h, c = result.c }
+
+      -- https://github.com/snakers4/silero-vad/blob/5e7ee10ee065ab2b98751dd82b28e3c6360e19aa/utils_vad.py#L187-L188
+      if (0.5 < result.probability) then do
+        liftEffect $ write (state' { streamLength = state.streamLength + length state.pause, pause = mempty }) ref
+        liftEffect $ push state.stream $ state.pause
+      else if samplesInStream < state.streamLength && samplesInPause == length state.pause then liftEffect process'
+      else liftEffect $ write state' ref
     process = do
 
       -- TODO: Add your audio processing logic here
       process'
+    process' = do
+      state <- read ref
+      push state.stream $ state.pause <> state.raw
+      end state.stream
+      initializeStream
+      write (state { pause = mempty, raw = mempty, streamLength = 0 }) ref
+      traceM state.streamLength
+    initializeStream = do
+      stream' <- newReadable
+      modify_ (\state -> state { stream = stream' }) ref
+      uuid <- genUUID
+      let filepath = appTempDirectory <> "/" <> toString uuid <> ".opus"
+      traceM filepath
+      ffmpeg <- spawn "ffmpeg" [ "-f", "f32le", "-ar", show ar, "-i", "pipe:0", "-b:a", "24k", filepath ] defaultSpawnOptions
+      _ <- pipe stream $ stdin ffmpeg
+      handleClose ffmpeg
   initializeStream
   launch record process
 

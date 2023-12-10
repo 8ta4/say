@@ -45,14 +45,16 @@ main = do
     detect audio = do
       state <- liftEffect $ read ref
       result <- toAffE $ run audio state.h state.c
-      let state' = state { h = result.h, c = result.c }
+      liftEffect do
+        state' <- read ref
+        let state'' = state' { h = result.h, c = result.c }
 
-      -- https://github.com/snakers4/silero-vad/blob/5e7ee10ee065ab2b98751dd82b28e3c6360e19aa/utils_vad.py#L187-L188
-      if (0.5 < result.probability) then do
-        liftEffect $ write (state' { streamLength = state.streamLength + length state.pause, pause = mempty }) ref
-        liftEffect $ push state.stream $ state.pause
-      else if samplesInStream < state.streamLength && samplesInPause == length state.pause then liftEffect process'
-      else liftEffect $ write state' ref
+        -- https://github.com/snakers4/silero-vad/blob/5e7ee10ee065ab2b98751dd82b28e3c6360e19aa/utils_vad.py#L187-L188
+        if (0.5 < result.probability) then do
+          write (state'' { streamLength = state'.streamLength + length state'.pause, pause = mempty }) ref
+          push state'.stream $ state'.pause
+        else if samplesInStream < state'.streamLength && samplesInPause == length state'.pause then process'
+        else write state'' ref
     process = do
 
       -- TODO: Add your audio processing logic here

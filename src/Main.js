@@ -1,7 +1,10 @@
 // https://www.electronjs.org/docs/latest/tutorial/quick-start#create-a-web-page
+import { createClient } from "@deepgram/sdk";
 import { app, BrowserWindow, globalShortcut, ipcMain } from "electron";
 import { InferenceSession, Tensor } from "onnxruntime-node";
 import { Readable } from "stream";
+
+export const createDeepgram = (key) => createClient(key);
 
 const session = await InferenceSession.create("vad.onnx");
 

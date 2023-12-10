@@ -19,6 +19,8 @@ import Promise.Aff (Promise, toAffE)
 
 foreign import data Tensor :: Type
 
+foreign import data Deepgram :: Type
+
 main :: Effect Unit
 main = do
   tempDirectory <- tmpdir
@@ -71,6 +73,7 @@ main = do
       launchAff_ do
         traceM "process"
         liftEffect $ modify_ (\state -> state { processing = false }) ref
+    deepgram = createDeepgram key
     createStream = do
       stream' <- newReadable
       uuid <- genUUID
@@ -114,5 +117,7 @@ windowSizeSamples :: Int
 windowSizeSamples = 1536
 
 foreign import end :: Readable () -> Effect Unit
+
+foreign import createDeepgram :: String -> Deepgram
 
 foreign import launch :: (Float32Array -> Effect Unit) -> Effect Unit -> Effect Unit

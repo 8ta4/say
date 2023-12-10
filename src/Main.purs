@@ -80,12 +80,14 @@ main = do
       ffmpeg <- spawn "ffmpeg" [ "-f", "f32le", "-ar", show ar, "-i", "pipe:0", "-b:a", "24k", filepath ] defaultSpawnOptions
       _ <- pipe stream' $ stdin ffmpeg
       handleClose ffmpeg do
-        modify_ (\state -> state { processing = true }) ref
-        launchAff_ do
-          transcript <- toAffE $ transcribe deepgram filepath
-          traceM "Transcript:"
-          traceM transcript
-          liftEffect $ modify_ (\state -> state { processing = false }) ref
+        state <- read ref
+        when (not state.processing) do
+          write state { processing = true } ref
+          launchAff_ do
+            transcript <- toAffE $ transcribe deepgram filepath
+            traceM "Transcript:"
+            traceM transcript
+            liftEffect $ modify_ (\state' -> state' { processing = false }) ref
       pure stream'
 
     -- https://github.com/deepgram/deepgram-node-sdk/blob/7c416605fc5953c8777b3685e014cf874c08eecf/README.md?plain=1#L123

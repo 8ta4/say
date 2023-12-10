@@ -26,6 +26,8 @@ main = do
   tempDirectory <- tmpdir
   -- https://nodejs.org/api/fs.html#fspromisesmkdtempprefix-options:~:text=mkdtemp(join(tmpdir()%2C%20%27foo%2D%27))
   appTempDirectory <- mkdtemp $ tempDirectory <> "/say-"
+  traceM "App temp directory:"
+  traceM appTempDirectory
   homeDirectory <- homedir
   key <- readTextFile UTF8 $ homeDirectory <> "/.config/say/key"
   stream <- newReadable
@@ -63,15 +65,17 @@ main = do
       save'
     save' = do
       state <- read ref
+      traceM "Current stream length:"
+      traceM state.streamLength
       push state.stream $ state.pause <> state.raw
       end state.stream
       stream' <- createStream
       write (state { stream = stream', pause = mempty, raw = mempty, streamLength = 0 }) ref
-      traceM state.streamLength
     createStream = do
       stream' <- newReadable
       uuid <- genUUID
       let filepath = appTempDirectory <> "/" <> toString uuid <> ".opus"
+      traceM "Filepath:"
       traceM filepath
       ffmpeg <- spawn "ffmpeg" [ "-f", "f32le", "-ar", show ar, "-i", "pipe:0", "-b:a", "24k", filepath ] defaultSpawnOptions
       _ <- pipe stream' $ stdin ffmpeg
@@ -79,6 +83,7 @@ main = do
         modify_ (\state -> state { processing = true }) ref
         launchAff_ do
           transcript <- toAffE $ transcribe deepgram filepath
+          traceM "Transcript:"
           traceM transcript
           liftEffect $ modify_ (\state -> state { processing = false }) ref
       pure stream'

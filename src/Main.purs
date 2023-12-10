@@ -51,15 +51,15 @@ main = do
             if (0.5 < result.probability) then do
               write (state'' { streamLength = state'.streamLength + length state'.pause, pause = mempty }) ref
               push state'.stream $ state'.pause
-            else if samplesInStream < state'.streamLength && samplesInPause == length state'.pause then process'
+            else if samplesInStream < state'.streamLength && samplesInPause == length state'.pause then save'
             else write state'' ref
       else
         write (state { raw = raw }) ref
-    process = do
+    save = do
 
       -- TODO: Add your audio processing logic here
-      process'
-    process' = do
+      save'
+    save' = do
       state <- read ref
       push state.stream $ state.pause <> state.raw
       end state.stream
@@ -77,7 +77,7 @@ main = do
       pure stream'
   stream' <- createStream
   modify_ (\state -> state { stream = stream' }) ref
-  launch record process
+  launch record save
 
 foreign import tensor :: Tensor
 

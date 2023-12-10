@@ -49,13 +49,13 @@ const createWindow = () => {
   win.loadFile("index.html");
 };
 
-export const launch = (record) => (process) => () => {
+export const launch = (record) => (save) => () => {
   app.whenReady().then(() => {
     createWindow();
 
     globalShortcut.register("Command+;", () => {
       console.log("Command+; is pressed");
-      process();
+      save();
     });
 
     ipcMain.on("audio", (_, data) => {

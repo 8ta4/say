@@ -63,19 +63,20 @@ main = do
       state <- read ref
       push state.stream $ state.pause <> state.raw
       end state.stream
-      initializeStream
-      write (state { pause = mempty, raw = mempty, streamLength = 0 }) ref
+      stream' <- createStream
+      write (state { stream = stream', pause = mempty, raw = mempty, streamLength = 0 }) ref
       traceM state.streamLength
-    initializeStream = do
+    createStream = do
       stream' <- newReadable
-      modify_ (\state -> state { stream = stream' }) ref
       uuid <- genUUID
       let filepath = appTempDirectory <> "/" <> toString uuid <> ".opus"
       traceM filepath
       ffmpeg <- spawn "ffmpeg" [ "-f", "f32le", "-ar", show ar, "-i", "pipe:0", "-b:a", "24k", filepath ] defaultSpawnOptions
       _ <- pipe stream $ stdin ffmpeg
       handleClose ffmpeg $ \processing' -> modify_ (\state -> state { processing = processing' }) ref
-  initializeStream
+      pure stream'
+  stream' <- createStream
+  modify_ (\state -> state { stream = stream' }) ref
   launch record process
 
 foreign import tensor :: Tensor

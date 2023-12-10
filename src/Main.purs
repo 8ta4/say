@@ -86,7 +86,7 @@ detect ref audio = do
   let state' = state { h = result.h, c = result.c }
 
   -- https://github.com/snakers4/silero-vad/blob/5e7ee10ee065ab2b98751dd82b28e3c6360e19aa/utils_vad.py#L187-L188
-  if (result.probability > 0.5) then do
+  if (0.5 < result.probability) then do
     liftEffect $ write (state' { streamLength = state.streamLength + length state.pause, pause = mempty }) ref
     liftEffect $ push state.stream $ state.pause
   else

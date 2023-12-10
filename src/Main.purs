@@ -23,7 +23,17 @@ main = do
   tempDirectory <- tmpdir
   -- https://nodejs.org/api/fs.html#fspromisesmkdtempprefix-options:~:text=mkdtemp(join(tmpdir()%2C%20%27foo%2D%27))
   appTempDirectory <- mkdtemp $ tempDirectory <> "/say-"
-  stream <- createStream appTempDirectory
+  let
+    createStream = do
+      stream <- newReadable
+      uuid <- genUUID
+      let filepath = appTempDirectory <> "/" <> toString uuid <> ".opus"
+      traceM filepath
+      ffmpeg <- spawn "ffmpeg" [ "-f", "f32le", "-ar", show ar, "-i", "pipe:0", "-b:a", "24k", filepath ] defaultSpawnOptions
+      _ <- pipe stream $ stdin ffmpeg
+      handleClose ffmpeg
+      pure stream
+  stream <- createStream
   ref <- new { stream: stream, pause: mempty, streamLength: 0, raw: mempty, h: tensor, c: tensor }
   let
     detect audio = do
@@ -58,21 +68,10 @@ main = do
       state <- read ref
       push state.stream $ state.pause <> state.raw
       end state.stream
-      stream' <- createStream appTempDirectory
+      stream' <- createStream
       write (state { stream = stream', pause = mempty, raw = mempty, streamLength = 0 }) ref
       traceM state.streamLength
   launch record process
-
-createStream :: String -> Effect (Readable ())
-createStream appTempDirectory = do
-  stream <- newReadable
-  uuid <- genUUID
-  let filepath = appTempDirectory <> "/" <> toString uuid <> ".opus"
-  traceM filepath
-  ffmpeg <- spawn "ffmpeg" [ "-f", "f32le", "-ar", show ar, "-i", "pipe:0", "-b:a", "24k", filepath ] defaultSpawnOptions
-  _ <- pipe stream $ stdin ffmpeg
-  handleClose ffmpeg
-  pure stream
 
 foreign import tensor :: Tensor
 

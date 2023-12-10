@@ -46,7 +46,6 @@ main = do
       stream' <- createStream
       write (state { stream = stream', pause = mempty, raw = mempty, streamLength = 0 }) ref
       traceM state.streamLength
-  let
     detect audio = do
       state <- liftEffect $ read ref
       result <- toAffE $ run audio state.h state.c
@@ -58,7 +57,6 @@ main = do
         liftEffect $ push state.stream $ state.pause
       else if samplesInStream < state.streamLength && samplesInPause == length state.pause then liftEffect process'
       else liftEffect $ write state' ref
-  let
     record audio = do
 
       -- TODO: Add your audio recording logic here
@@ -72,7 +70,6 @@ main = do
         launchAff_ $ detect before
       else
         write (state { raw = raw }) ref
-  let
     process = do
 
       -- TODO: Add your audio processing logic here

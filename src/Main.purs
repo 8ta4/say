@@ -27,7 +27,7 @@ main = do
   homeDirectory <- homedir
   key <- readTextFile UTF8 $ homeDirectory <> "/.config/say/key"
   stream <- newReadable
-  ref <- new { stream: stream, pause: mempty, streamLength: 0, raw: mempty, h: tensor, c: tensor }
+  ref <- new { stream: stream, pause: mempty, streamLength: 0, raw: mempty, h: tensor, c: tensor, processing: false }
   let
     record audio = do
 
@@ -72,7 +72,7 @@ main = do
       traceM filepath
       ffmpeg <- spawn "ffmpeg" [ "-f", "f32le", "-ar", show ar, "-i", "pipe:0", "-b:a", "24k", filepath ] defaultSpawnOptions
       _ <- pipe stream $ stdin ffmpeg
-      handleClose ffmpeg
+      handleClose ffmpeg $ \processing' -> modify_ (\state -> state { processing = processing' }) ref
   initializeStream
   launch record process
 
@@ -83,7 +83,7 @@ foreign import newReadable :: Effect (Readable ())
 ar :: Int
 ar = 16000
 
-foreign import handleClose :: ChildProcess -> Effect Unit
+foreign import handleClose :: ChildProcess -> (Boolean -> Effect Unit) -> Effect Unit
 
 streamDuration :: Int
 streamDuration = 60

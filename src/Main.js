@@ -4,8 +4,6 @@ import { app, BrowserWindow, globalShortcut, ipcMain } from "electron";
 import { InferenceSession, Tensor } from "onnxruntime-node";
 import { Readable } from "stream";
 
-export const createDeepgram = (key) => createClient(key);
-
 const session = await InferenceSession.create("vad.onnx");
 
 export const tensor = new Tensor(new Float32Array(2 * 1 * 64), [2, 1, 64]);
@@ -33,6 +31,8 @@ export const push = (stream) => (float32Array) => () =>
   stream.push(Buffer.from(float32Array.buffer));
 
 export const end = (stream) => () => stream.push(null);
+
+export const createDeepgram = (key) => createClient(key);
 
 const createWindow = () => {
   const win = new BrowserWindow({

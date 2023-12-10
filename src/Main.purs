@@ -40,6 +40,8 @@ main = do
         let { before, after } = splitAt windowSizeSamples raw
         write (state { raw = after, pause = takeEnd samplesInPause $ state.pause <> before }) ref
         launchAff_ $ do
+
+          -- TODO: Ensure `run` is not executed concurrently to avoid using incorrect `h` and `c`
           result <- toAffE $ run before state.h state.c
           liftEffect do
             state' <- read ref

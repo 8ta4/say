@@ -11,8 +11,9 @@ import Effect.Class (liftEffect)
 import Effect.Ref (new, read, write)
 import Float32Array (Float32Array, length, splitAt, takeEnd)
 import Node.ChildProcess (ChildProcess, defaultSpawnOptions, spawn, stdin)
-import Node.FS.Sync (mkdtemp)
-import Node.OS (tmpdir)
+import Node.Encoding (Encoding(..))
+import Node.FS.Sync (mkdtemp, readTextFile)
+import Node.OS (homedir, tmpdir)
 import Node.Stream (Readable, pipe)
 import Promise.Aff (Promise, toAffE)
 
@@ -23,6 +24,8 @@ main = do
   tempDirectory <- tmpdir
   -- https://nodejs.org/api/fs.html#fspromisesmkdtempprefix-options:~:text=mkdtemp(join(tmpdir()%2C%20%27foo%2D%27))
   appTempDirectory <- mkdtemp $ tempDirectory <> "/say-"
+  homeDirectory <- homedir
+  key <- readTextFile UTF8 $ homeDirectory <> "/.config/say/key"
   let
     createStream = do
       stream <- newReadable

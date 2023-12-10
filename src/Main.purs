@@ -68,12 +68,6 @@ main = do
       stream' <- createStream
       write (state { stream = stream', pause = mempty, raw = mempty, streamLength = 0 }) ref
       traceM state.streamLength
-    process = do
-      modify_ (\state -> state { processing = true }) ref
-      launchAff_ do
-        traceM "process"
-        liftEffect $ modify_ (\state -> state { processing = false }) ref
-    deepgram = createDeepgram key
     createStream = do
       stream' <- newReadable
       uuid <- genUUID
@@ -83,6 +77,12 @@ main = do
       _ <- pipe stream' $ stdin ffmpeg
       handleClose ffmpeg process
       pure stream'
+    process = do
+      modify_ (\state -> state { processing = true }) ref
+      launchAff_ do
+        traceM "process"
+        liftEffect $ modify_ (\state -> state { processing = false }) ref
+    deepgram = createDeepgram key
   stream' <- createStream
   modify_ (\state -> state { stream = stream' }) ref
   launch record save
@@ -93,8 +93,6 @@ foreign import newReadable :: Effect (Readable ())
 
 ar :: Int
 ar = 16000
-
-foreign import handleClose :: ChildProcess -> Effect Unit -> Effect Unit
 
 streamDuration :: Int
 streamDuration = 60
@@ -117,6 +115,8 @@ windowSizeSamples :: Int
 windowSizeSamples = 1536
 
 foreign import end :: Readable () -> Effect Unit
+
+foreign import handleClose :: ChildProcess -> Effect Unit -> Effect Unit
 
 foreign import createDeepgram :: String -> Deepgram
 

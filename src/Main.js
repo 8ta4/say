@@ -20,20 +20,16 @@ export const newReadable = () =>
     read() {},
   });
 
-export const handleClose = (ffmpeg) => (process) => () => {
+export const handleClose = (ffmpeg) => (process) => () =>
   ffmpeg.on("close", () => {
     console.log("closed");
     process();
   });
-};
 
-export const push = (stream) => (float32Array) => () => {
+export const push = (stream) => (float32Array) => () =>
   stream.push(Buffer.from(float32Array.buffer));
-};
 
-export const end = (stream) => () => {
-  stream.push(null);
-};
+export const end = (stream) => () => stream.push(null);
 
 const createWindow = () => {
   const win = new BrowserWindow({
@@ -48,7 +44,7 @@ const createWindow = () => {
   win.loadFile("index.html");
 };
 
-export const launch = (record) => (save) => () => {
+export const launch = (record) => (save) => () =>
   app.whenReady().then(() => {
     createWindow();
 
@@ -61,4 +57,3 @@ export const launch = (record) => (save) => () => {
       record(data)();
     });
   });
-};

@@ -12,6 +12,8 @@ import Effect.Ref (modify_, new, read, write)
 import Float32Array (Float32Array, length, splitAt, takeEnd)
 import Node.ChildProcess (ChildProcess, defaultSpawnOptions, spawn, stdin)
 import Node.Encoding (Encoding(..))
+import Node.FS.Aff (mkdir')
+import Node.FS.Perms (all, mkPerms, none)
 import Node.FS.Sync (mkdtemp, readTextFile)
 import Node.OS (homedir, tmpdir)
 import Node.Stream (Readable, pipe)
@@ -85,6 +87,7 @@ main = do
 
             -- TODO: Add your error handling logic here
             transcript <- toAffE $ transcribe deepgram filepath
+            mkdir' (homeDirectory <> "/.local/share/say/") { mode: mkPerms all none none, recursive: true }
             traceM "Transcript:"
             traceM transcript
             liftEffect $ modify_ (\state' -> state' { processing = false }) ref

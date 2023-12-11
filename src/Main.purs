@@ -34,8 +34,6 @@ main = do
   ref <- new { stream: stream, pause: mempty, streamLength: 0, raw: mempty, h: tensor, c: tensor, processing: false }
   let
     record audio = do
-
-      -- TODO: Add your audio recording logic here
       state <- read ref
       let raw = state.raw <> audio
 
@@ -84,6 +82,8 @@ main = do
         when (not state.processing) do
           write state { processing = true } ref
           launchAff_ do
+
+            -- TODO: Add your error handling logic here
             transcript <- toAffE $ transcribe deepgram filepath
             traceM "Transcript:"
             traceM transcript

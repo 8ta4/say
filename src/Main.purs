@@ -15,7 +15,7 @@ import Effect.Ref (modify_, new, read, write)
 import Float32Array (Float32Array, length, splitAt, takeEnd)
 import Node.ChildProcess (ChildProcess, defaultSpawnOptions, spawn, stdin)
 import Node.Encoding (Encoding(..))
-import Node.FS.Aff (mkdir')
+import Node.FS.Aff (appendTextFile, mkdir', writeFile, writeTextFile)
 import Node.FS.Perms (all, mkPerms, none)
 import Node.FS.Sync (mkdtemp, readTextFile)
 import Node.OS (homedir, tmpdir)
@@ -93,8 +93,8 @@ main = do
             transcript <- toAffE $ transcribe deepgram filepath
             let transcriptDirectory = homeDirectory <> "/.local/share/say/" <> (show $ fromEnum $ year currentDate) <> "/" <> (show $ fromEnum $ month currentDate)
             mkdir' transcriptDirectory { mode: mkPerms all none none, recursive: true }
-            traceM "Transcript:"
-            traceM transcript
+            let foo = transcriptDirectory <> "/" <> (show $ fromEnum $ month currentDate) <> ".txt"
+            appendTextFile UTF8 foo transcript
             liftEffect $ modify_ (\state' -> state' { processing = false }) ref
       pure stream'
 

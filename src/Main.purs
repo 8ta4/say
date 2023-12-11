@@ -91,7 +91,8 @@ main = do
 
             -- TODO: Add your error handling logic here
             transcript <- toAffE $ transcribe deepgram filepath
-            mkdir' (homeDirectory <> "/.local/share/say/" <> (show $ fromEnum $ year currentDate) <> "/" <> (show $ fromEnum $ month currentDate)) { mode: mkPerms all none none, recursive: true }
+            let transcriptDirectory = homeDirectory <> "/.local/share/say/" <> (show $ fromEnum $ year currentDate) <> "/" <> (show $ fromEnum $ month currentDate)
+            mkdir' transcriptDirectory { mode: mkPerms all none none, recursive: true }
             traceM "Transcript:"
             traceM transcript
             liftEffect $ modify_ (\state' -> state' { processing = false }) ref

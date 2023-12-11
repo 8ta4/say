@@ -23,7 +23,7 @@ export const newReadable = () =>
 
 export const handleClose = (ffmpeg) => (process) => () =>
   ffmpeg.on("close", () => {
-    console.log("closed");
+    console.log("ffmpeg process closed");
     process();
   });
 
@@ -36,13 +36,12 @@ export { createClient } from "@deepgram/sdk";
 
 export const transcribe = (deepgram) => (filepath) => async () => {
   // https://github.com/deepgram/deepgram-node-sdk/blob/7c416605fc5953c8777b3685e014cf874c08eecf/README.md?plain=1#L194-L199
-  const { result, error } = await deepgram.listen.prerecorded.transcribeFile(
+  const { result } = await deepgram.listen.prerecorded.transcribeFile(
     readFileSync(filepath),
     {
       model: "nova-2",
     }
   );
-  console.log(error);
   return result.results.channels[0].alternatives[0].transcript;
 };
 
@@ -61,6 +60,7 @@ const createWindow = () => {
 
 export const launch = (record) => (save) => () =>
   app.whenReady().then(() => {
+    console.log("App is ready, creating window...");
     createWindow();
 
     globalShortcut.register("Command+;", () => {

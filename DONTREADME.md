@@ -266,6 +266,14 @@ Each sentence in `say` gets its own line. That way, you can easily move up and d
 
 ### Transcript
 
+> What permissions are assigned to each transcription file?
+
+Each transcription file is assigned `-r--------` permissions. Only you can read them.
+
+> What permissions are assigned to each transcription directory?
+
+Each transcription directory is assigned `drwx------` permissions. Only you can access it.
+
 > How does this tool keep its transcript read-only when it updates it?
 
 1. `say` makes a copy of the `DD.txt` file and creates a temporary file in the system's temp directory. This ensures that the application directory doesn't get cluttered.

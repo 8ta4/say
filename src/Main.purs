@@ -2,12 +2,15 @@ module Main where
 
 import Prelude
 
+import Data.DateTime (month, year)
+import Data.Enum (fromEnum)
 import Data.Int (floor, toNumber)
 import Data.UUID (genUUID, toString)
 import Debug (traceM)
 import Effect (Effect)
 import Effect.Aff (launchAff_)
 import Effect.Class (liftEffect)
+import Effect.Now (nowDate)
 import Effect.Ref (modify_, new, read, write)
 import Float32Array (Float32Array, length, splitAt, takeEnd)
 import Node.ChildProcess (ChildProcess, defaultSpawnOptions, spawn, stdin)
@@ -83,11 +86,12 @@ main = do
         state <- read ref
         when (not state.processing) do
           write state { processing = true } ref
+          currentDate <- nowDate
           launchAff_ do
 
             -- TODO: Add your error handling logic here
             transcript <- toAffE $ transcribe deepgram filepath
-            mkdir' (homeDirectory <> "/.local/share/say/") { mode: mkPerms all none none, recursive: true }
+            mkdir' (homeDirectory <> "/.local/share/say/" <> (show $ fromEnum $ year currentDate) <> "/" <> (show $ fromEnum $ month currentDate)) { mode: mkPerms all none none, recursive: true }
             traceM "Transcript:"
             traceM transcript
             liftEffect $ modify_ (\state' -> state' { processing = false }) ref

@@ -2,16 +2,21 @@ module Main where
 
 import Prelude
 
+import Data.DateTime (month, year)
+import Data.Enum (fromEnum)
 import Data.Int (floor, toNumber)
 import Data.UUID (genUUID, toString)
 import Debug (traceM)
 import Effect (Effect)
 import Effect.Aff (launchAff_)
 import Effect.Class (liftEffect)
+import Effect.Now (nowDate)
 import Effect.Ref (modify_, new, read, write)
 import Float32Array (Float32Array, length, splitAt, takeEnd)
 import Node.ChildProcess (ChildProcess, defaultSpawnOptions, spawn, stdin)
 import Node.Encoding (Encoding(..))
+import Node.FS.Aff (appendTextFile, mkdir', writeFile, writeTextFile)
+import Node.FS.Perms (all, mkPerms, none)
 import Node.FS.Sync (mkdtemp, readTextFile)
 import Node.OS (homedir, tmpdir)
 import Node.Stream (Readable, pipe)
@@ -34,8 +39,6 @@ main = do
   ref <- new { stream: stream, pause: mempty, streamLength: 0, raw: mempty, h: tensor, c: tensor, processing: false }
   let
     record audio = do
-
-      -- TODO: Add your audio recording logic here
       state <- read ref
       let raw = state.raw <> audio
 
@@ -83,10 +86,15 @@ main = do
         state <- read ref
         when (not state.processing) do
           write state { processing = true } ref
+          currentDate <- nowDate
           launchAff_ do
+
+            -- TODO: Add your error handling logic here
             transcript <- toAffE $ transcribe deepgram filepath
-            traceM "Transcript:"
-            traceM transcript
+            let transcriptDirectory = homeDirectory <> "/.local/share/say/" <> (show $ fromEnum $ year currentDate) <> "/" <> (show $ fromEnum $ month currentDate)
+            mkdir' transcriptDirectory { mode: mkPerms all none none, recursive: true }
+            let foo = transcriptDirectory <> "/" <> (show $ fromEnum $ month currentDate) <> ".txt"
+            appendTextFile UTF8 foo transcript
             liftEffect $ modify_ (\state' -> state' { processing = false }) ref
       pure stream'
 

@@ -3,8 +3,6 @@ module Main where
 import Prelude
 
 import Data.Array (intercalate)
-import Data.DateTime (day, month, year)
-import Data.Enum (fromEnum)
 import Data.Int (floor, toNumber)
 import Data.Maybe (Maybe(..))
 import Data.UUID (genUUID, toString)
@@ -12,7 +10,6 @@ import Debug (traceM)
 import Effect (Effect)
 import Effect.Aff (launchAff_)
 import Effect.Class (liftEffect)
-import Effect.Now (nowDate)
 import Effect.Ref (modify_, new, read, write)
 import Float32Array (Float32Array, length, splitAt, takeEnd)
 import Node.ChildProcess (ChildProcess, defaultSpawnOptions, spawn, stdin)
@@ -88,7 +85,7 @@ main = do
         state <- read ref
         when (not state.processing) do
           write state { processing = true } ref
-          currentDate <- nowDate
+          currentDate <- getCurrentDate
           launchAff_ do
 
             -- TODO: Add your error handling logic here
@@ -97,8 +94,8 @@ main = do
               Just paragraphs -> do
                 let
                   transcript = intercalate "\n" $ map _.text $ paragraphs.paragraphs >>= _.sentences
-                  transcriptDirectoryPath = homeDirectoryPath <> "/.local/share/say/" <> (show $ fromEnum $ year currentDate) <> "/" <> (show $ fromEnum $ month currentDate)
-                  transcriptFilepath = transcriptDirectoryPath <> "/" <> (show $ fromEnum $ day currentDate) <> ".txt"
+                  transcriptDirectoryPath = homeDirectoryPath <> "/.local/share/say/" <> currentDate.year <> "/" <> currentDate.month
+                  transcriptFilepath = transcriptDirectoryPath <> "/" <> currentDate.day <> ".txt"
                 mkdir' transcriptDirectoryPath { mode: mkPerms all none none, recursive: true }
                 appendTextFile UTF8 transcriptFilepath transcript
               _ -> pure unit
@@ -148,5 +145,7 @@ transcribe :: Deepgram -> String -> Effect (Promise (Maybe { paragraphs :: Array
 transcribe = transcribeImpl Just Nothing
 
 foreign import transcribeImpl :: forall a. (a -> Maybe a) -> Maybe a -> Deepgram -> String -> Effect (Promise (Maybe a))
+
+foreign import getCurrentDate :: Effect { year :: String, month :: String, day :: String }
 
 foreign import launch :: (Float32Array -> Effect Unit) -> Effect Unit -> Effect Unit

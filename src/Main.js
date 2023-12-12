@@ -1,5 +1,6 @@
 // https://www.electronjs.org/docs/latest/tutorial/quick-start#create-a-web-page
 import { app, BrowserWindow, globalShortcut, ipcMain } from "electron";
+import dayjs from "dayjs";
 import { readFileSync } from "fs";
 import { InferenceSession, Tensor } from "onnxruntime-node";
 import { Readable } from "stream";
@@ -51,6 +52,15 @@ export const transcribeImpl =
       return nothing;
     }
   };
+
+export const getCurrentDate = () => {
+  const currentDate = dayjs();
+  return {
+    year: currentDate.format("YYYY"),
+    month: currentDate.format("MM"),
+    day: currentDate.format("DD"),
+  };
+};
 
 const createWindow = () => {
   const win = new BrowserWindow({

@@ -16,7 +16,7 @@ import Node.ChildProcess (ChildProcess, defaultSpawnOptions, spawn, stdin)
 import Node.Encoding (Encoding(..))
 import Node.FS.Aff (appendTextFile, mkdir')
 import Node.FS.Perms (all, mkPerms, none)
-import Node.FS.Sync (mkdtemp, readTextFile)
+import Node.FS.Sync (exists, mkdtemp, readTextFile)
 import Node.OS (homedir, tmpdir)
 import Node.Stream (Readable, pipe)
 import Promise.Aff (Promise, toAffE)
@@ -87,16 +87,17 @@ main = do
         when (not state.processing) do
           write state { processing = true } ref
           currentDate <- getCurrentDate
+          let
+            transcriptDirectoryPath = homeDirectoryPath <> "/.local/share/say/" <> currentDate.year <> "/" <> currentDate.month
+            transcriptFilepath = transcriptDirectoryPath <> "/" <> currentDate.day <> ".txt"
+          fileExists <- exists transcriptFilepath
           launchAff_ do
 
             -- TODO: Add your error handling logic here
             maybeParagraphs <- toAffE $ transcribe deepgram audioFilepath
             case maybeParagraphs of
               Just paragraphs -> do
-                let
-                  transcript = intercalate "\n" $ map _.text $ paragraphs.paragraphs >>= _.sentences
-                  transcriptDirectoryPath = homeDirectoryPath <> "/.local/share/say/" <> currentDate.year <> "/" <> currentDate.month
-                  transcriptFilepath = transcriptDirectoryPath <> "/" <> currentDate.day <> ".txt"
+                let transcript = (if fileExists then (<>) "\n\n" else identity) $ intercalate "\n" $ map _.text $ paragraphs.paragraphs >>= _.sentences
                 mkdir' transcriptDirectoryPath { mode: mkPerms all none none, recursive: true }
                 appendTextFile UTF8 transcriptFilepath transcript
                 liftEffect do

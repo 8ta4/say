@@ -2,7 +2,8 @@ module Main where
 
 import Prelude
 
-import Data.DateTime (month, year)
+import Data.Array (intercalate)
+import Data.DateTime (day, month, year)
 import Data.Enum (fromEnum)
 import Data.Int (floor, toNumber)
 import Data.Maybe (Maybe(..))
@@ -92,15 +93,15 @@ main = do
 
             -- TODO: Add your error handling logic here
             maybeParagraphs <- toAffE $ transcribe deepgram audioFilepath
-            traceM maybeParagraphs
             case maybeParagraphs of
               Just paragraphs -> do
-                traceM $ map _.text $ paragraphs.paragraphs >>= _.sentences
+                let
+                  transcript = intercalate "\n" $ map _.text $ paragraphs.paragraphs >>= _.sentences
+                  transcriptDirectoryPath = homeDirectoryPath <> "/.local/share/say/" <> (show $ fromEnum $ year currentDate) <> "/" <> (show $ fromEnum $ month currentDate)
+                  transcriptFilepath = transcriptDirectoryPath <> "/" <> (show $ fromEnum $ day currentDate) <> ".txt"
+                mkdir' transcriptDirectoryPath { mode: mkPerms all none none, recursive: true }
+                appendTextFile UTF8 transcriptFilepath transcript
               _ -> pure unit
-            -- let transcriptDirectoryPath = homeDirectoryPath <> "/.local/share/say/" <> (show $ fromEnum $ year currentDate) <> "/" <> (show $ fromEnum $ month currentDate)
-            -- mkdir' transcriptDirectoryPath { mode: mkPerms all none none, recursive: true }
-            -- let transcriptFilepath = transcriptDirectoryPath <> "/" <> (show $ fromEnum $ month currentDate) <> ".txt"
-            -- appendTextFile UTF8 transcriptFilepath transcript
             liftEffect $ modify_ (\state' -> state' { processing = false }) ref
       pure stream'
 

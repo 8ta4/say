@@ -33,8 +33,8 @@ main = do
   appTempDirectory <- mkdtemp $ tempDirectory <> "/say-"
   traceM "App temp directory:"
   traceM appTempDirectory
-  homeDirectory <- homedir
-  key <- readTextFile UTF8 $ homeDirectory <> "/.config/say/key"
+  homeDirectoryPath <- homedir
+  key <- readTextFile UTF8 $ homeDirectoryPath <> "/.config/say/key"
   stream <- newReadable
   ref <- new { stream: stream, pause: mempty, streamLength: 0, raw: mempty, h: tensor, c: tensor, processing: false }
   let
@@ -77,10 +77,10 @@ main = do
     createStream = do
       stream' <- newReadable
       uuid <- genUUID
-      let filepath = appTempDirectory <> "/" <> toString uuid <> ".opus"
-      traceM "Filepath:"
-      traceM filepath
-      ffmpeg <- spawn "ffmpeg" [ "-f", "f32le", "-ar", show ar, "-i", "pipe:0", "-b:a", "24k", filepath ] defaultSpawnOptions
+      let audioFilepath = appTempDirectory <> "/" <> toString uuid <> ".opus"
+      traceM "Audio filepath:"
+      traceM audioFilepath
+      ffmpeg <- spawn "ffmpeg" [ "-f", "f32le", "-ar", show ar, "-i", "pipe:0", "-b:a", "24k", audioFilepath ] defaultSpawnOptions
       _ <- pipe stream' $ stdin ffmpeg
       handleClose ffmpeg do
         state <- read ref
@@ -90,11 +90,11 @@ main = do
           launchAff_ do
 
             -- TODO: Add your error handling logic here
-            transcript <- toAffE $ transcribe deepgram filepath
-            let transcriptDirectory = homeDirectory <> "/.local/share/say/" <> (show $ fromEnum $ year currentDate) <> "/" <> (show $ fromEnum $ month currentDate)
-            mkdir' transcriptDirectory { mode: mkPerms all none none, recursive: true }
-            let foo = transcriptDirectory <> "/" <> (show $ fromEnum $ month currentDate) <> ".txt"
-            appendTextFile UTF8 foo transcript
+            transcript <- toAffE $ transcribe deepgram audioFilepath
+            let transcriptDirectoryPath = homeDirectoryPath <> "/.local/share/say/" <> (show $ fromEnum $ year currentDate) <> "/" <> (show $ fromEnum $ month currentDate)
+            mkdir' transcriptDirectoryPath { mode: mkPerms all none none, recursive: true }
+            let transcriptFilepath = transcriptDirectoryPath <> "/" <> (show $ fromEnum $ month currentDate) <> ".txt"
+            appendTextFile UTF8 transcriptFilepath transcript
             liftEffect $ modify_ (\state' -> state' { processing = false }) ref
       pure stream'
 

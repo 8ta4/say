@@ -3,7 +3,7 @@ module Main where
 import Prelude
 
 import Data.Array (intercalate)
-import Data.DateTime (month, year)
+import Data.DateTime (day, month, year)
 import Data.Enum (fromEnum)
 import Data.Int (floor, toNumber)
 import Data.Maybe (Maybe(..))
@@ -98,7 +98,7 @@ main = do
                 let
                   transcript = intercalate "\n" $ map _.text $ paragraphs.paragraphs >>= _.sentences
                   transcriptDirectoryPath = homeDirectoryPath <> "/.local/share/say/" <> (show $ fromEnum $ year currentDate) <> "/" <> (show $ fromEnum $ month currentDate)
-                  transcriptFilepath = transcriptDirectoryPath <> "/" <> (show $ fromEnum $ month currentDate) <> ".txt"
+                  transcriptFilepath = transcriptDirectoryPath <> "/" <> (show $ fromEnum $ day currentDate) <> ".txt"
                 mkdir' transcriptDirectoryPath { mode: mkPerms all none none, recursive: true }
                 appendTextFile UTF8 transcriptFilepath transcript
               _ -> pure unit

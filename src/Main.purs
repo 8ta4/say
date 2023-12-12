@@ -100,11 +100,10 @@ main = do
                 let transcript = (if fileExists then (<>) "\n\n" else identity) $ intercalate "\n" $ map _.text $ paragraphs.paragraphs >>= _.sentences
                 mkdir' transcriptDirectoryPath { mode: mkPerms all none none, recursive: true }
                 appendTextFile UTF8 transcriptFilepath transcript
-                liftEffect do
-                  _ <- spawn "code" [ transcriptFilepath ] defaultSpawnOptions
-                  modify_ (\state' -> state' { manual = false }) ref
               _ -> pure unit
-            liftEffect $ modify_ (\state' -> state' { processing = false }) ref
+            liftEffect do
+              _ <- spawn "code" [ "-g", transcriptFilepath <> ":" <> "10000" ] defaultSpawnOptions
+              modify_ (\state' -> state' { processing = false, manual = false }) ref
       pure stream'
 
     -- https://github.com/deepgram/deepgram-node-sdk/blob/7c416605fc5953c8777b3685e014cf874c08eecf/README.md?plain=1#L123

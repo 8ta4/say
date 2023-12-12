@@ -40,9 +40,10 @@ export const transcribe = (deepgram) => (filepath) => async () => {
     readFileSync(filepath),
     {
       model: "nova-2",
+      smart_format: true,
     }
   );
-  return result.results.channels[0].alternatives[0].transcript;
+  return result.results.channels[0].alternatives[0];
 };
 
 const createWindow = () => {

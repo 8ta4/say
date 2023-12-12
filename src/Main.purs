@@ -90,11 +90,12 @@ main = do
           launchAff_ do
 
             -- TODO: Add your error handling logic here
-            transcript <- toAffE $ transcribe deepgram audioFilepath
-            let transcriptDirectoryPath = homeDirectoryPath <> "/.local/share/say/" <> (show $ fromEnum $ year currentDate) <> "/" <> (show $ fromEnum $ month currentDate)
-            mkdir' transcriptDirectoryPath { mode: mkPerms all none none, recursive: true }
-            let transcriptFilepath = transcriptDirectoryPath <> "/" <> (show $ fromEnum $ month currentDate) <> ".txt"
-            appendTextFile UTF8 transcriptFilepath transcript
+            maybeTranscript <- toAffE $ transcribe deepgram audioFilepath
+            traceM maybeTranscript
+            -- let transcriptDirectoryPath = homeDirectoryPath <> "/.local/share/say/" <> (show $ fromEnum $ year currentDate) <> "/" <> (show $ fromEnum $ month currentDate)
+            -- mkdir' transcriptDirectoryPath { mode: mkPerms all none none, recursive: true }
+            -- let transcriptFilepath = transcriptDirectoryPath <> "/" <> (show $ fromEnum $ month currentDate) <> ".txt"
+            -- appendTextFile UTF8 transcriptFilepath transcript
             liftEffect $ modify_ (\state' -> state' { processing = false }) ref
       pure stream'
 

@@ -34,16 +34,23 @@ export const end = (stream) => () => stream.push(null);
 
 export { createClient } from "@deepgram/sdk";
 
-export const transcribe = (deepgram) => (filepath) => async () => {
-  // https://github.com/deepgram/deepgram-node-sdk/blob/7c416605fc5953c8777b3685e014cf874c08eecf/README.md?plain=1#L194-L199
-  const { result } = await deepgram.listen.prerecorded.transcribeFile(
-    readFileSync(filepath),
-    {
-      model: "nova-2",
+export const transcribeImpl =
+  (just) => (nothing) => (deepgram) => (filepath) => async () => {
+    // https://github.com/deepgram/deepgram-node-sdk/blob/7c416605fc5953c8777b3685e014cf874c08eecf/README.md?plain=1#L194-L199
+    const { result } = await deepgram.listen.prerecorded.transcribeFile(
+      readFileSync(filepath),
+      {
+        model: "nova-2",
+        smart_format: true,
+      }
+    );
+    const paragraphs = result.results.channels[0].alternatives[0].paragraphs;
+    if (paragraphs) {
+      return just(paragraphs);
+    } else {
+      return nothing;
     }
-  );
-  return result.results.channels[0].alternatives[0].transcript;
-};
+  };
 
 const createWindow = () => {
   const win = new BrowserWindow({

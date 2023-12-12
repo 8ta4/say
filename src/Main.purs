@@ -91,8 +91,8 @@ main = do
           launchAff_ do
 
             -- TODO: Add your error handling logic here
-            maybeTranscript <- toAffE $ transcribe deepgram audioFilepath
-            traceM maybeTranscript
+            maybeParagraphs <- toAffE $ transcribe deepgram audioFilepath
+            traceM maybeParagraphs
             -- let transcriptDirectoryPath = homeDirectoryPath <> "/.local/share/say/" <> (show $ fromEnum $ year currentDate) <> "/" <> (show $ fromEnum $ month currentDate)
             -- mkdir' transcriptDirectoryPath { mode: mkPerms all none none, recursive: true }
             -- let transcriptFilepath = transcriptDirectoryPath <> "/" <> (show $ fromEnum $ month currentDate) <> ".txt"

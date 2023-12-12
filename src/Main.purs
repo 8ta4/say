@@ -94,7 +94,8 @@ main = do
             maybeParagraphs <- toAffE $ transcribe deepgram audioFilepath
             traceM maybeParagraphs
             case maybeParagraphs of
-              Just paragraphs -> traceM paragraphs
+              Just paragraphs -> do
+                traceM $ map _.text $ paragraphs.paragraphs >>= _.sentences
               _ -> pure unit
             -- let transcriptDirectoryPath = homeDirectoryPath <> "/.local/share/say/" <> (show $ fromEnum $ year currentDate) <> "/" <> (show $ fromEnum $ month currentDate)
             -- mkdir' transcriptDirectoryPath { mode: mkPerms all none none, recursive: true }
@@ -144,6 +145,7 @@ foreign import createClient :: String -> Deepgram
 
 foreign import transcribeImpl :: forall a. (a -> Maybe a) -> Maybe a -> Deepgram -> String -> Effect (Promise (Maybe a))
 
+transcribe :: Deepgram -> String -> Effect (Promise (Maybe { paragraphs :: Array { sentences :: Array { text :: String } } }))
 transcribe = transcribeImpl Just Nothing
 
 foreign import launch :: (Float32Array -> Effect Unit) -> Effect Unit -> Effect Unit

@@ -93,6 +93,9 @@ main = do
             -- TODO: Add your error handling logic here
             maybeParagraphs <- toAffE $ transcribe deepgram audioFilepath
             traceM maybeParagraphs
+            case maybeParagraphs of
+              Just paragraphs -> traceM paragraphs
+              _ -> pure unit
             -- let transcriptDirectoryPath = homeDirectoryPath <> "/.local/share/say/" <> (show $ fromEnum $ year currentDate) <> "/" <> (show $ fromEnum $ month currentDate)
             -- mkdir' transcriptDirectoryPath { mode: mkPerms all none none, recursive: true }
             -- let transcriptFilepath = transcriptDirectoryPath <> "/" <> (show $ fromEnum $ month currentDate) <> ".txt"

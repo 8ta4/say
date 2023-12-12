@@ -5,6 +5,7 @@ import Prelude
 import Data.DateTime (month, year)
 import Data.Enum (fromEnum)
 import Data.Int (floor, toNumber)
+import Data.Maybe (Maybe(..))
 import Data.UUID (genUUID, toString)
 import Debug (traceM)
 import Effect (Effect)
@@ -138,6 +139,8 @@ foreign import handleClose :: ChildProcess -> Effect Unit -> Effect Unit
 
 foreign import createClient :: String -> Deepgram
 
-foreign import transcribe :: Deepgram -> String -> Effect (Promise String)
+foreign import transcribeImpl :: forall a. (a -> Maybe a) -> Maybe a -> Deepgram -> String -> Effect (Promise (Maybe a))
+
+transcribe = transcribeImpl Just Nothing
 
 foreign import launch :: (Float32Array -> Effect Unit) -> Effect Unit -> Effect Unit

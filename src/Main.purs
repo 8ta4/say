@@ -143,9 +143,9 @@ foreign import handleClose :: ChildProcess -> Effect Unit -> Effect Unit
 
 foreign import createClient :: String -> Deepgram
 
-foreign import transcribeImpl :: forall a. (a -> Maybe a) -> Maybe a -> Deepgram -> String -> Effect (Promise (Maybe a))
-
 transcribe :: Deepgram -> String -> Effect (Promise (Maybe { paragraphs :: Array { sentences :: Array { text :: String } } }))
 transcribe = transcribeImpl Just Nothing
+
+foreign import transcribeImpl :: forall a. (a -> Maybe a) -> Maybe a -> Deepgram -> String -> Effect (Promise (Maybe a))
 
 foreign import launch :: (Float32Array -> Effect Unit) -> Effect Unit -> Effect Unit

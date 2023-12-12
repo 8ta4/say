@@ -35,7 +35,7 @@ main = do
   homeDirectoryPath <- homedir
   key <- readTextFile UTF8 $ homeDirectoryPath <> "/.config/say/key"
   stream <- newReadable
-  ref <- new { stream: stream, pause: mempty, streamLength: 0, raw: mempty, h: tensor, c: tensor, processing: false }
+  ref <- new { stream: stream, pause: mempty, streamLength: 0, raw: mempty, h: tensor, c: tensor, processing: false, manual: false }
   let
     record audio = do
       state <- read ref
@@ -64,6 +64,7 @@ main = do
     save = do
 
       -- TODO: Add your audio processing logic here
+      modify_ (\state -> state { manual = true }) ref
       save'
     save' = do
       state <- read ref
@@ -98,6 +99,9 @@ main = do
                   transcriptFilepath = transcriptDirectoryPath <> "/" <> currentDate.day <> ".txt"
                 mkdir' transcriptDirectoryPath { mode: mkPerms all none none, recursive: true }
                 appendTextFile UTF8 transcriptFilepath transcript
+                liftEffect do
+                  _ <- spawn "code" [ transcriptFilepath ] defaultSpawnOptions
+                  modify_ (\state' -> state' { manual = false }) ref
               _ -> pure unit
             liftEffect $ modify_ (\state' -> state' { processing = false }) ref
       pure stream'

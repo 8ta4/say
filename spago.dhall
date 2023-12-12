@@ -21,6 +21,7 @@ to generate this file without the comments in this block.
   , "functions"
   , "integers"
   , "js-promise-aff"
+  , "maybe"
   , "node-buffer"
   , "node-child-process"
   , "node-fs"

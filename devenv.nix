@@ -9,6 +9,9 @@
     pkgs.ffmpeg
     pkgs.git
     pkgs.gitleaks
+
+    # https://www.electron.build/index.html#installation:~:text=yarn%20is%20strongly%20recommended%20instead%20of%20npm.
+    pkgs.yarn
   ];
 
   # https://devenv.sh/scripts/
@@ -26,7 +29,7 @@
   enterShell = ''
     hello
     git --version
-    ${pkgs.nodePackages.npm}/bin/npm install
+    ${pkgs.yarn}/bin/yarn install
     build
   '';
 

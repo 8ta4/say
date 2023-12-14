@@ -62,8 +62,6 @@ main = do
       else
         write (state { raw = raw }) ref
     save = do
-
-      -- TODO: Add your audio processing logic here
       modify_ (\state -> state { manual = true }) ref
       save'
     save' = do

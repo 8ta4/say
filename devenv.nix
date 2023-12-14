@@ -10,7 +10,7 @@
     pkgs.git
     pkgs.gitleaks
 
-    # https://www.electron.build/index.html#installation:~:text=yarn%20is%20strongly%20recommended%20instead%20of%20npm.
+    # https://github.com/electron-userland/electron-builder/blob/47e66ca64a89395a49300e8b2da1d9baeb93825a/docs/index.md?plain=1#L33
     pkgs.yarn
   ];
 

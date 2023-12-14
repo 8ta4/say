@@ -17,6 +17,7 @@
   # https://devenv.sh/scripts/
   scripts.hello.exec = "echo hello from $GREET";
   scripts.build.exec = ''
+    ${pkgs.yarn}/bin/yarn install
     ${pkgs.spago}/bin/spago build
   '';
   scripts.run.exec = ''
@@ -29,7 +30,6 @@
   enterShell = ''
     hello
     git --version
-    ${pkgs.yarn}/bin/yarn install
     build
   '';
 

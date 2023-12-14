@@ -1,4 +1,3 @@
-// https://www.electronjs.org/docs/latest/tutorial/quick-start#create-a-web-page
 import { app, BrowserWindow, globalShortcut, ipcMain } from "electron";
 import dayjs from "dayjs";
 import { readFileSync } from "fs";
@@ -76,6 +75,7 @@ const createWindow = () => {
 };
 
 export const launch = (record) => (save) => () =>
+  // https://www.electronjs.org/docs/latest/tutorial/quick-start#create-a-web-page
   app.whenReady().then(() => {
     console.log("App is ready, creating window...");
     createWindow();

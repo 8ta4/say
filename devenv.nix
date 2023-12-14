@@ -19,11 +19,11 @@
   scripts.build.exec = ''
     ${pkgs.spago}/bin/spago build
   '';
-  scripts.watch.exec = ''
-    ${pkgs.spago}/bin/spago build --watch
-  '';
   scripts.run.exec = ''
     ./node_modules/.bin/nodemon --watch output --exec './node_modules/.bin/electron .'
+  '';
+  scripts.watch.exec = ''
+    ${pkgs.spago}/bin/spago build --watch
   '';
 
   enterShell = ''

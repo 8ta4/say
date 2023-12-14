@@ -1,5 +1,8 @@
 {
   "author": "",
+  "build": {
+    "asar": false
+  },
   "dependencies": {
     "@deepgram/sdk": "^3.0.1",
     "app-root-path": "^3.1.0",

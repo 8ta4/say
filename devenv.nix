@@ -10,26 +10,38 @@
     pkgs.git
     pkgs.gitleaks
 
-    # https://www.electron.build/index.html#installation:~:text=yarn%20is%20strongly%20recommended%20instead%20of%20npm.
+    # https://github.com/electron-userland/electron-builder/blob/47e66ca64a89395a49300e8b2da1d9baeb93825a/docs/index.md?plain=1#L33
     pkgs.yarn
   ];
 
   # https://devenv.sh/scripts/
   scripts.hello.exec = "echo hello from $GREET";
+
+  # https://github.com/electron-userland/electron-builder/blob/47e66ca64a89395a49300e8b2da1d9baeb93825a/docs/index.md?plain=1#L93
+  scripts.dist.exec = ''
+    build
+    ./node_modules/.bin/electron-builder
+  '';
   scripts.build.exec = ''
+    ${pkgs.yarn}/bin/yarn install
     ${pkgs.spago}/bin/spago build
   '';
-  scripts.watch.exec = ''
-    ${pkgs.spago}/bin/spago build --watch
+
+  # https://github.com/electron-userland/electron-builder/blob/47e66ca64a89395a49300e8b2da1d9baeb93825a/docs/index.md?plain=1#L92
+  scripts.pack.exec = ''
+    build
+    ./node_modules/.bin/electron-builder --dir
   '';
   scripts.run.exec = ''
     ./node_modules/.bin/nodemon --watch output --exec './node_modules/.bin/electron .'
+  '';
+  scripts.watch.exec = ''
+    ${pkgs.spago}/bin/spago build --watch
   '';
 
   enterShell = ''
     hello
     git --version
-    ${pkgs.yarn}/bin/yarn install
     build
   '';
 

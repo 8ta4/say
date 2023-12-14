@@ -1,19 +1,23 @@
 {
-  "name": "say",
-  "version": "1.0.0",
+  "author": "",
+  "build": {
+    "asar": false
+  },
+  "dependencies": {
+    "@deepgram/sdk": "^3.0.1",
+    "app-root-path": "^3.1.0",
+    "dayjs": "^1.11.10",
+    "onnxruntime-node": "^1.16.3",
+    "uuid": "^9.0.1"
+  },
   "description": "",
-  "main": "main.js",
   "devDependencies": {
     "electron": "^28.0.0",
     "electron-builder": "^24.9.1",
     "nodemon": "^3.0.2"
   },
-  "author": "",
   "license": "ISC",
-  "dependencies": {
-    "@deepgram/sdk": "^3.0.1",
-    "dayjs": "^1.11.10",
-    "onnxruntime-node": "^1.16.3",
-    "uuid": "^9.0.1"
-  }
+  "main": "main.js",
+  "name": "say",
+  "version": "1.0.0"
 }

@@ -1,17 +1,22 @@
-// https://www.electronjs.org/docs/latest/tutorial/quick-start#create-a-web-page
+import appRoot from "app-root-path";
 import { app, BrowserWindow, globalShortcut, ipcMain } from "electron";
 import dayjs from "dayjs";
 import { readFileSync } from "fs";
 import { InferenceSession, Tensor } from "onnxruntime-node";
 import { Readable } from "stream";
 
-const session = await InferenceSession.create("vad.onnx");
+export const getAppRootPath = () =>
+  // https://github.com/inxilpro/node-app-root-path/blob/baf711a6ec61acf50aeb42fb6e5118e899bcbe4b/README.md?plain=1#L24
+  appRoot.toString();
+
+export const createSession = (path) => async () =>
+  await InferenceSession.create(path);
 
 export const tensor = new Tensor(new Float32Array(2 * 1 * 64), [2, 1, 64]);
 
 const sr = new Tensor(new BigInt64Array([16000n]));
 
-export const run = (audio) => (h) => (c) => async () => {
+export const run = (session) => (audio) => (h) => (c) => async () => {
   const input = new Tensor(audio, [1, audio.length]);
   const result = await session.run({ input: input, sr: sr, h: h, c: c });
   return { probability: result.output.data[0], h: result.hn, c: result.cn };
@@ -76,6 +81,7 @@ const createWindow = () => {
 };
 
 export const launch = (record) => (save) => () =>
+  // https://www.electronjs.org/docs/latest/tutorial/quick-start#create-a-web-page
   app.whenReady().then(() => {
     console.log("App is ready, creating window...");
     createWindow();

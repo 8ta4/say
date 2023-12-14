@@ -9,6 +9,7 @@
     pkgs.ffmpeg
     pkgs.git
     pkgs.gitleaks
+    pkgs.yarn
   ];
 
   # https://devenv.sh/scripts/
@@ -26,7 +27,7 @@
   enterShell = ''
     hello
     git --version
-    ${pkgs.nodePackages.npm}/bin/npm install
+    ${pkgs.yarn}/bin/yarn install
     build
   '';
 

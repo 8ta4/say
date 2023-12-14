@@ -16,9 +16,21 @@
 
   # https://devenv.sh/scripts/
   scripts.hello.exec = "echo hello from $GREET";
+
+  # https://github.com/electron-userland/electron-builder/blob/47e66ca64a89395a49300e8b2da1d9baeb93825a/docs/index.md?plain=1#L93
+  scripts.dist.exec = ''
+    build
+    ./node_modules/.bin/electron-builder
+  '';
   scripts.build.exec = ''
     ${pkgs.yarn}/bin/yarn install
     ${pkgs.spago}/bin/spago build
+  '';
+
+  # https://github.com/electron-userland/electron-builder/blob/47e66ca64a89395a49300e8b2da1d9baeb93825a/docs/index.md?plain=1#L92
+  scripts.pack.exec = ''
+    build
+    ./node_modules/.bin/electron-builder --dir
   '';
   scripts.run.exec = ''
     ./node_modules/.bin/nodemon --watch output --exec './node_modules/.bin/electron .'

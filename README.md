@@ -34,9 +34,13 @@
 
 1. Control-click `say` and choose Open, as this will [bypass Apple's security](https://support.apple.com/guide/mac-help/open-a-mac-app-from-an-unidentified-developer-mh40616/mac) that might block you.
 
-1. Head over to the [Deepgram website](https://deepgram.com/) and grab a Deepgram API key.
+1. Head over to the [Deepgram website](https://deepgram.com/) and copy a Deepgram API key.
 
-1. When `say` asks for the API key, paste it in.
+1. Add the API key by entering this command in your terminal:
+
+   ```sh
+   pbpaste > ~/.config/say/key
+   ```
 
 1. If asked, allow `say` to access your mic.
 

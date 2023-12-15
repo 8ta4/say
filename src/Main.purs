@@ -84,7 +84,7 @@ main = do
           let audioFilepath = appTempDirectory <> "/" <> toString uuid <> ".opus"
           traceM "Audio filepath:"
           traceM audioFilepath
-          ffmpeg <- spawn "ffmpeg" [ "-f", "f32le", "-ar", show ar, "-i", "pipe:0", "-b:a", "24k", audioFilepath ] defaultSpawnOptions
+          ffmpeg <- spawn "/opt/homebrew/bin/ffmpeg" [ "-f", "f32le", "-ar", show ar, "-i", "pipe:0", "-b:a", "24k", audioFilepath ] defaultSpawnOptions
           _ <- pipe stream' $ stdin ffmpeg
           handleClose ffmpeg do
             state <- read ref

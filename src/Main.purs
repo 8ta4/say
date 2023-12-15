@@ -84,7 +84,7 @@ main = do
           let audioFilepath = appTempDirectory <> "/" <> toString uuid <> ".opus"
           traceM "Audio filepath:"
           traceM audioFilepath
-          ffmpeg <- spawn "ffmpeg" [ "-f", "f32le", "-ar", show ar, "-i", "pipe:0", "-b:a", "24k", audioFilepath ] defaultSpawnOptions
+          ffmpeg <- spawn (homebrewPath <> "ffmpeg") [ "-f", "f32le", "-ar", show ar, "-i", "pipe:0", "-b:a", "24k", audioFilepath ] defaultSpawnOptions
           _ <- pipe stream' $ stdin ffmpeg
           handleClose ffmpeg do
             state <- read ref
@@ -106,7 +106,7 @@ main = do
                     appendTextFile UTF8 transcriptFilepath transcript
                   _ -> pure unit
                 liftEffect do
-                  _ <- spawn "code" [ "-g", transcriptFilepath <> ":" <> "10000" ] defaultSpawnOptions
+                  _ <- spawn (homebrewPath <> "code") [ "-g", transcriptFilepath <> ":" <> "10000" ] defaultSpawnOptions
                   modify_ (\state' -> state' { processing = false, manual = false }) ref
           pure stream'
 
@@ -149,15 +149,18 @@ windowSizeSamples = 1536
 
 foreign import end :: Readable () -> Effect Unit
 
+homebrewPath :: String
+homebrewPath = "/opt/homebrew/bin/"
+
 foreign import handleClose :: ChildProcess -> Effect Unit -> Effect Unit
 
-foreign import createClient :: String -> Deepgram
+foreign import getCurrentDate :: Effect { year :: String, month :: String, day :: String }
 
 transcribe :: Deepgram -> String -> Effect (Promise (Maybe { paragraphs :: Array { sentences :: Array { text :: String } } }))
 transcribe = transcribeImpl Just Nothing
 
 foreign import transcribeImpl :: forall a. (a -> Maybe a) -> Maybe a -> Deepgram -> String -> Effect (Promise (Maybe a))
 
-foreign import getCurrentDate :: Effect { year :: String, month :: String, day :: String }
+foreign import createClient :: String -> Deepgram
 
 foreign import launch :: (Float32Array -> Effect Unit) -> Effect Unit -> Effect Unit

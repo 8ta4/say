@@ -6,7 +6,6 @@
 
   # https://devenv.sh/packages/
   packages = [
-    pkgs.ffmpeg
     pkgs.git
     pkgs.gitleaks
 

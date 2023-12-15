@@ -66,6 +66,8 @@ Some folks might say that a higher price makes you use the tool more. You know, 
 
 > How do I set up this tool's dev environment?
 
+<!-- TODO: include ffmpeg as a dependency in the setup instructions -->
+
 1. Make sure you're using a Mac.
 
 1. Get [git](https://formulae.brew.sh/formula/git#default) installed.

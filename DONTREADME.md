@@ -84,12 +84,6 @@ Some folks might say that a higher price makes you use the tool more. You know, 
 
 The `devenv.nix` file has got all the scripts you need.
 
-> Why does this tool mess with my third-party tools when I first run this tool?
-
-I could've asked you to edit your `.skhdrc` file to make a shortcut for this tool. But that would be a hassle.
-
-And I couldn't do it for you, because that would break [Homebrew's policy](https://docs.brew.sh/Homebrew-and-Python#:~:text=homebrew%20has%20a%20strict%20policy%20never%20to%20write%20stuff%20outside%20of%20the%20brew%20--prefix).
-
 ## Architecture
 
 > Why not just let a cloud server handle the transcript API calls?

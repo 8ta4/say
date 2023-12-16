@@ -12,7 +12,7 @@ import Effect.Aff (launchAff_)
 import Effect.Class (liftEffect)
 import Effect.Ref (modify_, new, read, write)
 import Float32Array (Float32Array, length, splitAt, takeEnd)
-import Node.ChildProcess (ChildProcess, defaultSpawnOptions, spawn, stdin)
+import Node.ChildProcess (ChildProcess, spawn, stdin)
 import Node.Encoding (Encoding(..))
 import Node.FS.Aff (appendTextFile, mkdir')
 import Node.FS.Perms (all, mkPerms, none)
@@ -84,7 +84,7 @@ main = do
           let audioFilepath = appTempDirectory <> "/" <> toString uuid <> ".opus"
           traceM "Audio filepath:"
           traceM audioFilepath
-          ffmpeg <- spawn (homebrewPath <> "ffmpeg") [ "-f", "f32le", "-ar", show ar, "-i", "pipe:0", "-b:a", "24k", audioFilepath ] defaultSpawnOptions
+          ffmpeg <- spawn (homebrewPath <> "ffmpeg") [ "-f", "f32le", "-ar", show ar, "-i", "pipe:0", "-b:a", "24k", audioFilepath ]
           _ <- pipe stream' $ stdin ffmpeg
           handleClose ffmpeg do
             state <- read ref
@@ -106,7 +106,7 @@ main = do
                     appendTextFile UTF8 transcriptFilepath transcript
                   _ -> pure unit
                 liftEffect do
-                  _ <- spawn (homebrewPath <> "code") [ "-g", transcriptFilepath <> ":" <> "10000" ] defaultSpawnOptions
+                  _ <- spawn (homebrewPath <> "code") [ "-g", transcriptFilepath <> ":" <> "10000" ]
                   modify_ (\state' -> state' { processing = false, manual = false }) ref
           pure stream'
 

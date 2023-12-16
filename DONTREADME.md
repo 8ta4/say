@@ -66,15 +66,15 @@ Some folks might say that a higher price makes you use the tool more. You know, 
 
 > How do I set up this tool's dev environment?
 
-<!-- TODO: Clarify that Visual Studio Code needs to be installed -->
-
 1. Make sure you're using a Mac.
 
-1. Get [Git](https://formulae.brew.sh/formula/git#default) installed.
+1. Install [Git](https://formulae.brew.sh/formula/git#default).
 
-1. Get [devenv](https://devenv.sh/getting-started/) installed too.
+1. Install [devenv](https://devenv.sh/getting-started/).
 
-1. Get [direnv](https://formulae.brew.sh/formula/direnv#default) installed as well.
+1. Install [direnv](https://formulae.brew.sh/formula/direnv#default).
+
+1. Install [Visual Studio Code](https://formulae.brew.sh/cask/visual-studio-code#default).
 
 1. Run the following commands:
 

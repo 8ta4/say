@@ -47,6 +47,7 @@
   enterShell = ''
     hello
     git --version
+    export PATH="$(pwd)/node_modules/.bin:$PATH"
     build
   '';
 

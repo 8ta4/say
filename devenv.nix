@@ -9,6 +9,9 @@
     pkgs.git
     pkgs.gitleaks
 
+    # https://github.com/NixOS/nixpkgs/issues/253198
+    pkgs.purescript
+
     # https://github.com/electron-userland/electron-builder/blob/47e66ca64a89395a49300e8b2da1d9baeb93825a/docs/index.md?plain=1#L33
     pkgs.yarn
   ];
@@ -23,7 +26,7 @@
   '';
   scripts.build.exec = ''
     ${pkgs.yarn}/bin/yarn install
-    ${pkgs.spago}/bin/spago build
+    ./node_modules/.bin/spago build
   '';
 
   # https://github.com/electron-userland/electron-builder/blob/47e66ca64a89395a49300e8b2da1d9baeb93825a/docs/index.md?plain=1#L92
@@ -35,7 +38,7 @@
     ./node_modules/.bin/nodemon --watch output --exec './node_modules/.bin/electron .'
   '';
   scripts.watch.exec = ''
-    ${pkgs.spago}/bin/spago build --watch
+    ./node_modules/.bin/spago build --watch
   '';
 
   enterShell = ''
@@ -46,7 +49,6 @@
 
   # https://devenv.sh/languages/
   # languages.nix.enable = true;
-  languages.purescript.enable = true;
 
   # https://devenv.sh/pre-commit-hooks/
   # pre-commit.hooks.shellcheck.enable = true;

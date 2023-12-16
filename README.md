@@ -24,23 +24,24 @@
    brew install 8ta4/say/say
    ```
 
-1. If you have already installed Visual Studio Code not using Homebrew, you need to [add it to your system's PATH](https://code.visualstudio.com/docs/setup/mac#_launching-from-the-command-line).
-
 1. Tweak Visual Studio Code to [respect read-only file settings](https://code.visualstudio.com/docs/getstarted/settings#:~:text=//%20Marks%20files%20as%20read%2Donly%20when%20their%20file%20permissions%20indicate%20as%20such.%20This%20can%20be%20overridden%20via%20%60files.readonlyInclude%60%20and%20%60files.readonlyExclude%60%20settings.%0A%20%20%22files.readonlyFromPermissions%22%3A%20false%2C).
+
+1. Head over to the [Deepgram website](https://deepgram.com/) and copy a Deepgram API key.
+
+1. Run these commands in your terminal to add the API key:
+
+   ```sh
+   mkdir -p ~/.config/say
+   pbpaste > ~/.config/say/key
+   ```
+
+1. If you have already installed Visual Studio Code not using Homebrew, you need to [add it to your system's PATH](https://code.visualstudio.com/docs/setup/mac#_launching-from-the-command-line).
 
 1. Open `Finder`.
 
 1. Go to `Applications`.
 
 1. Control-click `say` and choose Open, as this will [bypass Apple's security](https://support.apple.com/guide/mac-help/open-a-mac-app-from-an-unidentified-developer-mh40616/mac) that might block you.
-
-1. Head over to the [Deepgram website](https://deepgram.com/) and copy a Deepgram API key.
-
-1. Add the API key by entering this command in your terminal:
-
-   ```sh
-   pbpaste > ~/.config/say/key
-   ```
 
 1. If asked, allow `say` to access your mic.
 

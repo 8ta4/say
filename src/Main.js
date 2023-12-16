@@ -48,7 +48,7 @@ export const transcribeImpl =
       {
         model: "nova-2",
         smart_format: true,
-      }
+      },
     );
     const paragraphs = result.results.channels[0].alternatives[0].paragraphs;
     if (paragraphs) {

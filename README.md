@@ -24,7 +24,7 @@
    brew install 8ta4/say/say
    ```
 
-1. If you have already installed Visual Studio Code not using Homebrew, you need to [add it to your system's PATH](https://code.visualstudio.com/docs/setup/mac#_launching-from-the-command-line)..
+1. If you have already installed Visual Studio Code not using Homebrew, you need to [add it to your system's PATH](https://code.visualstudio.com/docs/setup/mac#_launching-from-the-command-line).
 
 1. Tweak Visual Studio Code to [respect read-only file settings](https://code.visualstudio.com/docs/getstarted/settings#:~:text=//%20Marks%20files%20as%20read%2Donly%20when%20their%20file%20permissions%20indicate%20as%20such.%20This%20can%20be%20overridden%20via%20%60files.readonlyInclude%60%20and%20%60files.readonlyExclude%60%20settings.%0A%20%20%22files.readonlyFromPermissions%22%3A%20false%2C).
 

@@ -8,9 +8,8 @@
   packages = [
     pkgs.git
     pkgs.gitleaks
-
-    # https://github.com/NixOS/nixpkgs/issues/253198
     pkgs.purescript
+    pkgs.nodePackages.purescript-language-server
 
     # https://github.com/electron-userland/electron-builder/blob/47e66ca64a89395a49300e8b2da1d9baeb93825a/docs/index.md?plain=1#L33
     pkgs.yarn-berry
@@ -25,6 +24,7 @@
     electron-builder
   '';
 
+  # https://github.com/NixOS/nixpkgs/issues/253198
   # I am using `yarn` to install `spago` due to issues encountered when trying to use `pkgs.spago` and `languages.purescript.enable`.
   # The package spago-0.20.9 is marked as broken in the Nix packages repository, which caused the error.
   scripts.build.exec = ''

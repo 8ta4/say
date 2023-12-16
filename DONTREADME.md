@@ -76,6 +76,8 @@ Some folks might say that a higher price makes you use the tool more. You know, 
 
 1. Install [Visual Studio Code](https://formulae.brew.sh/cask/visual-studio-code#default).
 
+1. If you have installed Visual Studio Code not using Homebrew, [add it to your system's PATH](https://code.visualstudio.com/docs/setup/mac#_launching-from-the-command-line).
+
 1. Run the following commands:
 
    ```sh

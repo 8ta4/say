@@ -24,7 +24,6 @@ to generate this file without the comments in this block.
   , "node-buffer"
   , "node-child-process"
   , "node-fs"
-  , "node-fs-aff"
   , "node-os"
   , "node-streams"
   , "prelude"

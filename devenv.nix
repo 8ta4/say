@@ -6,11 +6,14 @@
 
   # https://devenv.sh/packages/
   packages = [
+    pkgs.ffmpeg
     pkgs.git
     pkgs.gitleaks
+    pkgs.purescript
+    pkgs.nodePackages.purescript-language-server
 
     # https://github.com/electron-userland/electron-builder/blob/47e66ca64a89395a49300e8b2da1d9baeb93825a/docs/index.md?plain=1#L33
-    pkgs.yarn
+    pkgs.yarn-berry
   ];
 
   # https://devenv.sh/scripts/
@@ -19,34 +22,38 @@
   # https://github.com/electron-userland/electron-builder/blob/47e66ca64a89395a49300e8b2da1d9baeb93825a/docs/index.md?plain=1#L93
   scripts.dist.exec = ''
     build
-    ./node_modules/.bin/electron-builder
+    electron-builder
   '';
+
+  # https://github.com/NixOS/nixpkgs/issues/253198
+  # I am using `yarn` to install `spago` due to issues encountered when trying to use `pkgs.spago` and `languages.purescript.enable`.
+  # The package spago-0.20.9 is marked as broken in the Nix packages repository, which caused the error.
   scripts.build.exec = ''
-    ${pkgs.yarn}/bin/yarn install
-    ${pkgs.spago}/bin/spago build
+    ${pkgs.yarn-berry}/bin/yarn install
+    spago build
   '';
 
   # https://github.com/electron-userland/electron-builder/blob/47e66ca64a89395a49300e8b2da1d9baeb93825a/docs/index.md?plain=1#L92
   scripts.pack.exec = ''
     build
-    ./node_modules/.bin/electron-builder --dir
+    electron-builder --dir
   '';
   scripts.run.exec = ''
-    ./node_modules/.bin/nodemon --watch output --exec './node_modules/.bin/electron .'
+    nodemon --watch output --exec './node_modules/.bin/electron .'
   '';
   scripts.watch.exec = ''
-    ${pkgs.spago}/bin/spago build --watch
+    spago build --watch
   '';
 
   enterShell = ''
     hello
     git --version
+    export PATH="$(pwd)/node_modules/.bin:$PATH"
     build
   '';
 
   # https://devenv.sh/languages/
   # languages.nix.enable = true;
-  languages.purescript.enable = true;
 
   # https://devenv.sh/pre-commit-hooks/
   # pre-commit.hooks.shellcheck.enable = true;

@@ -22,26 +22,26 @@
   # https://github.com/electron-userland/electron-builder/blob/47e66ca64a89395a49300e8b2da1d9baeb93825a/docs/index.md?plain=1#L93
   scripts.dist.exec = ''
     build
-    ./node_modules/.bin/electron-builder
+    electron-builder
   '';
 
   # I am using `yarn` to install `spago` due to issues encountered when trying to use `pkgs.spago` and `languages.purescript.enable`.
   # The package spago-0.20.9 is marked as broken in the Nix packages repository, which caused the error.
   scripts.build.exec = ''
     ${pkgs.yarn-berry}/bin/yarn install
-    ./node_modules/.bin/spago build
+    spago build
   '';
 
   # https://github.com/electron-userland/electron-builder/blob/47e66ca64a89395a49300e8b2da1d9baeb93825a/docs/index.md?plain=1#L92
   scripts.pack.exec = ''
     build
-    ./node_modules/.bin/electron-builder --dir
+    electron-builder --dir
   '';
   scripts.run.exec = ''
-    ./node_modules/.bin/nodemon --watch output --exec './node_modules/.bin/electron .'
+    nodemon --watch output --exec './node_modules/.bin/electron .'
   '';
   scripts.watch.exec = ''
-    ./node_modules/.bin/spago build --watch
+    spago build --watch
   '';
 
   enterShell = ''

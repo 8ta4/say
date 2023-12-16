@@ -22,7 +22,7 @@
   # https://github.com/electron-userland/electron-builder/blob/47e66ca64a89395a49300e8b2da1d9baeb93825a/docs/index.md?plain=1#L93
   scripts.dist.exec = ''
     build
-    electron-builder
+    electron-builder -p never
   '';
 
   # https://github.com/NixOS/nixpkgs/issues/253198

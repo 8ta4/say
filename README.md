@@ -96,8 +96,9 @@ No, `say` doesn't possess speaker identification capabilities. If there are mult
 - Noise cancellation
 - Proximity to the mouth
 - Wireless capability
-- Ergonomic design
+- Comfort fit
 - Long battery life
+- Secure grip
 
 However, if there is only one speaker, your built-in mic should do the trick, saving you from:
 

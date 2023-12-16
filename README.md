@@ -10,7 +10,7 @@
 
 > How do I set up this tool?
 
-1. Make sure you're using a Mac with Apple silicon.
+1. Make sure you're using a Mac.
 
 1. Be located in the continental US to minimize latency, as "[[a]ll Deepgram data is processed inside of the continental US](https://help.deepgram.com/hc/en-us/articles/6126293557399-Data-Security-Privacy-FAQ#:~:text=all%20deepgram%20data%20is%20processed%20inside%20of%20the%20continental%20us..)."
 

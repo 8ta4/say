@@ -24,4 +24,4 @@ jobs:
       - name: Build the devenv shell and run any pre-commit hooks
         run: devenv ci
 
-      - run: devenv shell build
+      - run: devenv shell dist

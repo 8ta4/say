@@ -13,7 +13,7 @@
     pkgs.purescript
 
     # https://github.com/electron-userland/electron-builder/blob/47e66ca64a89395a49300e8b2da1d9baeb93825a/docs/index.md?plain=1#L33
-    pkgs.yarn
+    pkgs.yarn-berry
   ];
 
   # https://devenv.sh/scripts/
@@ -25,7 +25,7 @@
     ./node_modules/.bin/electron-builder
   '';
   scripts.build.exec = ''
-    ${pkgs.yarn}/bin/yarn install
+    ${pkgs.yarn-berry}/bin/yarn install
     ./node_modules/.bin/spago build
   '';
 

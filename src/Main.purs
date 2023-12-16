@@ -27,8 +27,6 @@ foreign import data Deepgram :: Type
 
 foreign import data Session :: Type
 
-foreign import fixPath :: Effect Unit
-
 main :: Effect Unit
 main = do
   fixPath
@@ -118,6 +116,8 @@ main = do
       stream' <- createStream
       modify_ (\state -> state { stream = stream' }) ref
       launch record save
+
+foreign import fixPath :: Effect Unit
 
 foreign import getAppRootPath :: Effect String
 

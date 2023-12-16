@@ -24,6 +24,9 @@
     build
     ./node_modules/.bin/electron-builder
   '';
+
+  # I am using `yarn` to install `spago` due to issues encountered when trying to use `pkgs.spago` and `languages.purescript.enable`.
+  # The package spago-0.20.9 is marked as broken in the Nix packages repository, which caused the error.
   scripts.build.exec = ''
     ${pkgs.yarn-berry}/bin/yarn install
     ./node_modules/.bin/spago build

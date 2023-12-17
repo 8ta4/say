@@ -30,12 +30,7 @@
 
 1. Head over to the [Deepgram website](https://deepgram.com/) and copy a Deepgram API key.
 
-1. Run these commands in your terminal to add the API key:
-
-   ```sh
-   mkdir -p ~/.config/say
-   pbpaste > ~/.config/say/key
-   ```
+1. Paste your API key in `~/.config/say/key`.
 
 1. Open `Finder`.
 

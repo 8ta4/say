@@ -1,21 +1,21 @@
 # https://devenv.sh/integrations/github-actions/#complete-example
-name: "Test"
+name: "Build and Release"
 
 on:
   pull_request:
   push:
 
 jobs:
-  tests:
+  job:
     strategy:
       matrix:
         os: [macos-latest]
     runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: cachix/install-nix-action@v23
-      - uses: cachix/cachix-action@v12
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # pin@v4
+      - uses: cachix/install-nix-action@6a9a9e84a173d90b3ffb42c5ddaf9ea033fad011 # pin@v23
+      - uses: cachix/cachix-action@6a9a34cdd93d0ae4b4b59fd678660efb08109f2f # pin@v12
         with:
           name: devenv
       - name: Install devenv.sh
@@ -25,3 +25,14 @@ jobs:
         run: devenv ci
 
       - run: devenv shell dist
+
+      # https://github.com/softprops/action-gh-release/blob/c9b46fe7aad9f02afd89b12450b780f52dacfb2d/README.md?plain=1#L45-L47
+      - name: Release
+        uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844 # pin@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: dist/say.dmg
+
+# https://github.com/softprops/action-gh-release/blob/c9b46fe7aad9f02afd89b12450b780f52dacfb2d/README.md?plain=1#L220-L225
+permissions:
+  contents: write

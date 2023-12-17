@@ -11,6 +11,7 @@
       "vad.onnx"
     ],
     "mac": {
+      "artifactName": "${productName}.${ext}",
       "target": [
         {
           "arch": [

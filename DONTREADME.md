@@ -68,11 +68,15 @@ Some folks might say that a higher price makes you use the tool more. You know, 
 
 1. Make sure you're using a Mac.
 
-1. Get [git](https://formulae.brew.sh/formula/git#default) installed.
+1. Install [Git](https://formulae.brew.sh/formula/git#default).
 
-1. Get [devenv](https://devenv.sh/getting-started/) installed too.
+1. Install [devenv](https://devenv.sh/getting-started/).
 
-1. Get [direnv](https://formulae.brew.sh/formula/direnv#default) installed as well.
+1. Install [direnv](https://formulae.brew.sh/formula/direnv#default).
+
+1. Install [Visual Studio Code](https://formulae.brew.sh/cask/visual-studio-code#default).
+
+1. If you have installed Visual Studio Code not using Homebrew, [add it to your system's PATH](https://code.visualstudio.com/docs/setup/mac#_launching-from-the-command-line).
 
 1. Run the following commands:
 
@@ -84,12 +88,6 @@ Some folks might say that a higher price makes you use the tool more. You know, 
 
 The `devenv.nix` file has got all the scripts you need.
 
-> Why does this tool mess with my third-party tools when I first run this tool?
-
-I could've asked you to edit your `.skhdrc` file to make a shortcut for this tool. But that would be a hassle.
-
-And I couldn't do it for you, because that would break [Homebrew's policy](https://docs.brew.sh/Homebrew-and-Python#:~:text=homebrew%20has%20a%20strict%20policy%20never%20to%20write%20stuff%20outside%20of%20the%20brew%20--prefix).
-
 ## Architecture
 
 > Why not just let a cloud server handle the transcript API calls?
@@ -100,27 +98,39 @@ Plus, it's a breeze to develop and test `say` using Mac.
 
 > Why not use a dedicated recording device?
 
-I wanted to make say easy to try out.
+I wanted to make `say` easy to try out.
+
+> Why not a standalone iPhone app?
+
+Because iOS won't let you do continuous real-time voice detection and transcription in the background, as [iOS's general-purpose background execution has certain limitations](https://developer.apple.com/forums/thread/685525#:~:text=iOS%20puts%20strict,or%20IPC%20request).
 
 ## Functionality
 
-### CLI
+### Background Process
 
-> Does this tool conflict with the macOS built-in `say` command?
+> Where does this tool store the API key?
 
-Yes, `say` intentionally replaces the macOS built-in `say`.
+The API key is in `~/.config/say/key`.
 
-> Why not use an alias to avoid conflict?
+> Why not `Application Support`?
 
-I wanted to keep installation and usage simple.
+`~/.config` is the standard config folder for Unix systems. It's easier to access from the command line.
 
-Plus, using the macOS `say` while this tool is active might mess up the recording and transcription.
+> Is the API key encrypted?
 
-> How does this tool store the API key?
+Nope. It's plain text. This way, you can easily update it as needed.
 
-It doesn't store it on disk, only in memory. This keeps the code simple and secure.
+> Does this tool run automatically after a system reboot?
 
-Designed for continuous operation, `say` ideally requires the API key to be entered just once.
+Yes, `say` uses macOS Launch Agents to start itself automatically.
+
+> What happens if this tool stops unexpectedly?
+
+`say` also uses macOS Launch Agents to restart itself automatically.
+
+> Why not use Login Items?
+
+Login Items only work when you log in. They won't help you if `say` stops working for some reason.
 
 ### Recording
 
@@ -136,27 +146,45 @@ Even the sound of typing can sometimes reveal what you're typing. This is risky 
 
 If you want to document everything, you might consider recording video. But this has its own risks, such as accidentally capturing yourself naked.
 
+> So, does this tool store any audio at all?
+
+Yep, `say` does temporarily store audio, but it uses the Opus format.
+
+> Why Opus and not MP3?
+
+Opus is pretty cool because it allows real-time compression. MP3 needs the whole audio file to get the best encoding.
+
+Plus, Opus gives you a small file size but still keeps the quality high.
+
+For MP3, it's recommended to use 128 kbps for [audiobooks](<https://support.google.com/books/partner/answer/7504302#file-formats:~:text=mp3%20(cbr%20preferred)%2C%20%3E%3D128kbps%20(mono)>)/[podcasts](https://learn.acast.com/en/articles/3505536-which-audio-file-format-should-i-use-for-my-podcast#sharing:~:text=we%20recommend%20uploading%20mp3%20files%20with%20a%20bitrate%20of%20128kbps.). But if you're using Opus, you can get away with just 24 Kbps for [audiobooks/podcasts](https://wiki.xiph.org/Opus_Recommended_Settings#Recommended_Bitrates:~:text=down%20this%20page.-,Audiobooks%20%2F%20Podcasts,24,-Bitrates%20from%20here).
+
+> How many times larger is a 128 kbps MP3 file than a 24 kbps Opus file?
+
+It's about 5.3333 times larger.
+
+$$\frac{128\text{ kbps}}{24\text{ kbps}} \approx 5.3333$$
+
+> Is latency linearly proportional to file size?
+
+No, latency does not increase linearly with file size. TCP slow start gradually increases data transmission rate. So, even though MP3 file is larger, the actual latency does not increase proportionally.
+
+> What sample rate is used?
+
+`say` uses a sample rate of 16 kHz. Google recommends [a sample rate of at least 16 kHz in the audio files that you use for transcription](https://cloud.google.com/speech-to-text/docs/optimizing-audio-files-for-speech-to-text#sample_rate_frequency_range:~:text=We%20recommend%20a%20sample%20rate%20of%20at%20least%2016%20kHz%20in%20the%20audio%20files%20that%20you%20use%20for%20transcription%20with%20Speech%2Dto%2DText.).
+
 ### Trigger
 
-#### Manual
+> Why does this tool use `⌘ + ;` to trigger transcription?
 
-> Why does this tool use `Shift + Space` to trigger transcription?
+`⌘` is the easiest modifier to reach, and `;` is the only home position key that doesn't clash with major shortcuts.
 
-`Shift + Space` is to press and it doesn't clash with anything.
+For example, `⌘ + ;` conflicts with the next spelling and grammar check, which is not very handy without a shortcut to go back.
 
-> Why doesn't this tool use `⌘ + Space` to trigger transcription?
-
-`⌘ + Space` is used by Spotlight or other launchers.
-
-> Why doesn't this tool use `Ctrl + Space` to trigger transcription?
-
-`Ctrl + Space` triggers auto-suggestions in IDEs, like VS Code.
-
-#### Automatic
+Also, `⌘ + ;` conflicts with Excel's time insertion, but that's not very common.
 
 > When does `say` start transcribing automatically?
 
-The automatic trigger is based on voice activity. `say` listens to you and waits for a pause before it starts transcribing.
+The automatic trigger is based on voice activity. `say` listens to you and waits for a pause before it starts transcribing. It's all thanks to the Silero VAD's ONNX model that detects your voice activity.
 
 > Why does this tool wait for a pause?
 
@@ -192,13 +220,17 @@ Confidence intervals are great for estimating the mean, but a tolerance interval
 
 I want to be safe and avoid cutting off your words in the middle.
 
+> Why use ONNX instead of PyTorch?
+
+Speed, my friend! The ONNX model [may even run up to 4-5x faster](https://github.com/snakers4/silero-vad/blob/5e7ee10ee065ab2b98751dd82b28e3c6360e19aa/README.md?plain=1#L37), which means less CPU usage. That's awesome for `say`, since it's always on.
+
 ### Transcription
 
 > Why not do transcription locally?
 
 `say` uses a powerful API that can transcribe speech cheap, fast, and accurately. Deepgram seems to be the best one right now.
 
-With [Deepgram's Pay-as-You-Go at $0.0043/min](https://deepgram.com/pricing#:~:text=Deepgram%20Nova%2D2,at%20%240.0043/min), here's a quick math:
+With [Deepgram's Pay-as-You-Go at $0.0043/min](https://deepgram.com/pricing#:~:text=Nova%2D2,%240.0043/min), here's a quick math:
 
 An average month has about 30.44 days.
 
@@ -231,6 +263,14 @@ This also makes it easy to search for a specific date.
 Each sentence in `say` gets its own line. That way, you can easily move up and down with `j` and `k`.
 
 ### Transcript
+
+> What permissions are assigned to each transcription file?
+
+Each transcription file is assigned `-r--------` permissions. Only you can read them.
+
+> What permissions are assigned to each transcription directory?
+
+Each transcription directory is assigned `drwx------` permissions. Only you can access it.
 
 > How does this tool keep its transcript read-only when it updates it?
 

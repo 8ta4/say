@@ -1,0 +1,42 @@
+{
+  "build": {
+    "asar": false,
+    "files": [
+      "audio.js",
+      "index.html",
+      "main.js",
+      "output",
+      "renderer.js",
+      "vad.onnx"
+    ],
+    "mac": {
+      "artifactName": "${productName}.${ext}",
+      "target": [
+        {
+          "arch": [
+            "universal"
+          ],
+          "target": "dmg"
+        }
+      ],
+      "x64ArchFiles": "**/*"
+    }
+  },
+  "dependencies": {
+    "@deepgram/sdk": "^3.0.1",
+    "app-root-path": "^3.1.0",
+    "dayjs": "^1.11.10",
+    "fix-path": "^4.0.0",
+    "onnxruntime-node": "^1.16.3",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1",
+    "nodemon": "^3.0.2",
+    "spago": "0.21.0"
+  },
+  "main": "main.js",
+  "name": "say",
+  "version": "1.0.0"
+}

@@ -3,66 +3,69 @@
 {
   # https://devenv.sh/basics/
   env.GREET = "devenv";
-  env.PIPENV_VENV_IN_PROJECT = "True";
 
   # https://devenv.sh/packages/
   packages = [
-    pkgs.jdk17
-    pkgs.ghcid
+    pkgs.ffmpeg
     pkgs.git
-    pkgs.lame
-    pkgs.leiningen
-    # I initially used Poetry for managing Python dependencies. However, I encountered a persistent issue when installing the project via Homebrew. The error was related to Poetry's handling of lock files in the PyPI cache directory.
-    pkgs.pipenv
-    pkgs.portaudio
+    pkgs.gitleaks
+    pkgs.purescript
+    pkgs.nodePackages.purescript-language-server
+
+    # https://github.com/electron-userland/electron-builder/blob/47e66ca64a89395a49300e8b2da1d9baeb93825a/docs/index.md?plain=1#L33
+    pkgs.yarn-berry
   ];
 
   # https://devenv.sh/scripts/
   scripts.hello.exec = "echo hello from $GREET";
-  scripts.build.exec = ''
-    cd "$DEVENV_ROOT/clj"
-    ${pkgs.leiningen}/bin/lein uberjar
-    cd "$DEVENV_ROOT/hs"
-    ${pkgs.haskellPackages.stack}/bin/stack --local-bin-path . --nix install
-    cd "$DEVENV_ROOT"
-    tar czf say.tar.gz Pipfile Pipfile.lock clj/target/uberjar/say.jar hs
+
+  # https://github.com/electron-userland/electron-builder/blob/47e66ca64a89395a49300e8b2da1d9baeb93825a/docs/index.md?plain=1#L93
+  scripts.dist.exec = ''
+    build
+    electron-builder -p never
   '';
-  scripts.ghci.exec = ''
-    export DEVELOPMENT=1
-    cd "$DEVENV_ROOT/hs"
-    ${pkgs.ghcid}/bin/ghcid --command="${pkgs.stack}/bin/stack ghci" -T="main" --warnings
+
+  # https://github.com/NixOS/nixpkgs/issues/253198
+  # I am using `yarn` to install `spago` due to issues encountered when trying to use `pkgs.spago` and `languages.purescript.enable`.
+  # The package spago-0.20.9 is marked as broken in the Nix packages repository, which caused the error.
+  scripts.build.exec = ''
+    ${pkgs.yarn-berry}/bin/yarn install
+    spago build
+  '';
+
+  # https://github.com/electron-userland/electron-builder/blob/47e66ca64a89395a49300e8b2da1d9baeb93825a/docs/index.md?plain=1#L92
+  scripts.pack.exec = ''
+    build
+    electron-builder --dir
   '';
   scripts.run.exec = ''
-    export DEVELOPMENT=1
-    cd "$DEVENV_ROOT/hs"
-    ${pkgs.stack}/bin/stack --nix run
+    nodemon --watch output --exec './node_modules/.bin/electron .'
   '';
-  scripts.say.exec = ''
-    "$DEVENV_ROOT/hs/say"
+  scripts.watch.exec = ''
+    spago build --watch
   '';
 
   enterShell = ''
     hello
     git --version
-    source "$DEVENV_ROOT/.venv/bin/activate"
-    ${pkgs.pipenv}/bin/pipenv install
-    cd "$DEVENV_ROOT/clj"
-    ${pkgs.leiningen}/bin/lein deps
-    cd "$DEVENV_ROOT/hs"
-    ${pkgs.haskellPackages.stack}/bin/stack build --fast
+    export PATH="$(pwd)/node_modules/.bin:$PATH"
+    build
   '';
 
   # https://devenv.sh/languages/
   # languages.nix.enable = true;
-  languages.haskell.enable = true;
-  languages.python.enable = true;
 
   # https://devenv.sh/pre-commit-hooks/
   # pre-commit.hooks.shellcheck.enable = true;
   pre-commit.hooks = {
+    gitleaks = {
+      enable = true;
+      # https://github.com/gitleaks/gitleaks/blob/8de8938ad425d11edb0986c38890116525a36035/.pre-commit-hooks.yaml#L4C10-L4C54
+      entry = "${pkgs.gitleaks}/bin/gitleaks protect --verbose --redact --staged";
+    };
     nixpkgs-fmt.enable = true;
-    ormolu.enable = true;
     prettier.enable = true;
+    purs-tidy.enable = true;
     # https://github.com/cachix/pre-commit-hooks.nix/issues/31#issuecomment-744657870
     trailing-whitespace = {
       enable = true;

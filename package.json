@@ -1,7 +1,26 @@
 {
   "author": "",
   "build": {
-    "asar": false
+    "asar": false,
+    "files": [
+      "audio.js",
+      "index.html",
+      "main.js",
+      "output",
+      "renderer.js",
+      "vad.onnx"
+    ],
+    "mac": {
+      "target": [
+        {
+          "arch": [
+            "universal"
+          ],
+          "target": "dmg"
+        }
+      ],
+      "x64ArchFiles": "**/*"
+    }
   },
   "dependencies": {
     "@deepgram/sdk": "^3.0.1",

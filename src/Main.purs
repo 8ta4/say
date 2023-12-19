@@ -107,7 +107,7 @@ main = do
                     appendTextFile UTF8 transcriptFilepath transcript
                   _ -> pure unit
                 liftEffect do
-                  _ <- spawn "code" [ "-g", transcriptFilepath <> ":" <> "10000" ]
+                  when state.manual $ void $ spawn "code" [ "-g", transcriptFilepath <> ":" <> "10000" ]
                   modify_ (\state' -> state' { processing = false, manual = false }) ref
           pure stream'
 

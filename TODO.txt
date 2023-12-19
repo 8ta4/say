@@ -1,0 +1,2 @@
+Ensure Visual Studio Code only opens when transcription is manually initiated.
+Request microphone access just a single time.

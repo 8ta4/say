@@ -108,7 +108,7 @@ Here are some pro tips:
 - Keep your words simple and clear. It's like touch-typing for your voice.
 - Consider accent coaching. No offense, but Standard American English is the most recognized. Yeah, it's accentist.
 - Look into voice training. You don't want to lose your voice after a long chat, right?
-- Try to avoid background noise like music or movies.
+- Wear headphones or earphones when you listen to audio.
 - Living alone could be an option... if you're really serious about clean recordings.
 - And if all else fails... well, there's always divorce.
 

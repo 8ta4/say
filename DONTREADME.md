@@ -70,9 +70,9 @@ Some folks might say that a higher price makes you use the tool more. You know, 
 
 1. Install [Git](https://formulae.brew.sh/formula/git#default).
 
-1. Install [devenv](https://devenv.sh/getting-started/).
+1. Install [devenv](https://github.com/cachix/devenv/blob/dad24416b1ca61a5551db0de863b047765ac0454/docs/getting-started.md#installation).
 
-1. Install [direnv](https://formulae.brew.sh/formula/direnv#default).
+1. Install [direnv](https://github.com/cachix/devenv/blob/dad24416b1ca61a5551db0de863b047765ac0454/docs/automatic-shell-activation.md#installing-direnv).
 
 1. Install [Visual Studio Code](https://formulae.brew.sh/cask/visual-studio-code#default).
 

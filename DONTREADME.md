@@ -66,7 +66,7 @@ Some folks might say that a higher price makes you use the tool more. You know, 
 
 > How do I set up this tool's dev environment?
 
-1. Make sure you're using a Mac.
+1. Make sure you're using a Mac with Apple silicon.
 
 1. Install [Git](https://formulae.brew.sh/formula/git#default).
 

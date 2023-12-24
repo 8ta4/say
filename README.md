@@ -32,11 +32,11 @@
 
 1. Paste your API key in `~/.config/say/key`.
 
-1. Open `Finder`.
+1. Hit `⌘ + Space` to open your launcher.
 
-1. Go to `Applications`.
+1. Type `say`.
 
-1. Control-click `say` and choose Open, as this will [bypass Apple's security](https://support.apple.com/guide/mac-help/open-a-mac-app-from-an-unidentified-developer-mh40616/mac) that might block you.
+1. Hit `Enter` when `say` pops up.
 
 1. If asked, allow `say` to access your mic.
 

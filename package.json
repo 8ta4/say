@@ -14,7 +14,7 @@
       "target": [
         {
           "arch": [
-            "universal"
+            "arm64"
           ],
           "target": "dmg"
         }

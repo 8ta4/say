@@ -116,6 +116,10 @@ The API key is in `~/.config/say/key`.
 
 `~/.config` is the standard config folder for Unix systems. It's easier to access from the command line.
 
+> When does this tool check if my API key is legit? (Planned)
+
+`say` checks the validity of the API key every time you change it. This way, you get instant feedback if something is wrong.
+
 > Is the API key encrypted?
 
 Nope. It's plain text. This way, you can easily update it as needed.

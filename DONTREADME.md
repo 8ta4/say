@@ -246,6 +246,14 @@ So, you can transcribe roughly 12.73 hours of voice activity daily.
 
 Streaming transcription seems less accurate and more expensive.
 
+> Can the API call ever fail?
+
+Absolutely, API calls can fail. The usual suspects are:
+
+Network issues: If your Mac loses connection or has internet issues, you might run into problems.
+
+Invalid API key: If your API key is expired or incorrect, the API call won't go through.
+
 ### Segmentation
 
 > Why does each day gets its own file?

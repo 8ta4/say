@@ -120,11 +120,11 @@ The API key is in `~/.config/say/key`.
 
 Nope. It's plain text. This way, you can easily update it as needed.
 
-> Does this tool run automatically after a system reboot?
+> Does this tool run automatically after a system reboot? (Planned)
 
 Yes, `say` uses macOS Launch Agents to start itself automatically.
 
-> What happens if this tool stops unexpectedly?
+> What happens if this tool stops unexpectedly? (Planned)
 
 `say` also uses macOS Launch Agents to restart itself automatically.
 
@@ -134,7 +134,7 @@ Login Items only work when you log in. They won't help you if `say` stops workin
 
 ### Recording
 
-> Why doesn't this tool store my audio after transcribing?
+> Why doesn't this tool store my audio after transcribing? (Planned)
 
 Storing audio can amplify the observer effect, potentially making you more self-conscious.
 
@@ -264,15 +264,15 @@ Each sentence in `say` gets its own line. That way, you can easily move up and d
 
 ### Transcript
 
-> What permissions are assigned to each transcription file?
+> What permissions are assigned to each transcription file? (Planned)
 
 Each transcription file is assigned `-r--------` permissions. Only you can read them.
 
-> What permissions are assigned to each transcription directory?
+> What permissions are assigned to each transcription directory? (Planned)
 
 Each transcription directory is assigned `drwx------` permissions. Only you can access it.
 
-> How does this tool keep its transcript read-only when it updates it?
+> How does this tool keep its transcript read-only when it updates it? (Planned)
 
 1. `say` makes a copy of the `DD.txt` file and creates a temporary file in the system's temp directory. This ensures that the application directory doesn't get cluttered.
 

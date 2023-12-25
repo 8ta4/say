@@ -116,7 +116,7 @@ Here are some pro tips:
 
 The sound intensity is inversely proportional to the square of the distance.
 
-> Does this tool keep a record of the audio?
+> Does this tool keep a record of the audio? (Planned)
 
 Nope, `say` doesn't store any audio after it's transcribed.
 

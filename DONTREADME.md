@@ -186,6 +186,10 @@ For example, `⌘ + ;` conflicts with the next spelling and grammar check, which
 
 Also, `⌘ + ;` conflicts with Excel's time insertion, but that's not very common.
 
+> Can this tool just start transcribing on its own?
+
+Absolutely!
+
 > When does this tool start transcribing automatically?
 
 The automatic trigger is based on voice activity. `say` listens to you and waits for a pause before it starts transcribing. It's all thanks to the Silero VAD's ONNX model that detects your voice activity.

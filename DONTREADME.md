@@ -256,11 +256,11 @@ Absolutely, API calls can fail. The usual suspects are network issues.
 
 Error notification depends on whether transcription is triggered manually or automatically.
 
-> Will I get notified if transcription is triggered manually?
+> Will I get notified if transcription fails when it is triggered manually?
 
 Yup, you will.
 
-> Will I get notified if transcription is triggered automatically? (Planned)
+> Will I get notified if transcription fails when it is triggered automatically? (Planned)
 
 Nope, you won't. `say` is designed to be non-intrusive.
 

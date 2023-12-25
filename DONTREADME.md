@@ -254,6 +254,16 @@ Streaming transcription seems less accurate and more expensive.
 
 Absolutely, API calls can fail. The usual suspects are network issues.
 
+Error notification depends on whether transcription is triggered manually or automatically.
+
+> Will I get notified if transcription is triggered manually?
+
+Yup, you will.
+
+> Will I get notified if transcription is triggered automatically? (Planned)
+
+Nope, you won't. `say` is designed to be non-intrusive.
+
 > Does this tool retry if a transcription API call fails? (Planned)
 
 Yes, indeed! `say` will give it another shot if a transcription API call fails. If any future transcription API call succeeds, it triggers a retry.

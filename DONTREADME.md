@@ -276,11 +276,9 @@ Yes, indeed! `say` will give it another shot if a transcription API call fails. 
 
 > Why does each day gets its own file?
 
-Daily files load faster.
+This makes it easy to search for a specific date.
 
 If you need weekly or monthly transcriptions, you can simply concatenate the daily transcriptions.
-
-This also makes it easy to search for a specific date.
 
 > How does this tool segment each file?
 

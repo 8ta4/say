@@ -234,7 +234,11 @@ Speed, my friend! The ONNX model [may even run up to 4-5x faster](https://github
 
 > Can another transcription be triggered while one is already in progress? (Planned)
 
-Absolutely!
+Absolutely! The likelihood depends on whether the second trigger is manual or automatic.
+
+> If transcription is already happening, is overlap more likely with a manual or automatic second trigger? (Planned)
+
+Overlap is more likely with a manual second trigger.
 
 ### Transcription
 

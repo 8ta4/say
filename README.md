@@ -116,6 +116,10 @@ Here are some pro tips:
 
 The sound intensity is inversely proportional to the square of the distance.
 
+> Which mic does this tool pick? (Planned)
+
+`say` defaults to your built-in microphone. It's plug-and-play, no external mic needed.
+
 > Does this tool keep a record of the audio? (Planned)
 
 Nope, `say` doesn't store any audio after it's transcribed.

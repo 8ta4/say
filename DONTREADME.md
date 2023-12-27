@@ -66,17 +66,11 @@ Some folks might say that a higher price makes you use the tool more. You know, 
 
 > How do I set up this tool's dev environment?
 
-1. Make sure you're using a Mac with Apple silicon.
-
-1. Install [Git](https://formulae.brew.sh/formula/git#default).
+1. Follow the [setup steps](https://github.com/8ta4/say?tab=readme-ov-file#setup) in the README.md.
 
 1. Install [devenv](https://github.com/cachix/devenv/blob/dad24416b1ca61a5551db0de863b047765ac0454/docs/getting-started.md#installation).
 
 1. Install [direnv](https://github.com/cachix/devenv/blob/dad24416b1ca61a5551db0de863b047765ac0454/docs/automatic-shell-activation.md#installing-direnv).
-
-1. Install [Visual Studio Code](https://formulae.brew.sh/cask/visual-studio-code#default).
-
-1. If you have installed Visual Studio Code not using Homebrew, [add it to your system's PATH](https://code.visualstudio.com/docs/setup/mac#_launching-from-the-command-line).
 
 1. Run the following commands:
 

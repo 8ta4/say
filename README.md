@@ -116,9 +116,21 @@ Here are some pro tips:
 
 The sound intensity is inversely proportional to the square of the distance.
 
-> Which mic does this tool pick? (Planned)
+> Which mic does this tool use by default? (Planned)
 
 `say` defaults to your built-in microphone. It's plug-and-play, no external mic needed.
+
+> How do I switch to a different microphone? (Planned)
+
+To switch to a different microphone, you can define a hideaway. If you're not in a hideaway, `say` will automatically try to use an external microphone to minimize background noise.
+
+> Will this tool use the built-in microphone if an external one isn't available and I'm not in a hideaway? (Planned)
+
+No. If you're not in a hideaway and there's no external microphone, `say` won't use the built-in microphone to avoid recording poor audio. You can either connect an external microphone or designate your current location as a hideaway if you think the built-in microphone is good enough.
+
+> Can I set up multiple hideaways? (Planned)
+
+Yes, you can set up multiple network hideaways.
 
 > Does this tool keep a record of the audio? (Planned)
 

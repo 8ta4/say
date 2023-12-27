@@ -124,7 +124,7 @@ The sound intensity is inversely proportional to the square of the distance.
 
 To switch mics, set up a hideaway. If you're not in a hideaway, `say` will try to use an external mic to cut down on background noise.
 
-> Which mic does `say` use in a hideaway? (Planned)
+> Which mic does this tool use in a hideaway? (Planned)
 
 `say` sticks with your built-in mic in a hideaway.
 

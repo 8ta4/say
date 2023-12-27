@@ -240,7 +240,7 @@ Absolutely! The likelihood depends on whether the second trigger is manual or au
 
 Overlap is more likely with a manual second trigger.
 
-The automatic trigger is designed to kick in after it accumulates 1 minute of untranscribed speech. Usually, the transcription is done fast, keeping the latency under one second. This quick turnaround makes it pretty unlikely for a second automatic trigger to overlap with the previous one.
+The automatic trigger is designed to kick in after it accumulates 1 minute of untranscribed speech. Usually, the transcription is done fast, keeping the latency under one second. This quick turnaround makes it pretty unlikely for an automatic second trigger to overlap with the previous trigger.
 
 But a manual trigger can be activated anytime, so it's more likely to overlap.
 

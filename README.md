@@ -70,7 +70,7 @@ To access today's transcriptions, hit `⌘ + ;`.
 
 Each day's transcript is organized by year (`YYYY`), month (`MM`), and day (`DD`).
 
-> Can I modify the transcript files?
+> Can I modify the transcript files? (Planned)
 
 `DD.txt` is read-only. Sure, you could edit it, but let's not go there.
 

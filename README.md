@@ -84,9 +84,11 @@ You can back up the `~/.local/share/say` directory using your preferred method.
 
 You can protect your data using device-level encryption.
 
-> Does the tool filter out other voices?
+> Does this tool filter out other voices by default?
 
-No, `say` doesn't possess speaker identification capabilities. If there are multiple speakers, consider a fancy mic with:
+Nah, `say` is an equal-opportunity listener. It captures all voices equally by default.
+
+If there are multiple speakers, consider a fancy mic with:
 
 - Noise cancellation
 - Proximity to the mouth

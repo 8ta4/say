@@ -134,7 +134,7 @@ When you're not in a hideaway and your external mic is plugged in, `say` jumps o
 
 1. Hit `Enter` when `say` pops up.
 
-1. Click `Add the current network as a hideaway`
+1. Click `Add the current network as a hideaway`.
 
 > Which mic does this tool use in a hideaway? (Planned)
 
@@ -164,7 +164,7 @@ Once you've registered your voice with `say`, it'll start tuning out other voice
 
 1. Hit `Enter` when `say` pops up.
 
-1. Click `Record your voice sample`.
+1. Click `Record a voice sample`.
 
 1. Say something for 2 seconds in your usual conversational style.
 

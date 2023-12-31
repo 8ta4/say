@@ -278,21 +278,13 @@ Nope, you won't. `say` is designed to be non-intrusive.
 
 Yes, indeed! `say` will give it another shot if a transcription API call fails. If any future transcription API call succeeds, it triggers a retry.
 
-### Segmentation
+### Transcript
 
 > Why does each day gets its own file?
 
 This makes it easy to search for a specific date.
 
 If you need weekly or monthly transcriptions, you can simply concatenate the daily transcriptions.
-
-> How does this tool segment each file?
-
-`say` starts a new paragraph when you ask for transcription. This helps you keep track of what you have already used and what you need next. You can jump to the latest chunk of text with `Shift + [` and `Shift + ]`.
-
-Each sentence in `say` gets its own line. That way, you can easily move up and down with `j` and `k`.
-
-### Transcript
 
 > What permissions are assigned to each transcription file? (Planned)
 

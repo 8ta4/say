@@ -172,6 +172,14 @@ Nope, `say` doesn't store any audio after it's transcribed.
 
 But it uses Deepgram as the transcription service. And Deepgram say they only hold "[audio data for as long as necessary](https://help.deepgram.com/hc/en-us/articles/6126293557399-Data-Security-Privacy-FAQ#:~:text=Deepgram%20holds%20audio%20data%20for%20as%20long%20as%20necessary)", but who knows what that means.
 
+> How does this tool segment each file?
+
+`say` splits each file into handy chunks for easy navigation with your [Neovim plugin](https://github.com/vscode-neovim/vscode-neovim/blob/79beb2c83aaec45e87fcb543b78d8b3a7e8ff9e1/README.md#neovim-configuration).
+
+`say` starts a new paragraph when you ask for transcription. This helps you keep track of what you have already used and what you need next. You can jump to the latest chunk of text with `Shift + [` and `Shift + ]`.
+
+Each sentence in `say` gets its own line. That way, you can easily move up and down with `j` and `k`.
+
 > What's the main source of latency?
 
 Usually, it's the Deepgram API that slows things down.

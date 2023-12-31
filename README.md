@@ -124,13 +124,17 @@ The sound intensity is inversely proportional to the square of the distance.
 
 > How do I use an external mic? (Planned)
 
-Set up a hideaway. 
+1. Set up a hideaway.
 
-1. Hit `⌘ + ,`
+1. Plug in your external mic.
 
-2. Click `Add the current network as a hideaway`
+1. Get out of the hideaway.
 
-If you're not in a hideaway, `say` will try to use an external mic to cut down on background noise.
+> How do I set up a hideaway? (Planned)
+
+1. Press `⌘ + ,`
+
+1. Click `Add the current network as a hideaway`
 
 > Which mic does this tool use in a hideaway? (Planned)
 

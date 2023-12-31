@@ -122,9 +122,9 @@ The sound intensity is inversely proportional to the square of the distance.
 
 `say` defaults to your built-in microphone. It's plug-and-play, no external mic needed.
 
-> How do I switch mics? (Planned)
+> How do I use an external mic? (Planned)
 
-To switch mics, set up a hideaway. 
+Set up a hideaway. 
 
 1. Hit `⌘ + ,`
 

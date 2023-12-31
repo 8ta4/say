@@ -152,7 +152,7 @@ Yes, you can set up multiple network hideaways.
 
 Once you've registered your voice with `say`, it'll start tuning out other voices, unless you're chilling in a hideaway.
 
-> How do I capture my voice sample?
+> How do I capture my voice sample? (Planned)
 
 1. Find a quiet spot.
 

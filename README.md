@@ -124,7 +124,13 @@ The sound intensity is inversely proportional to the square of the distance.
 
 > How do I switch mics? (Planned)
 
-To switch mics, set up a hideaway. If you're not in a hideaway, `say` will try to use an external mic to cut down on background noise.
+To switch mics, set up a hideaway. 
+
+1. Hit `⌘ + ,`
+
+2. Click `Add the current network as a hideaway`
+
+If you're not in a hideaway, `say` will try to use an external mic to cut down on background noise.
 
 > Which mic does this tool use in a hideaway? (Planned)
 

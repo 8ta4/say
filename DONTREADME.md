@@ -302,6 +302,10 @@ Each transcription directory is assigned `drwx------` permissions. Only you can 
 
 1. `say` uses the atomic `rename` operation to replace the original `DD.txt` file with the modified temporary file. This atomic operation ensures that the `DD.txt` file is always consistent.
 
+> Will my transcript automatically refresh when the transcription is auto-triggered?
+
+Absolutely! Visual Studio Code has this nifty [auto-reload feature](https://stackoverflow.com/questions/30078077/visual-studio-code-auto-refresh-file-changes#:~:text=vscode%20will%20never%20refresh%20the%20file%20if%20you%20have%20changes%20in%20that%20file%20that%20are%20not%20saved%20to%20disk.%20however%2C%20if%20the%20file%20is%20open%20and%20does%20not%20have%20changes%2C%20it%20will%20replace%20with%20the%20changes%20on%20disk%2C%20that%20is%20true.)
+
 > Does this tool do application-level encryption?
 
 No. Encryption would mean dealing with decryption keys or passphrases, and that's no fun.
@@ -311,11 +315,3 @@ If you lose your key or something goes wrong with the encryption, you might lose
 Plus, I want you to be able to open your transcripts with any tool you like.
 
 But you can still use device-level encryption if you want.
-
-> Why does this tool prefer Visual Studio Code for viewing transcript files?
-
-It's got this cool [auto-reload feature](https://stackoverflow.com/questions/30078077/visual-studio-code-auto-refresh-file-changes#:~:text=vscode%20will%20never%20refresh%20the%20file%20if%20you%20have%20changes%20in%20that%20file%20that%20are%20not%20saved%20to%20disk.%20however%2C%20if%20the%20file%20is%20open%20and%20does%20not%20have%20changes%2C%20it%20will%20replace%20with%20the%20changes%20on%20disk%2C%20that%20is%20true.) built right in.
-
-It can be set up to [honor read-only files](https://code.visualstudio.com/docs/getstarted/settings#:~:text=//%20Marks%20files%20as%20read%2Donly%20when%20their%20file%20permissions%20indicate%20as%20such.%20This%20can%20be%20overridden%20via%20%60files.readonlyInclude%60%20and%20%60files.readonlyExclude%60%20settings.%0A%20%20%22files.readonlyFromPermissions%22%3A%20false%2C).
-
-It's got a [Neovim plugin](https://github.com/vscode-neovim/vscode-neovim/blob/79beb2c83aaec45e87fcb543b78d8b3a7e8ff9e1/README.md#neovim-configuration) that plays nice with your existing Neovim config.

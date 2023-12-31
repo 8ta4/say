@@ -144,6 +144,10 @@ No. If you're not in a hideaway and there's no external mic, `say` won't use the
 
 Yes, you can set up multiple network hideaways.
 
+> When does this tool start giving other voices the silent treatment? (Planned)
+
+Once you've registered your voice with `say`, it'll start tuning out other voices, unless you're chilling in a hideaway.
+
 > Does this tool keep a record of the audio? (Planned)
 
 Nope, `say` doesn't store any audio after it's transcribed.

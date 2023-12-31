@@ -12,10 +12,6 @@
 
 1. Make sure you're using a Mac with Apple silicon.
 
-1. Be located in the continental US to minimize latency, as "[[a]ll Deepgram data is processed inside of the continental US](https://help.deepgram.com/hc/en-us/articles/6126293557399-Data-Security-Privacy-FAQ#:~:text=all%20deepgram%20data%20is%20processed%20inside%20of%20the%20continental%20us..)."
-
-1. Check that you have an internet connection with an upload bandwidth of at least 1 Gbps.
-
 1. Install [Homebrew](https://brew.sh/#install).
 
 1. Enter this command in your terminal:
@@ -175,3 +171,12 @@ Once you've registered your voice with `say`, it'll start tuning out other voice
 Nope, `say` doesn't store any audio after it's transcribed.
 
 But it uses Deepgram as the transcription service. And Deepgram say they only hold "[audio data for as long as necessary](https://help.deepgram.com/hc/en-us/articles/6126293557399-Data-Security-Privacy-FAQ#:~:text=Deepgram%20holds%20audio%20data%20for%20as%20long%20as%20necessary)", but who knows what that means.
+
+> What's the main source of latency?
+
+Usually, it's the Deepgram API that slows things down.
+
+Here are some hacks to speed it up:
+
+- Stay in the continental US to reduce latency, as "[[a]ll Deepgram data is processed inside of the continental US](https://help.deepgram.com/hc/en-us/articles/6126293557399-Data-Security-Privacy-FAQ#:~:text=all%20deepgram%20data%20is%20processed%20inside%20of%20the%20continental%20us..)."
+- Get an internet connection with an upload bandwidth of at least 1 Gbps.

@@ -122,13 +122,9 @@ The sound intensity is inversely proportional to the square of the distance.
 
 `say` defaults to your built-in microphone. It's plug-and-play, no external mic needed.
 
-> How do I use an external mic? (Planned)
+> When does this tool start using my external mic? (Planned)
 
-1. Set up a hideaway.
-
-1. Plug in your external mic.
-
-1. Get out of the hideaway.
+When you're not in a hideaway and your external mic is plugged in, `say` jumps on it to reduce background noise.
 
 > How do I set up a hideaway? (Planned)
 

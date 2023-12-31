@@ -50,39 +50,18 @@ To save some bucks, `say` uses voice activity detection (VAD) to cut down on unn
 
 To access today's transcriptions, hit `⌘ + ;`.
 
-> How are my transcriptions organized?
+> What's the main source of latency?
 
-`say` organizes your transcripts in a specific directory structure:
+Usually, it's the Deepgram API that slows things down.
 
-```
- ~/.local/share/say
-│
-├── YYYY
-│   ├── MM
-│   │   ├── DD.txt
-```
+Here are some hacks to speed it up:
 
-Each day's transcript is organized by year (`YYYY`), month (`MM`), and day (`DD`).
+- Stay in the continental US to reduce latency, as "[[a]ll Deepgram data is processed inside of the continental US.](https://help.deepgram.com/hc/en-us/articles/6126293557399-Data-Security-Privacy-FAQ#:~:text=all%20deepgram%20data%20is%20processed%20inside%20of%20the%20continental%20us.)"
+- Get an internet connection with an upload bandwidth of at least 1 Gbps.
 
-> Can I modify the transcript files? (Planned)
+> Which mic does this tool use by default? (Planned)
 
-`DD.txt` is read-only. Sure, you could edit it, but let's not go there.
-
-If you want to annotate or edit something, copy the content to a new file and work on that.
-
-You can tweak Visual Studio Code to [respect read-only file settings](https://code.visualstudio.com/docs/getstarted/settings#:~:text=//%20Marks%20files%20as%20read%2Donly%20when%20their%20file%20permissions%20indicate%20as%20such.%20This%20can%20be%20overridden%20via%20%60files.readonlyInclude%60%20and%20%60files.readonlyExclude%60%20settings.%0A%20%20%22files.readonlyFromPermissions%22%3A%20false%2C).
-
-> How do I back up my transcripts?
-
-You can back up the `~/.local/share/say` directory using your preferred method.
-
-> How do I secure my transcripts?
-
-You can protect your data using device-level encryption.
-
-> Does this tool filter out other voices by default?
-
-Nah, `say` is an equal-opportunity listener. It captures all voices equally by default.
+`say` defaults to your built-in microphone. It's plug-and-play, no external mic needed.
 
 If there are multiple speakers, consider a fancy mic with:
 
@@ -114,10 +93,6 @@ Here are some pro tips:
 
 The sound intensity is inversely proportional to the square of the distance.
 
-> Which mic does this tool use by default? (Planned)
-
-`say` defaults to your built-in microphone. It's plug-and-play, no external mic needed.
-
 > When does this tool start using my external mic? (Planned)
 
 When you're not in a hideaway and your external mic is plugged in, `say` jumps on it to reduce background noise.
@@ -146,6 +121,16 @@ No. If you're not in a hideaway and there's no external mic, `say` won't use the
 
 Yes, you can set up multiple network hideaways.
 
+> Does this tool keep a record of the audio? (Planned)
+
+Nope, `say` doesn't store any audio after it's transcribed.
+
+But it uses Deepgram as the transcription service. And Deepgram say they only hold "[audio data for as long as necessary](https://help.deepgram.com/hc/en-us/articles/6126293557399-Data-Security-Privacy-FAQ#:~:text=Deepgram%20holds%20audio%20data%20for%20as%20long%20as%20necessary)", but who knows what that means.
+
+> Does this tool filter out other voices by default?
+
+Nah, `say` is an equal-opportunity listener. It captures all voices equally by default.
+
 > When does this tool start ignoring other voices? (Planned)
 
 Once you've registered your voice with `say`, it'll start tuning out other voices, unless you're chilling in a hideaway.
@@ -166,11 +151,19 @@ Once you've registered your voice with `say`, it'll start tuning out other voice
 
 1. Say something for 2 seconds in your usual conversational style.
 
-> Does this tool keep a record of the audio? (Planned)
+> How are my transcriptions organized?
 
-Nope, `say` doesn't store any audio after it's transcribed.
+`say` organizes your transcripts in a specific directory structure:
 
-But it uses Deepgram as the transcription service. And Deepgram say they only hold "[audio data for as long as necessary](https://help.deepgram.com/hc/en-us/articles/6126293557399-Data-Security-Privacy-FAQ#:~:text=Deepgram%20holds%20audio%20data%20for%20as%20long%20as%20necessary)", but who knows what that means.
+```
+ ~/.local/share/say
+│
+├── YYYY
+│   ├── MM
+│   │   ├── DD.txt
+```
+
+Each day's transcript is organized by year (`YYYY`), month (`MM`), and day (`DD`).
 
 > How does this tool segment each file?
 
@@ -180,11 +173,18 @@ But it uses Deepgram as the transcription service. And Deepgram say they only ho
 
 Each sentence in `say` gets its own line. That way, you can easily move up and down with `j` and `k`.
 
-> What's the main source of latency?
+> Can I modify the transcript files? (Planned)
 
-Usually, it's the Deepgram API that slows things down.
+`DD.txt` is read-only. Sure, you could edit it, but let's not go there.
 
-Here are some hacks to speed it up:
+If you want to annotate or edit something, copy the content to a new file and work on that.
 
-- Stay in the continental US to reduce latency, as "[[a]ll Deepgram data is processed inside of the continental US.](https://help.deepgram.com/hc/en-us/articles/6126293557399-Data-Security-Privacy-FAQ#:~:text=all%20deepgram%20data%20is%20processed%20inside%20of%20the%20continental%20us.)"
-- Get an internet connection with an upload bandwidth of at least 1 Gbps.
+You can tweak Visual Studio Code to [respect read-only file settings](https://code.visualstudio.com/docs/getstarted/settings#:~:text=//%20Marks%20files%20as%20read%2Donly%20when%20their%20file%20permissions%20indicate%20as%20such.%20This%20can%20be%20overridden%20via%20%60files.readonlyInclude%60%20and%20%60files.readonlyExclude%60%20settings.%0A%20%20%22files.readonlyFromPermissions%22%3A%20false%2C).
+
+> How do I back up my transcripts?
+
+You can back up the `~/.local/share/say` directory using your preferred method.
+
+> How do I secure my transcripts?
+
+You can protect your data using device-level encryption.

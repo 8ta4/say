@@ -128,7 +128,11 @@ When you're not in a hideaway and your external mic is plugged in, `say` jumps o
 
 > How do I set up a hideaway? (Planned)
 
-1. Press `⌘ + ,`
+1. Hit `⌘ + Space` to open your launcher.
+
+1. Type `say`.
+
+1. Hit `Enter` when `say` pops up.
 
 1. Click `Add the current network as a hideaway`
 

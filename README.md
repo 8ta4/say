@@ -148,9 +148,25 @@ No. If you're not in a hideaway and there's no external mic, `say` won't use the
 
 Yes, you can set up multiple network hideaways.
 
-> When does this tool start giving other voices the silent treatment? (Planned)
+> When does `say` start ignoring other voices? (Planned)
 
 Once you've registered your voice with `say`, it'll start tuning out other voices, unless you're chilling in a hideaway.
+
+> How do I capture my voice sample?
+
+1. Find a quiet spot.
+
+1. Hook up your external mic.
+
+1. Hit `⌘ + Space` to open your launcher.
+
+1. Type `say`.
+
+1. Hit `Enter` when `say` pops up.
+
+1. Click `Record your voice sample`.
+
+1. Say something for 2 seconds in your usual conversational style.
 
 > Does this tool keep a record of the audio? (Planned)
 

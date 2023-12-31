@@ -146,7 +146,7 @@ No. If you're not in a hideaway and there's no external mic, `say` won't use the
 
 Yes, you can set up multiple network hideaways.
 
-> When does `say` start ignoring other voices? (Planned)
+> When does this tool start ignoring other voices? (Planned)
 
 Once you've registered your voice with `say`, it'll start tuning out other voices, unless you're chilling in a hideaway.
 

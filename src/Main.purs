@@ -11,7 +11,7 @@ import Effect (Effect)
 import Effect.Aff (launchAff_)
 import Effect.Class (liftEffect)
 import Effect.Ref (modify_, new, read, write)
-import Float32Array (Float32Array, length, splitAt, takeEnd)
+import Float32Array (Float32Array, length, splitAt)
 import Node.ChildProcess (ChildProcess, spawn, stdin)
 import Node.Encoding (Encoding(..))
 import Node.FS.Aff (appendTextFile, mkdir')
@@ -45,7 +45,7 @@ main = do
 
       -- TODO: Add padding both before and after the audio. https://github.com/snakers4/silero-vad/blob/94504ece54c8caeebb808410b08ae55ee82dba82/utils_vad.py#L210-L211
       -- TODO: Enable concurrent processing.
-      ref <- new { stream: stream, pause: mempty, streamLength: 0, raw: mempty, h: tensor, c: tensor, processing: false, manual: false }
+      ref <- new { stream: stream, streamLength: 0, pad: mempty, pauseLength: 0, raw: mempty, h: tensor, c: tensor, processing: false, manual: false }
       let
         record audio = do
           state <- read ref
@@ -54,7 +54,7 @@ main = do
           -- https://developer.mozilla.org/en-US/docs/Web/API/AudioWorkletProcessor/process#sect1
           if length raw >= windowSizeSamples then do
             let { before, after } = splitAt windowSizeSamples raw
-            write (state { raw = after, pause = takeEnd samplesInPause $ state.pause <> before }) ref
+            write (state { raw = after }) ref
             launchAff_ $ do
 
               -- TODO: Ensure `run` is not executed concurrently to avoid using incorrect `h` and `c`
@@ -65,10 +65,11 @@ main = do
 
                 -- https://github.com/snakers4/silero-vad/blob/5e7ee10ee065ab2b98751dd82b28e3c6360e19aa/utils_vad.py#L187-L188
                 if (0.5 < result.probability) then do
-                  write (state'' { streamLength = state'.streamLength + length state'.pause, pause = mempty }) ref
-                  push state'.stream $ state'.pause
-                else if samplesInStream < state'.streamLength && samplesInPause == length state'.pause then save'
-                else write state'' ref
+                  write (state'' { streamLength = state'.streamLength + length state'.pad + length before, pad = mempty, pauseLength = 0 }) ref
+                  push state'.stream $ state'.pad <> before
+                else do
+                  write state'' { pad = before, pauseLength = state.pauseLength + length before } ref
+                  when (samplesInStream < state'.streamLength && samplesInPause < state'.pauseLength) save'
           else
             write (state { raw = raw }) ref
         save = do
@@ -78,10 +79,10 @@ main = do
           state <- read ref
           traceM "Current stream length:"
           traceM state.streamLength
-          push state.stream $ state.pause <> state.raw
+          push state.stream $ state.pad <> state.raw
           end state.stream
           stream' <- createStream
-          write (state { stream = stream', pause = mempty, raw = mempty, streamLength = 0 }) ref
+          write (state { stream = stream', streamLength = 0, pad = mempty, pauseLength = 0, raw = mempty }) ref
         createStream = do
           stream' <- newReadable
           uuid <- genUUID

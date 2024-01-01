@@ -30,11 +30,3 @@ slice = runFn3 sliceImpl
 
 -- https://github.com/purescript/purescript-arrays/blob/6554b3d9c1ebb871477ffa88c2f3850d714b42b0/src/Data/Array.purs#L932
 foreign import sliceImpl :: Fn3 Int Int Float32Array Float32Array
-
--- https://github.com/purescript/purescript-arrays/blob/6554b3d9c1ebb871477ffa88c2f3850d714b42b0/src/Data/Array.purs#L957-L958
-takeEnd :: Int -> Float32Array -> Float32Array
-takeEnd n xs = drop (length xs - n) xs
-
--- https://github.com/purescript/purescript-arrays/blob/6554b3d9c1ebb871477ffa88c2f3850d714b42b0/src/Data/Array.purs#L980-L981
-drop :: Int -> Float32Array -> Float32Array
-drop n xs = if n < 1 then xs else slice n (length xs) xs

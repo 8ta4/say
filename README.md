@@ -149,7 +149,7 @@ Once you've registered your voice with `say`, it'll start tuning out other voice
 
 1. Click `Record a voice sample`.
 
-1. Say something for 2 seconds in your usual conversational style.
+1. Say something in your usual conversational style.
 
 > How are my transcriptions organized?
 

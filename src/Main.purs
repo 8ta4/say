@@ -45,7 +45,7 @@ main = do
 
       -- TODO: Add padding both before and after the audio. https://github.com/snakers4/silero-vad/blob/94504ece54c8caeebb808410b08ae55ee82dba82/utils_vad.py#L210-L211
       -- TODO: Enable concurrent processing.
-      ref <- new { stream: stream, pause: mempty, streamLength: 0, raw: mempty, h: tensor, c: tensor, processing: false, manual: false }
+      ref <- new { stream: stream, streamLength: 0, pause: mempty, raw: mempty, h: tensor, c: tensor, processing: false, manual: false }
       let
         record audio = do
           state <- read ref

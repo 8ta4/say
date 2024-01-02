@@ -186,6 +186,19 @@ The choice of a 1.5-second pause was statistically derived from storytelling and
 
 I chose the storytelling pause duration.
 
+> Why was storytelling chosen?
+
+I chose storytelling because its pause duration is longer, and I wanted to err on the side of caution to avoid cutting off mid-sentence.
+
+I used this nifty [script](https://stackoverflow.com/a/63706587/21856904) to compute a one-sided tolerance interval with 99% coverage and a 99% confidence level.
+
+> Why not use a confidence interval?
+
+Confidence intervals are great for estimating the mean, but a tolerance interval covers a specified proportion of the population, which is better for making sure we capture most of your speech accurately.
+
+> Why 99% and not 95%?
+
+I want to be safe and avoid cutting off your words in the middle.
 
 ### Hideaway (Planned)
 
@@ -228,20 +241,6 @@ Longer speech gives more context and improves accuracy.
 But I also want to keep things snappy with the manual trigger aiming for sub-second latency.
 
 From my experience, if the audio is 1 minute or less, the transcription API usually responds in under a second. But if the audio is 2 minutes or longer, the latency can extend to 1 second or more. And that's on a North American gigabit connection.
-
-> Why was storytelling chosen?
-
-I chose storytelling because its pause duration is longer, and I wanted to err on the side of caution to avoid cutting off mid-sentence.
-
-I used this nifty [script](https://stackoverflow.com/a/63706587/21856904) to compute a one-sided tolerance interval with 99% coverage and a 99% confidence level.
-
-> Why not use a confidence interval?
-
-Confidence intervals are great for estimating the mean, but a tolerance interval covers a specified proportion of the population, which is better for making sure we capture most of your speech accurately.
-
-> Why 99% and not 95%?
-
-I want to be safe and avoid cutting off your words in the middle.
 
 > Why use ONNX instead of PyTorch?
 

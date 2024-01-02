@@ -62,8 +62,6 @@ main = do
               liftEffect do
                 state' <- read ref
                 let state'' = state' { h = result.h, c = result.c }
-
-                -- https://github.com/snakers4/silero-vad/blob/5e7ee10ee065ab2b98751dd82b28e3c6360e19aa/utils_vad.py#L187-L188
                 if (0.5 < result.probability) then do
                   write (state'' { streamLength = state'.streamLength + length state'.pad + length before, pad = mempty, pauseLength = 0 }) ref
                   push state'.stream $ state'.pad <> before

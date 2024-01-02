@@ -170,7 +170,7 @@ No, latency does not increase linearly with file size. TCP slow start gradually 
 
 `say` uses a sample rate of 16 kHz. Google recommends [a sample rate of at least 16 kHz in the audio files that you use for transcription](https://cloud.google.com/speech-to-text/docs/optimizing-audio-files-for-speech-to-text#sample_rate_frequency_range:~:text=We%20recommend%20a%20sample%20rate%20of%20at%20least%2016%20kHz%20in%20the%20audio%20files%20that%20you%20use%20for%20transcription%20with%20Speech%2Dto%2DText.).
 
-> Does `say` pad voice activity? (Planned)
+> Does this tool pad voice activity?
 
 Absolutely! `say` adds a 1.5-second padding to make sure it captures everything.
 

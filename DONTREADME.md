@@ -170,6 +170,23 @@ No, latency does not increase linearly with file size. TCP slow start gradually 
 
 `say` uses a sample rate of 16 kHz. Google recommends [a sample rate of at least 16 kHz in the audio files that you use for transcription](https://cloud.google.com/speech-to-text/docs/optimizing-audio-files-for-speech-to-text#sample_rate_frequency_range:~:text=We%20recommend%20a%20sample%20rate%20of%20at%20least%2016%20kHz%20in%20the%20audio%20files%20that%20you%20use%20for%20transcription%20with%20Speech%2Dto%2DText.).
 
+> Does `say` pad voice activity? (Planned)
+
+Absolutely! `say` adds a 1.5-second padding to make sure it captures everything.
+
+We found that a padding of \(\frac{1536}{16000}\) seconds was too short. `say` was missing the start of the speech, resulting in incomplete transcriptions.
+
+For comparison, [Silero VAD uses an even shorter padding of 30 milliseconds](https://github.com/snakers4/silero-vad/blob/94504ece54c8caeebb808410b08ae55ee82dba82/utils_vad.py#L210-L211).
+
+The padding duration matches the 1.5-second pause. This consistency helps `say` capture natural speech patterns, including meaningful pauses.
+
+The 1.5 -second pause was statistically derived from storytelling and interview pause durations.
+
+The choice of a 1.5-second pause was statistically derived from storytelling and interview pause durations. [The mean pause duration in storytelling is 0.94 seconds (standard deviation: 0.23 seconds; sample size: 437), while in interviews it's 0.53 seconds (standard deviation: 0.06 seconds; sample size: 69)](https://www.researchgate.net/profile/Richard-Wiese-2/publication/257239931_The_Use_of_Time_in_Storytelling/links/00b4952d7b579ab2ac000000/The-Use-of-Time-in-Storytelling.pdf#page=11).
+
+I chose the storytelling pause duration.
+
+
 ### Hideaway (Planned)
 
 > How does this tool know when I'm at my hideaway?
@@ -211,12 +228,6 @@ Longer speech gives more context and improves accuracy.
 But I also want to keep things snappy with the manual trigger aiming for sub-second latency.
 
 From my experience, if the audio is 1 minute or less, the transcription API usually responds in under a second. But if the audio is 2 minutes or longer, the latency can extend to 1 second or more. And that's on a North American gigabit connection.
-
-The 1.5 second pause was statistically derived from storytelling and interview pause durations.
-
-The choice of a 1.5-second pause was statistically derived from storytelling and interview pause durations. [The mean pause duration in storytelling is 0.94 seconds (standard deviation: 0.23 seconds; sample size: 437), while in interviews it's 0.53 seconds (standard deviation: 0.06 seconds; sample size: 69)](https://www.researchgate.net/profile/Richard-Wiese-2/publication/257239931_The_Use_of_Time_in_Storytelling/links/00b4952d7b579ab2ac000000/The-Use-of-Time-in-Storytelling.pdf#page=11).
-
-I chose the storytelling pause duration.
 
 > Why was storytelling chosen?
 

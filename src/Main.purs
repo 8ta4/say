@@ -43,8 +43,8 @@ main = do
       key <- readTextFile UTF8 $ homeDirectoryPath <> "/.config/say/key"
       stream <- newReadable
 
-      -- TODO: Add padding both before and after the audio. https://github.com/snakers4/silero-vad/blob/94504ece54c8caeebb808410b08ae55ee82dba82/utils_vad.py#L210-L211
       -- TODO: Enable concurrent processing.
+      -- https://github.com/snakers4/silero-vad/blob/94504ece54c8caeebb808410b08ae55ee82dba82/utils_vad.py#L210-L211
       ref <- new { stream: stream, streamLength: 0, pad: mempty, pauseLength: 0, speaking: false, raw: mempty, h: tensor, c: tensor, processing: false, manual: false }
       let
         record audio = do

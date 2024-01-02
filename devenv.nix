@@ -43,7 +43,7 @@
     electron-builder --dir
   '';
   scripts.run.exec = ''
-    nodemon --watch output --exec 'pkill -f "node_modules/.bin/electron"; electron .'
+    nodemon --watch output --exec 'pkill -f "node_modules/electron"; electron .'
   '';
   scripts.watch.exec = ''
     spago build --watch

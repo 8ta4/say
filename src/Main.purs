@@ -11,7 +11,7 @@ import Effect (Effect)
 import Effect.Aff (launchAff_)
 import Effect.Class (liftEffect)
 import Effect.Ref (modify_, new, read, write)
-import Float32Array (Float32Array, length, splitAt)
+import Float32Array (Float32Array, length, splitAt, takeEnd)
 import Node.ChildProcess (ChildProcess, spawn, stdin)
 import Node.Encoding (Encoding(..))
 import Node.FS.Aff (appendTextFile, mkdir')
@@ -45,7 +45,7 @@ main = do
 
       -- TODO: Enable concurrent processing.
       -- https://github.com/snakers4/silero-vad/blob/94504ece54c8caeebb808410b08ae55ee82dba82/utils_vad.py#L210-L211
-      ref <- new { stream: stream, streamLength: 0, pad: mempty, pauseLength: 0, speaking: false, raw: mempty, h: tensor, c: tensor, processing: false, manual: false }
+      ref <- new { stream: stream, streamLength: 0, pad: mempty, pauseLength: 0, raw: mempty, h: tensor, c: tensor, processing: false, manual: false }
       let
         record audio = do
           state <- read ref
@@ -65,15 +65,14 @@ main = do
 
                 -- https://github.com/snakers4/silero-vad/blob/5e7ee10ee065ab2b98751dd82b28e3c6360e19aa/utils_vad.py#L187-L188
                 if (0.5 < result.probability) then do
-                  write (state'' { streamLength = state'.streamLength + length state'.pad + length before, pad = mempty, pauseLength = 0, speaking = true }) ref
+                  write (state'' { streamLength = state'.streamLength + length state'.pad + length before, pad = mempty, pauseLength = 0 }) ref
                   push state'.stream $ state'.pad <> before
                 else do
-                  let state''' = state'' { pauseLength = state'.pauseLength + length before, speaking = false }
-                  if state'.speaking then do
+                  let state''' = state'' { pauseLength = state'.pauseLength + length before }
+                  if state'.pauseLength <= samplesInPause then do
                     push state'.stream before
                     write state''' { pad = mempty } ref
-                  else
-                    write state''' { pad = before } ref
+                  else write state''' { pad = takeEnd samplesInPause $ state'.pad <> before } ref
                   when (samplesInStream < state'.streamLength && samplesInPause < state'.pauseLength) save'
           else
             write (state { raw = raw }) ref

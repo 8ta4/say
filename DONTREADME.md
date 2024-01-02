@@ -174,7 +174,7 @@ No, latency does not increase linearly with file size. TCP slow start gradually 
 
 Absolutely! `say` adds a 1.5-second padding to make sure it captures everything.
 
-We found that a padding of \(\frac{1536}{16000}\) seconds was too short. `say` was missing the start of the speech, resulting in incomplete transcriptions.
+We found that a padding of $\frac{1536}{16000}$ seconds was too short. `say` was missing the start of the speech, resulting in incomplete transcriptions.
 
 For comparison, [Silero VAD uses an even shorter padding of 30 milliseconds](https://github.com/snakers4/silero-vad/blob/94504ece54c8caeebb808410b08ae55ee82dba82/utils_vad.py#L210-L211).
 

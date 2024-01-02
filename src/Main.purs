@@ -35,6 +35,7 @@ main = do
     session <- toAffE $ createSession $ appRootPath <> "/vad.onnx"
     liftEffect do
       tempDirectory <- tmpdir
+
       -- https://nodejs.org/api/fs.html#fspromisesmkdtempprefix-options:~:text=mkdtemp(join(tmpdir()%2C%20%27foo%2D%27))
       appTempDirectory <- mkdtemp $ tempDirectory <> "/say-"
       traceM "App temp directory:"
@@ -56,7 +57,6 @@ main = do
             let { before, after } = splitAt windowSizeSamples raw
             write (state { raw = after }) ref
             launchAff_ $ do
-
               -- TODO: Ensure `run` is not executed concurrently to avoid using incorrect `h` and `c`
               result <- toAffE $ run session before state.h state.c
               liftEffect do

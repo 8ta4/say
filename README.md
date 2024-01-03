@@ -59,6 +59,14 @@ Here are some hacks to speed it up:
 - Stay in the continental US to reduce latency, as "[[a]ll Deepgram data is processed inside of the continental US.](https://help.deepgram.com/hc/en-us/articles/6126293557399-Data-Security-Privacy-FAQ#:~:text=all%20deepgram%20data%20is%20processed%20inside%20of%20the%20continental%20us.)"
 - Get an internet connection with an upload bandwidth of at least 1 Gbps.
 
+> Will my Mac automatically sleep while this tool is running? (Planned)
+
+Nope, your Mac stays awake when `say` is running, even on battery power. After all, `say`'s main gig is to capture voice round-the-clock. But hey, modern Macs have some serious battery stamina. Just find a plug when you can.
+
+> Can I manually make my Mac sleep while this tool is running?
+
+Absolutely! If you care more about saving battery, feel free to put your Mac to sleep.
+
 > Which mic does this tool use by default? (Planned)
 
 `say` defaults to your built-in microphone. It's plug-and-play, no external mic needed.

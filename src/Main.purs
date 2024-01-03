@@ -137,7 +137,7 @@ ar :: Int
 ar = 16000
 
 streamDuration :: Int
-streamDuration = 5
+streamDuration = 60
 
 samplesInStream :: Int
 samplesInStream = ar * streamDuration

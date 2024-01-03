@@ -62,7 +62,7 @@ main = do
               liftEffect do
                 state' <- read ref
                 let state'' = state' { h = result.h, c = result.c }
-                if (0.5 < result.probability) then do
+                if 0.5 < result.probability then do
                   write (state'' { streamLength = state'.streamLength + length state'.pad + length before, pad = mempty, pauseLength = 0 }) ref
                   push state'.stream $ state'.pad <> before
                 else do

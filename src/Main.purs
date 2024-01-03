@@ -46,7 +46,7 @@ main = do
 
       -- TODO: Enable concurrent processing.
       -- https://github.com/snakers4/silero-vad/blob/94504ece54c8caeebb808410b08ae55ee82dba82/utils_vad.py#L210-L211
-      ref <- new { stream: stream, streamLength: 0, pad: mempty, pauseLength: 0, raw: mempty, h: tensor, c: tensor, manual: false, processing: false }
+      ref <- new { stream: stream, streamLength: 0, pad: mempty, pauseLength: 0, raw: mempty, h: tensor, c: tensor, vad: false, manual: false, processing: false }
       let
         record audio = do
           state <- read ref
@@ -63,11 +63,11 @@ main = do
                 state' <- read ref
                 let state'' = state' { h = result.h, c = result.c }
                 if 0.5 < result.probability then do
-                  write (state'' { streamLength = state'.streamLength + length state'.pad + length before, pad = mempty, pauseLength = 0 }) ref
+                  write (state'' { streamLength = state'.streamLength + length state'.pad + length before, pad = mempty, pauseLength = 0, vad = true }) ref
                   push state'.stream $ state'.pad <> before
                 else do
                   let state''' = state'' { pauseLength = state'.pauseLength + length before }
-                  if state'.pauseLength <= samplesInPause then do
+                  if state'.pauseLength <= samplesInPause && state'.vad then do
                     write state''' { streamLength = state'.streamLength + length before } ref
                     push state'.stream before
                   else write state''' { pad = takeEnd samplesInPause $ state'.pad <> before } ref
@@ -84,7 +84,7 @@ main = do
           push state.stream $ state.pad <> state.raw
           end state.stream
           stream' <- createStream
-          write (state { stream = stream', streamLength = 0, pad = mempty, pauseLength = 0, raw = mempty }) ref
+          write (state { stream = stream', streamLength = 0, pad = mempty, pauseLength = 0, raw = mempty, vad = false }) ref
         createStream = do
           stream' <- newReadable
           uuid <- genUUID

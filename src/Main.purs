@@ -68,8 +68,8 @@ main = do
                 else do
                   let state''' = state'' { pauseLength = state'.pauseLength + length before }
                   if state'.pauseLength <= samplesInPause then do
+                    write state''' { streamLength = state'.streamLength + length before } ref
                     push state'.stream before
-                    write state''' { pad = mempty } ref
                   else write state''' { pad = takeEnd samplesInPause $ state'.pad <> before } ref
                   when (samplesInStream < state'.streamLength && samplesInPause < state'.pauseLength) save'
           else
@@ -137,7 +137,7 @@ ar :: Int
 ar = 16000
 
 streamDuration :: Int
-streamDuration = 60
+streamDuration = 5
 
 samplesInStream :: Int
 samplesInStream = ar * streamDuration

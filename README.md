@@ -99,7 +99,7 @@ Here are some pro tips:
 
 > Which mic does this tool use by default? (Planned)
 
-`say` defaults to your built-in microphone. It's plug-and-play, no external mic needed.
+`say` defaults to your built-in microphone.
 
 > How does the intensity of sound change as the microphone is moved further away?
 

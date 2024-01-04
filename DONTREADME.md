@@ -132,6 +132,10 @@ Login Items only work when you log in. They won't help you if `say` stops workin
 
 ### Recording
 
+> Why does this tool use the built-in microphone by default?
+
+I wanted to make `say` easy to try out.
+
 > Why doesn't this tool store my audio after transcribing? (Planned)
 
 Storing audio can amplify the observer effect, potentially making you more self-conscious.

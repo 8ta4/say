@@ -67,9 +67,9 @@ Nope, your Mac stays awake when `say` is running, even on battery power. After a
 
 Absolutely! If you care more about saving battery, feel free to put your Mac to sleep.
 
-> Which mic does this tool use by default? (Planned)
+> Does this tool filter out other voices?
 
-`say` defaults to your built-in microphone. It's plug-and-play, no external mic needed.
+Nah, `say` is an equal-opportunity listener.
 
 If there are multiple speakers, consider a fancy mic with:
 
@@ -96,6 +96,10 @@ Here are some pro tips:
 - Wear headphones or earphones when you listen to audio.
 - Living alone could be an option... if you're really serious about clean recordings.
 - And if all else fails... well, there's always divorce.
+
+> Which mic does this tool use by default? (Planned)
+
+`say` defaults to your built-in microphone. It's plug-and-play, no external mic needed.
 
 > How does the intensity of sound change as the microphone is moved further away?
 
@@ -134,30 +138,6 @@ Yes, you can set up multiple network hideaways.
 Nope, `say` doesn't store any audio after it's transcribed.
 
 But it uses Deepgram as the transcription service. And Deepgram say they only hold "[audio data for as long as necessary](https://help.deepgram.com/hc/en-us/articles/6126293557399-Data-Security-Privacy-FAQ#:~:text=Deepgram%20holds%20audio%20data%20for%20as%20long%20as%20necessary)", but who knows what that means.
-
-> Does this tool filter out other voices by default?
-
-Nah, `say` is an equal-opportunity listener. It captures all voices equally by default.
-
-> When does this tool start ignoring other voices? (Planned)
-
-Once you've registered your voice with `say`, it'll start tuning out other voices, unless you're chilling in a hideaway.
-
-> How do I capture my voice sample? (Planned)
-
-1. Find a quiet spot.
-
-1. Hook up your external mic.
-
-1. Hit `⌘ + Space` to open your launcher.
-
-1. Type `say`.
-
-1. Hit `Enter` when `say` pops up.
-
-1. Click `Record a voice sample`.
-
-1. Say something in your usual conversational style.
 
 > How are my transcriptions organized?
 

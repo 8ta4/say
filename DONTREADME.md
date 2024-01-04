@@ -132,6 +132,10 @@ Login Items only work when you log in. They won't help you if `say` stops workin
 
 ### Recording
 
+> Why doesn't this tool do speaker verification?
+
+Well, if `say` tried to filter voices, it might accidentally filter yours too.
+
 > Why does this tool use the built-in microphone by default?
 
 I wanted to make `say` easy to try out.

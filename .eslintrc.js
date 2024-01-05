@@ -21,6 +21,13 @@ module.exports = {
     sourceType: "module",
   },
   rules: {
+    // https://stackoverflow.com/a/68177043
+    "import/extensions": [
+      "error",
+      {
+        js: "ignorePackages",
+      },
+    ],
     "no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
   },
   settings: {

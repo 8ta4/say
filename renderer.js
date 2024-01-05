@@ -1,3 +1,3 @@
-import("./output/Renderer/index").then((module) => {
+import("./output/Renderer/index.js").then((module) => {
   module.main();
 });

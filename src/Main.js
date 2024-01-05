@@ -1,17 +1,18 @@
 import appRoot from "app-root-path";
 import { app, BrowserWindow, globalShortcut, ipcMain } from "electron";
 import dayjs from "dayjs";
-export { default as fixPath } from "fix-path";
 import { readFileSync } from "fs";
 import { InferenceSession, Tensor } from "onnxruntime-node";
 import { Readable } from "stream";
+
+export { default as fixPath } from "fix-path";
 
 export const getAppRootPath = () =>
   // https://github.com/inxilpro/node-app-root-path/blob/baf711a6ec61acf50aeb42fb6e5118e899bcbe4b/README.md?plain=1#L24
   appRoot.toString();
 
 export const createSession = (path) => async () =>
-  await InferenceSession.create(path);
+  InferenceSession.create(path);
 
 export const tensor = new Tensor(new Float32Array(2 * 1 * 64), [2, 1, 64]);
 
@@ -19,7 +20,12 @@ const sr = new Tensor(new BigInt64Array([16000n]));
 
 export const run = (session) => (audio) => (h) => (c) => async () => {
   const input = new Tensor(audio, [1, audio.length]);
-  const result = await session.run({ input: input, sr: sr, h: h, c: c });
+  const result = await session.run({
+    input,
+    sr,
+    h,
+    c,
+  });
   return { probability: result.output.data[0], h: result.hn, c: result.cn };
 };
 
@@ -51,12 +57,11 @@ export const transcribeImpl =
         smart_format: true,
       },
     );
-    const paragraphs = result.results.channels[0].alternatives[0].paragraphs;
+    const { paragraphs } = result.results.channels[0].alternatives[0];
     if (paragraphs) {
       return just(paragraphs);
-    } else {
-      return nothing;
     }
+    return nothing;
   };
 
 export const getCurrentDate = () => {

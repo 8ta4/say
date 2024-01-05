@@ -1,3 +1,3 @@
-import("./output/Main/index.js").then((module) => {
+import("./output/Main/index").then((module) => {
   module.main();
 });

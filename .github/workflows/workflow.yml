@@ -32,6 +32,8 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: dist/say.dmg
+      - run: nix log /nix/store/5iy100r4dhkgk5xgsgzmpci4fiawgrd2-pre-commit-run.drv
+        if: always()
 
 # https://github.com/softprops/action-gh-release/blob/c9b46fe7aad9f02afd89b12450b780f52dacfb2d/README.md?plain=1#L220-L225
 permissions:

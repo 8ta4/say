@@ -33,7 +33,7 @@
   '';
 
   scripts.build.exec = ''
-    ${pkgs.yarn-berry}/bin/yarn install
+    yarn install
     spago build
   '';
 
@@ -70,7 +70,7 @@
     gitleaks = {
       enable = true;
       # https://github.com/gitleaks/gitleaks/blob/8de8938ad425d11edb0986c38890116525a36035/.pre-commit-hooks.yaml#L4C10-L4C54
-      entry = "${pkgs.gitleaks}/bin/gitleaks protect --verbose --redact --staged";
+      entry = "gitleaks protect --verbose --redact --staged";
     };
     nixpkgs-fmt.enable = true;
     prettier.enable = true;

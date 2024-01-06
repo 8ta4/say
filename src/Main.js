@@ -82,22 +82,19 @@ const createWindow = () => {
       contextIsolation: false,
     },
   });
-
   win.loadFile("index.html");
 };
 
 export const launch = (record) => (save) => () =>
   // https://www.electronjs.org/docs/latest/tutorial/quick-start#create-a-web-page
   app.whenReady().then(() => {
+    ipcMain.on("audio", (_, data) => {
+      record(data)();
+    });
     console.log("App is ready, creating window...");
     createWindow();
-
     globalShortcut.register("Command+;", () => {
       console.log("Command+; is pressed");
       save();
-    });
-
-    ipcMain.on("audio", (_, data) => {
-      record(data)();
     });
   });

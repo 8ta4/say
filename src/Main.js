@@ -1,6 +1,12 @@
 import appRoot from "app-root-path";
 import dayjs from "dayjs";
-import { app, BrowserWindow, globalShortcut, ipcMain } from "electron";
+import {
+  app,
+  BrowserWindow,
+  globalShortcut,
+  ipcMain,
+  powerSaveBlocker,
+} from "electron";
 import { readFileSync } from "fs";
 import { InferenceSession, Tensor } from "onnxruntime-node";
 import { Readable } from "stream";
@@ -97,4 +103,5 @@ export const launch = (record) => (save) => () =>
       console.log("Command+; is pressed");
       save();
     });
+    powerSaveBlocker.start("prevent-app-suspension");
   });

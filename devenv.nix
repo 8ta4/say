@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 
 {
   # https://devenv.sh/basics/
@@ -63,7 +63,10 @@
   # https://devenv.sh/pre-commit-hooks/
   # pre-commit.hooks.shellcheck.enable = true;
   pre-commit.hooks = {
-    eslint.enable = true;
+    eslint = {
+      enable = true;
+      entry = lib.mkForce "./node_modules/.bin/eslint --fix";
+    };
     gitleaks = {
       enable = true;
       # https://github.com/gitleaks/gitleaks/blob/8de8938ad425d11edb0986c38890116525a36035/.pre-commit-hooks.yaml#L4C10-L4C54

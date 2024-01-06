@@ -1,6 +1,12 @@
 import appRoot from "app-root-path";
 import dayjs from "dayjs";
-import { app, BrowserWindow, globalShortcut, ipcMain } from "electron";
+import {
+  app,
+  BrowserWindow,
+  globalShortcut,
+  ipcMain,
+  powerSaveBlocker,
+} from "electron";
 import { readFileSync } from "fs";
 import { InferenceSession, Tensor } from "onnxruntime-node";
 import { Readable } from "stream";
@@ -82,22 +88,20 @@ const createWindow = () => {
       contextIsolation: false,
     },
   });
-
   win.loadFile("index.html");
 };
 
 export const launch = (record) => (save) => () =>
   // https://www.electronjs.org/docs/latest/tutorial/quick-start#create-a-web-page
   app.whenReady().then(() => {
+    ipcMain.on("audio", (_, data) => {
+      record(data)();
+    });
     console.log("App is ready, creating window...");
     createWindow();
-
     globalShortcut.register("Command+;", () => {
       console.log("Command+; is pressed");
       save();
     });
-
-    ipcMain.on("audio", (_, data) => {
-      record(data)();
-    });
+    powerSaveBlocker.start("prevent-app-suspension");
   });

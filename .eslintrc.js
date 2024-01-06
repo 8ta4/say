@@ -15,6 +15,12 @@ module.exports = {
         sourceType: "script",
       },
     },
+    {
+      files: ["src/**/*.js"],
+      rules: {
+        "import/prefer-default-export": "off",
+      },
+    },
   ],
   parserOptions: {
     ecmaVersion: "latest",

@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ lib, pkgs, ... }:
 
 {
   # https://devenv.sh/basics/
@@ -65,7 +65,7 @@
   pre-commit.hooks = {
     eslint = {
       enable = true;
-      entry = lib.mkForce "./node_modules/.bin/eslint --fix";
+      entry = lib.mkForce "eslint --fix";
     };
     gitleaks = {
       enable = true;

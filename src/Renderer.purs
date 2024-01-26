@@ -8,9 +8,9 @@ import Promise.Aff (Promise, toAffE)
 
 main :: Effect Unit
 main = launchAff_ $ do
-  audioDevices <- toAffE getAudioDevices
+  devices <- toAffE getDevices
   toAffE record
 
-foreign import getAudioDevices :: Effect (Promise (Array { deviceId :: String, label :: String }))
+foreign import getDevices :: Effect (Promise (Array { deviceId :: String, label :: String }))
 
 foreign import record :: Effect (Promise Unit)

@@ -1,6 +1,6 @@
 const { ipcRenderer } = require("electron");
 
-export async function getAudioDevices() {
+export async function getDevices() {
   await navigator.mediaDevices.getUserMedia({ audio: true });
   return navigator.mediaDevices.enumerateDevices();
 }

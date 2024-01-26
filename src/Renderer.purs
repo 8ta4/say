@@ -14,10 +14,9 @@ main = launchAff_ $ do
   devices <- toAffE getDevices
   let microphoneDevice = find (\device -> device.label == "Microphone (Built-in)") devices
   case microphoneDevice of
-    Just device -> traceM device.deviceId
+    Just device -> toAffE $ record device.deviceId
     Nothing -> traceM "Microphone (Built-in) not found"
-  toAffE record
 
 foreign import getDevices :: Effect (Promise (Array { deviceId :: String, label :: String }))
 
-foreign import record :: Effect (Promise Unit)
+foreign import record :: String -> Effect (Promise Unit)

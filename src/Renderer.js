@@ -1,5 +1,10 @@
 const { ipcRenderer } = require("electron");
 
+export async function getAudioDevices() {
+  await navigator.mediaDevices.getUserMedia({ audio: true });
+  return navigator.mediaDevices.enumerateDevices();
+}
+
 export async function record() {
   const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
   const context = new AudioContext({ sampleRate: 16000 });

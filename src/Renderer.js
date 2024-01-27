@@ -5,6 +5,9 @@ export async function getDevices() {
   return navigator.mediaDevices.enumerateDevices();
 }
 
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/endsWith#searchstring
+export const endsWith = (searchString) => (str) => str.endsWith(searchString);
+
 export const record = (deviceId) => async () => {
   const stream = await navigator.mediaDevices.getUserMedia({
     audio: { deviceId: { exact: deviceId } },

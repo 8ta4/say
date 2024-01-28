@@ -12,6 +12,8 @@ export const endsWith = (searchString) => (str) => str.endsWith(searchString);
 
 export const record =
   (deviceId) => (oldContext) => (newContext) => async () => {
+    console.log("Recording with device ID:");
+    console.log(deviceId);
     oldContext.close();
     const stream = await navigator.mediaDevices.getUserMedia({
       audio: { deviceId: { exact: deviceId } },

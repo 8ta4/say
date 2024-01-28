@@ -13,7 +13,7 @@ import Promise.Aff (Promise, toAffE)
 main :: Effect Unit
 main = launchAff_ $ do
   devices <- toAffE getDevices
-  let microphoneDevice = find (\device -> endsWith "(Built-in)" device.label && not (contains (Pattern "External") device.label)) devices
+  let microphoneDevice = find (\device -> endsWith "(Built-in)" device.label && device.deviceId /= "default" && not (contains (Pattern "External") device.label)) devices
   case microphoneDevice of
     Just device -> toAffE $ record device.deviceId
     Nothing -> traceM "(Built-in) not found"

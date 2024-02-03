@@ -97,7 +97,7 @@ Here are some pro tips:
 - Living alone could be an option... if you're really serious about clean recordings.
 - And if all else fails... well, there's always divorce.
 
-> Which mic does this tool use by default? (Planned)
+> Which mic does this tool use by default?
 
 `say` defaults to your built-in microphone.
 
@@ -128,10 +128,6 @@ When you're not in a hideaway and your external mic is plugged in, `say` jumps o
 > Will this tool use the built-in mic if there's no external mic and I'm not in a hideaway? (Planned)
 
 No. If you're not in a hideaway and there's no external mic, `say` won't use the built-in mic to avoid recording poor audio. You can either connect an external mic or mark your current location as a hideaway if you think the built-in mic is good enough.
-
-> Can I set up multiple hideaways? (Planned)
-
-Yes, you can set up multiple network hideaways.
 
 > Does this tool keep a record of the audio? (Planned)
 

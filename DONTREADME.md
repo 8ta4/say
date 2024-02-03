@@ -218,19 +218,27 @@ Confidence intervals are great for estimating the mean, but a tolerance interval
 
 I want to be safe and avoid cutting off your words in the middle.
 
-### Hideaway (Planned)
-
-> How does this tool know when I'm at my hideaway?
+> How does this tool know when I'm at my hideaway? (Planned)
 
 `say` uses your network router's MAC address to pinpoint your hideaway.
 
-> Why doesn't this tool use Location Services?
+> Why doesn't this tool use Location Services? (Planned)
 
 Location Services often need an internet connection to work accurately indoors. But if you're online, `say` can just use your network info to confirm your hideaway.
 
-> Where does this tool store the MAC address?
+> Where does this tool store the MAC address? (Planned)
 
 `say` tucks away the MAC address in `~/.config/say/secrets.yaml`. This way, it treats your network-specific sensitive info with the same care as an API key.
+
+> Where does this tool keep the mic settings for when I'm not at my hideaway? (Planned)
+
+The mic settings are also in `~/.config/say/secrets.yaml`.
+
+> Why two config files and not one? (Planned)
+
+`secrets.yaml` is for sensitive data only.
+
+`config.yaml` is for general settings that you might want to version control like a dotfile.
 
 ### Trigger
 

@@ -230,7 +230,7 @@ Location Services often need an internet connection to work accurately indoors. 
 
 > Where does this tool store the MAC address?
 
-`say` tucks away the MAC address in `secrets.yaml`. This way, it treats your network-specific sensitive info with the same care as an API key.
+`say` tucks away the MAC address in `~/.config/say/secrets.yaml`. This way, it treats your network-specific sensitive info with the same care as an API key.
 
 ### Trigger
 

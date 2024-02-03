@@ -22,8 +22,6 @@
 
 1. If you have already installed Visual Studio Code not using Homebrew, [add it to your system's PATH](https://code.visualstudio.com/docs/setup/mac#_launching-from-the-command-line).
 
-1. Paste your API key in `~/.config/say/key`.
-
 1. Hit `⌘ + Space` to open your launcher.
 
 1. Type `say`.

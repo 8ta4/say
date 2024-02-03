@@ -6,7 +6,7 @@
 
 `say` is always on, recording and transcribing your voice 24/7. Whenever inspiration strikes, just say it.
 
-## Setup
+## Setup (Planned)
 
 > How do I set up this tool?
 
@@ -22,8 +22,6 @@
 
 1. If you have already installed Visual Studio Code not using Homebrew, [add it to your system's PATH](https://code.visualstudio.com/docs/setup/mac#_launching-from-the-command-line).
 
-1. Head over to the [Deepgram website](https://deepgram.com/) and copy a Deepgram API key.
-
 1. Paste your API key in `~/.config/say/key`.
 
 1. Hit `⌘ + Space` to open your launcher.
@@ -33,6 +31,10 @@
 1. Hit `Enter` when `say` pops up.
 
 1. If asked, allow `say` to access your mic.
+
+1. Copy a Deepgram API key from [their website](https://deepgram.com/).
+
+1. Paste your API key when `say` asks for it.
 
 ## Cost
 

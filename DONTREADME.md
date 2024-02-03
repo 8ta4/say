@@ -228,6 +228,10 @@ I want to be safe and avoid cutting off your words in the middle.
 
 Location Services often need an internet connection to work accurately indoors. But if you're online, `say` can just use your network info to confirm your hideaway.
 
+> Where does this tool store the MAC address?
+
+`say` tucks away the MAC address in `secrets.yaml`. This way, it treats your network-specific sensitive info with the same care as an API key.
+
 ### Trigger
 
 > Why does this tool use `⌘ + ;` to trigger transcription?

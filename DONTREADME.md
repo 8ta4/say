@@ -104,7 +104,11 @@ Because iOS won't let you do continuous real-time voice detection and transcript
 
 > Where does this tool store the API key?
 
-The API key is in `~/.config/say/key`.
+The API key is in `~/.config/say/secrets.yaml`.
+
+> Why the `.yaml` and not `.yml`?
+
+YAML FAQ says "[use '.yaml' when possible.](https://yaml.org/faq.html#:~:text=Is%20there%20an,yaml%22%20when%20possible.)"
 
 > Why not `Application Support`?
 

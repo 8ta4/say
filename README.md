@@ -109,9 +109,9 @@ The sound intensity is inversely proportional to the square of the distance.
 
 `say` will use your external mic if:
 
-- You're not in a hideaway
-- You've specified an external mic to use in a hideaway
-- Your configured external mic is connected
+- You're not in a hideaway.
+- You've specified an external mic to use outside of your hideaway.
+- Your configured external mic is connected.
 
 > How do I set up a hideaway? (Planned)
 

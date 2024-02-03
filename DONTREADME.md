@@ -106,6 +106,12 @@ Because iOS won't let you do continuous real-time voice detection and transcript
 
 The API key is in `~/.config/say/secrets.yaml`.
 
+> Why not JSON?
+
+YAML is better than JSON because it
+- lets you add comments
+- doesn't need extra commas.
+
 > Why the `.yaml` and not `.yml`?
 
 YAML FAQ says "[use '.yaml' when possible.](https://yaml.org/faq.html#:~:text=Is%20there%20an,yaml%22%20when%20possible.)"

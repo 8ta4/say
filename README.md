@@ -99,9 +99,9 @@ Here are some pro tips:
 
 > Which mic does this tool use by default?
 
-`say` defaults to your built-in microphone.
+`say` defaults to your built-in mic.
 
-> How does the intensity of sound change as the microphone is moved further away?
+> How does the intensity of sound change as the mic is moved further away?
 
 The sound intensity is inversely proportional to the square of the distance.
 

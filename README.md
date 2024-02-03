@@ -109,7 +109,11 @@ The sound intensity is inversely proportional to the square of the distance.
 
 > When does this tool start using my external mic? (Planned)
 
-When you're not in a hideaway and your external mic is plugged in, `say` jumps on it to reduce background noise.
+`say` will use your external mic if:
+
+- You're not in a hideaway
+- You've specified an external mic to use in a hideaway
+- Your configured external mic is connected
 
 > How do I set up a hideaway? (Planned)
 

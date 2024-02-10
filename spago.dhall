@@ -28,6 +28,7 @@ to generate this file without the comments in this block.
   , "node-streams"
   , "prelude"
   , "refs"
+  , "strings"
   , "uuid"
   ]
 , packages = ./packages.dhall

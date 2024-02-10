@@ -12,6 +12,7 @@ import Effect.Aff (launchAff_)
 import Effect.Class (liftEffect)
 import Effect.Ref (modify_, new, read, write)
 import Float32Array (Float32Array, length, splitAt, takeEnd)
+import Foreign (Foreign)
 import Node.ChildProcess (ChildProcess, spawn, stdin)
 import Node.Encoding (Encoding(..))
 import Node.FS.Aff (appendTextFile, mkdir')
@@ -20,6 +21,7 @@ import Node.FS.Sync (exists, mkdtemp, readTextFile)
 import Node.OS (homedir, tmpdir)
 import Node.Stream (Readable, pipe)
 import Promise.Aff (Promise, toAffE)
+import Simple.JSON (read_)
 
 foreign import data Tensor :: Type
 
@@ -41,7 +43,12 @@ main = do
       traceM "App temp directory:"
       traceM appTempDirectory
       homeDirectoryPath <- homedir
-      key <- readTextFile UTF8 $ homeDirectoryPath <> "/.config/say/key"
+      secretsRef <- new { key: Nothing }
+      secretsText <- readTextFile UTF8 $ homeDirectoryPath <> "/.config/say/secrets.yaml"
+      let maybeSecrets = read_ $ parse secretsText
+      case maybeSecrets of
+        Just secrets -> write secrets secretsRef
+        Nothing -> pure unit
       stream <- newReadable
 
       -- TODO: Enable concurrent processing.
@@ -97,28 +104,30 @@ main = do
             state <- read ref
             when (not state.processing) do
               write state { processing = true } ref
-              currentDate <- getCurrentDate
-              let
-                transcriptDirectoryPath = homeDirectoryPath <> "/.local/share/say/" <> currentDate.year <> "/" <> currentDate.month
-                transcriptFilepath = transcriptDirectoryPath <> "/" <> currentDate.day <> ".txt"
-              fileExists <- exists transcriptFilepath
-              launchAff_ do
-
-                -- TODO: Add your error handling logic here
-                maybeParagraphs <- toAffE $ transcribe deepgram audioFilepath
-                case maybeParagraphs of
-                  Just paragraphs -> do
-                    let transcript = (if fileExists then (<>) "\n\n" else identity) $ intercalate "\n" $ map _.text $ paragraphs.paragraphs >>= _.sentences
-                    mkdir' transcriptDirectoryPath { mode: mkPerms all none none, recursive: true }
-                    appendTextFile UTF8 transcriptFilepath transcript
-                  _ -> pure unit
-                liftEffect do
-                  when state.manual $ void $ spawn "code" [ "-g", transcriptFilepath <> ":" <> "10000" ]
-                  modify_ (\state' -> state' { manual = false, processing = false }) ref
+              secrets <- read secretsRef
+              case secrets.key of
+                Just key -> do
+                  let deepgram = createClient key
+                  currentDate <- getCurrentDate
+                  let
+                    transcriptDirectoryPath = homeDirectoryPath <> "/.local/share/say/" <> currentDate.year <> "/" <> currentDate.month
+                    transcriptFilepath = transcriptDirectoryPath <> "/" <> currentDate.day <> ".txt"
+                  fileExists <- exists transcriptFilepath
+                  launchAff_ do
+                    -- TODO: Add your error handling logic here
+                    -- https://github.com/deepgram/deepgram-node-sdk/blob/7c416605fc5953c8777b3685e014cf874c08eecf/README.md?plain=1#L123
+                    maybeParagraphs <- toAffE $ transcribe deepgram audioFilepath
+                    case maybeParagraphs of
+                      Just paragraphs -> do
+                        let transcript = (if fileExists then (<>) "\n\n" else identity) $ intercalate "\n" $ map _.text $ paragraphs.paragraphs >>= _.sentences
+                        mkdir' transcriptDirectoryPath { mode: mkPerms all none none, recursive: true }
+                        appendTextFile UTF8 transcriptFilepath transcript
+                      _ -> pure unit
+                    liftEffect do
+                      when state.manual $ void $ spawn "code" [ "-g", transcriptFilepath <> ":" <> "10000" ]
+                      modify_ (\state' -> state' { manual = false, processing = false }) ref
+                Nothing -> pure unit
           pure stream'
-
-        -- https://github.com/deepgram/deepgram-node-sdk/blob/7c416605fc5953c8777b3685e014cf874c08eecf/README.md?plain=1#L123
-        deepgram = createClient key
       stream' <- createStream
       modify_ (\state -> state { stream = stream' }) ref
       launch record save
@@ -128,6 +137,8 @@ foreign import fixPath :: Effect Unit
 foreign import getAppRootPath :: Effect String
 
 foreign import createSession :: String -> Effect (Promise Session)
+
+foreign import parse :: String -> Foreign
 
 foreign import tensor :: Tensor
 

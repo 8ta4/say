@@ -102,13 +102,14 @@ Because iOS won't let you do continuous real-time voice detection and transcript
 
 ### Background Process
 
-> Where does this tool store the API key? (Planned) 
+> Where does this tool store the API key? (Planned)
 
 The API key is in `~/.config/say/secrets.yaml`.
 
 > Why not JSON?
 
 YAML is better than JSON because it
+
 - lets you add comments
 - doesn't need extra commas.
 

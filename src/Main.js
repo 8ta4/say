@@ -20,6 +20,8 @@ export const getAppRootPath = () =>
 export const createSession = (path) => async () =>
   InferenceSession.create(path);
 
+export { parse } from "yaml";
+
 export const tensor = new Tensor(new Float32Array(2 * 1 * 64), [2, 1, 64]);
 
 const sr = new Tensor(new BigInt64Array([16000n]));

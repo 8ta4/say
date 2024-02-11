@@ -1,3 +1,4 @@
+import { mac } from "address/promises";
 import appRoot from "app-root-path";
 import dayjs from "dayjs";
 import {
@@ -35,12 +36,6 @@ export const run = (session) => (audio) => (h) => (c) => async () => {
     c,
   });
   return { probability: result.output.data[0], h: result.hn, c: result.cn };
-};
-
-export const handleNetwork = (networkOutputStream) => () => {
-  networkOutputStream.on("data", (_) => {
-    console.log("Network script");
-  });
 };
 
 export const newReadable = () =>
@@ -87,29 +82,32 @@ export const getCurrentDate = () => {
   };
 };
 
-const createWindow = () => {
-  const win = new BrowserWindow({
-    width: 800,
-    height: 600,
-    webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false,
-    },
-  });
-  win.loadFile("index.html");
-};
-
-export const launch = (record) => (save) => () =>
-  // https://www.electronjs.org/docs/latest/tutorial/quick-start#create-a-web-page
-  app.whenReady().then(() => {
-    ipcMain.on("audio", (_, data) => {
-      record(data)();
+export const launch =
+  (networkOutputStream) => (updateHideawayStatus) => (record) => (save) => () =>
+    // https://www.electronjs.org/docs/latest/tutorial/quick-start#create-a-web-page
+    app.whenReady().then(() => {
+      console.log("App is ready, creating window...");
+      const win = new BrowserWindow({
+        width: 800,
+        height: 600,
+        webPreferences: {
+          nodeIntegration: true,
+          contextIsolation: false,
+        },
+      });
+      win.loadFile("index.html");
+      const sendHideaway = (isHideaway) => () =>
+        win.webContents.send("hideaway", isHideaway);
+      networkOutputStream.on("data", async (_) => {
+        const macAddress = await mac();
+        updateHideawayStatus(macAddress)(sendHideaway)();
+      });
+      ipcMain.on("audio", (_, data) => {
+        record(data)();
+      });
+      globalShortcut.register("Command+;", () => {
+        console.log("Command+; is pressed");
+        save();
+      });
+      powerSaveBlocker.start("prevent-app-suspension");
     });
-    console.log("App is ready, creating window...");
-    createWindow();
-    globalShortcut.register("Command+;", () => {
-      console.log("Command+; is pressed");
-      save();
-    });
-    powerSaveBlocker.start("prevent-app-suspension");
-  });

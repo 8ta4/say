@@ -22,4 +22,8 @@ export const record = (deviceId) => async () => {
   processor.port.onmessage = (event) => {
     ipcRenderer.send("audio", event.data);
   };
+  ipcRenderer.on("hideaway", (_, isHideaway) => {
+    console.log("isHideaway:");
+    console.log(isHideaway);
+  });
 };

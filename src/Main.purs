@@ -43,19 +43,17 @@ main = do
       traceM "App temp directory:"
       traceM appTempDirectory
       homeDirectoryPath <- homedir
-      secretsRef <- new { key: Nothing }
+      secretsRef <- new { key: Nothing, hideaway: Nothing }
       secretsText <- readTextFile UTF8 $ homeDirectoryPath <> "/.config/say/secrets.yaml"
       let maybeSecrets = read_ $ parse secretsText
       case maybeSecrets of
         Just secrets -> write secrets secretsRef
         Nothing -> pure unit
-      networkProcess <- spawn "expect" [ appRootPath <> "/network.sh" ]
-      handleNetwork $ stdout networkProcess
       stream <- newReadable
 
       -- TODO: Enable concurrent processing.
       -- https://github.com/snakers4/silero-vad/blob/94504ece54c8caeebb808410b08ae55ee82dba82/utils_vad.py#L210-L211
-      ref <- new { stream: stream, streamLength: 0, pad: mempty, pauseLength: 0, raw: mempty, h: tensor, c: tensor, vad: false, manual: false, processing: false }
+      ref <- new { stream: stream, streamLength: 0, pad: mempty, pauseLength: 0, raw: mempty, h: tensor, c: tensor, vad: false, manual: false, processing: false, isHideaway: true }
       let
         record audio = do
           state <- read ref
@@ -130,9 +128,21 @@ main = do
                       modify_ (\state' -> state' { manual = false, processing = false }) ref
                 Nothing -> pure unit
           pure stream'
+        updateHideawayStatus macAddress sendHideaway = do
+          secretsState <- read secretsRef
+          state <- read ref
+          let
+            isHideaway = case secretsState.hideaway of
+              Just hideaway -> hideaway == macAddress
+              Nothing -> false
+          traceM "isHideaway:"
+          traceM isHideaway
+          when (isHideaway /= state.isHideaway) $ sendHideaway isHideaway
+          write state { isHideaway = isHideaway } ref
       stream' <- createStream
       modify_ (\state -> state { stream = stream' }) ref
-      launch record save
+      networkProcess <- spawn "expect" [ appRootPath <> "/network.sh" ]
+      launch (stdout networkProcess) updateHideawayStatus record save
 
 foreign import fixPath :: Effect Unit
 
@@ -143,8 +153,6 @@ foreign import createSession :: String -> Effect (Promise Session)
 foreign import parse :: String -> Foreign
 
 foreign import tensor :: Tensor
-
-foreign import handleNetwork :: Readable () -> Effect Unit
 
 foreign import newReadable :: Effect (Readable ())
 
@@ -184,4 +192,4 @@ foreign import transcribeImpl :: forall a. (a -> Maybe a) -> Maybe a -> Deepgram
 
 foreign import createClient :: String -> Deepgram
 
-foreign import launch :: (Float32Array -> Effect Unit) -> Effect Unit -> Effect Unit
+foreign import launch :: Readable () -> (String -> (Boolean -> Effect Unit) -> Effect Unit) -> (Float32Array -> Effect Unit) -> Effect Unit -> Effect Unit

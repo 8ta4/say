@@ -82,13 +82,6 @@ export const getCurrentDate = () => {
   };
 };
 
-export const handleNetwork =
-  (networkOutputStream) => (updateHideawayStatus) => () => {
-    networkOutputStream.on("data", async (_) => {
-      updateHideawayStatus(await mac())();
-    });
-  };
-
 export const launch =
   (networkOutputStream) => (updateHideawayStatus) => (record) => (save) => () =>
     // https://www.electronjs.org/docs/latest/tutorial/quick-start#create-a-web-page

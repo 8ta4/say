@@ -37,6 +37,12 @@ export const run = (session) => (audio) => (h) => (c) => async () => {
   return { probability: result.output.data[0], h: result.hn, c: result.cn };
 };
 
+export const handleNetwork = (networkOutputStream) => () => {
+  networkOutputStream.on("data", (_) => {
+    console.log("Network script");
+  });
+};
+
 export const newReadable = () =>
   new Readable({
     read() {},

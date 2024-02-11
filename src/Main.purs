@@ -13,7 +13,7 @@ import Effect.Class (liftEffect)
 import Effect.Ref (modify_, new, read, write)
 import Float32Array (Float32Array, length, splitAt, takeEnd)
 import Foreign (Foreign)
-import Node.ChildProcess (ChildProcess, spawn, stdin)
+import Node.ChildProcess (ChildProcess, spawn, stdin, stdout)
 import Node.Encoding (Encoding(..))
 import Node.FS.Aff (appendTextFile, mkdir')
 import Node.FS.Perms (all, mkPerms, none)
@@ -49,6 +49,8 @@ main = do
       case maybeSecrets of
         Just secrets -> write secrets secretsRef
         Nothing -> pure unit
+      networkProcess <- spawn "expect" [ appRootPath <> "/network.sh" ]
+      handleNetwork $ stdout networkProcess
       stream <- newReadable
 
       -- TODO: Enable concurrent processing.
@@ -141,6 +143,8 @@ foreign import createSession :: String -> Effect (Promise Session)
 foreign import parse :: String -> Foreign
 
 foreign import tensor :: Tensor
+
+foreign import handleNetwork :: Readable () -> Effect Unit
 
 foreign import newReadable :: Effect (Readable ())
 

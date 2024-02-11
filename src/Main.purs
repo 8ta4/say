@@ -128,20 +128,21 @@ main = do
                       modify_ (\state' -> state' { manual = false, processing = false }) ref
                 Nothing -> pure unit
           pure stream'
-        updateHideawayStatus mac = do
+        updateHideawayStatus macAddress sendHideaway = do
           secretsState <- read secretsRef
+          state <- read ref
           let
             isHideaway = case secretsState.hideaway of
-              Just hideaway -> hideaway == mac
+              Just hideaway -> hideaway == macAddress
               Nothing -> false
           traceM "isHideaway:"
           traceM isHideaway
-          modify_ (\state -> state { isHideaway = isHideaway }) ref
-      networkProcess <- spawn "expect" [ appRootPath <> "/network.sh" ]
-      handleNetwork (stdout networkProcess) updateHideawayStatus
+          when (isHideaway /= state.isHideaway) $ sendHideaway isHideaway
+          write state { isHideaway = isHideaway } ref
       stream' <- createStream
       modify_ (\state -> state { stream = stream' }) ref
-      launch record save
+      networkProcess <- spawn "expect" [ appRootPath <> "/network.sh" ]
+      launch (stdout networkProcess) updateHideawayStatus record save
 
 foreign import fixPath :: Effect Unit
 
@@ -191,6 +192,4 @@ foreign import transcribeImpl :: forall a. (a -> Maybe a) -> Maybe a -> Deepgram
 
 foreign import createClient :: String -> Deepgram
 
-foreign import handleNetwork :: Readable () -> (String -> Effect Unit) -> Effect Unit
-
-foreign import launch :: (Float32Array -> Effect Unit) -> Effect Unit -> Effect Unit
+foreign import launch :: Readable () -> (String -> (Boolean -> Effect Unit) -> Effect Unit) -> (Float32Array -> Effect Unit) -> Effect Unit -> Effect Unit

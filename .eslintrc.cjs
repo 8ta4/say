@@ -34,6 +34,7 @@ module.exports = {
         js: "ignorePackages",
       },
     ],
+    "import/no-unresolved": "off",
     "no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
   },
   settings: {

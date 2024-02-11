@@ -690,6 +690,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"address@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "address@npm:2.0.1"
+  checksum: d4ce69e0e63392db2f1157a7e1807902d5a48860406095513c28f0b04a95d24e32b9d66fe3c1140d0cfd1a80de8c4f243ba1af0286c99d56a0f29d1afbd83046
+  languageName: node
+  linkType: hard
+
 "agent-base@npm:6, agent-base@npm:^6.0.2":
   version: 6.0.2
   resolution: "agent-base@npm:6.0.2"
@@ -4117,6 +4124,7 @@ __metadata:
   dependencies:
     "@deepgram/sdk": "npm:^3.0.1"
     "@trivago/prettier-plugin-sort-imports": "npm:^4.3.0"
+    address: "npm:^2.0.1"
     app-root-path: "npm:^3.1.0"
     dayjs: "npm:^1.11.10"
     electron: "npm:^28.0.0"

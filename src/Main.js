@@ -1,3 +1,4 @@
+import { mac } from "address/promises";
 import appRoot from "app-root-path";
 import dayjs from "dayjs";
 import {
@@ -35,12 +36,6 @@ export const run = (session) => (audio) => (h) => (c) => async () => {
     c,
   });
   return { probability: result.output.data[0], h: result.hn, c: result.cn };
-};
-
-export const handleNetwork = (networkOutputStream) => () => {
-  networkOutputStream.on("data", (_) => {
-    console.log("Network script");
-  });
 };
 
 export const newReadable = () =>
@@ -86,6 +81,13 @@ export const getCurrentDate = () => {
     day: currentDate.format("DD"),
   };
 };
+
+export const handleNetwork =
+  (networkOutputStream) => (updateHideawayStatus) => () => {
+    networkOutputStream.on("data", async (_) => {
+      updateHideawayStatus(await mac())();
+    });
+  };
 
 const createWindow = () => {
   const win = new BrowserWindow({

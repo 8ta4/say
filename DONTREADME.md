@@ -110,7 +110,7 @@ The API key is in `~/.config/say/secrets.yaml`.
 
 YAML is better than JSON because it
 
-- lets you add comments
+- lets you add comments.
 - doesn't need extra commas.
 
 > Why the `.yaml` and not `.yml`?

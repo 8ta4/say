@@ -337,6 +337,10 @@ Nope, you won't. `say` is designed to be non-intrusive.
 
 Yes, indeed! `say` will give it another shot if a transcription API call fails. If any future transcription API call succeeds, it triggers a retry.
 
+> Which Electron process is responsible to handle transcription, main or renderer?
+
+The renderer process handles transcription. It captures audio data and user input directly, so it avoids IPC and complexity.
+
 ### Transcript
 
 > Why does each day gets its own file?

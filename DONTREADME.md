@@ -141,6 +141,14 @@ Yes, `say` uses macOS Launch Agents to start itself automatically.
 
 Login Items only work when you log in. They won't help you if `say` stops working for some reason.
 
+> When does this tool appear in the application switcher? (Planned)
+
+You'll only see `say` in the application switcher when the settings window is open.
+
+That's because you might need to switch between the settings window and other apps, like the documentation, a web browser, or a text editor.
+
+When you close the settings window, `say` disappears from the application switcher. This way, it doesn't clutter your screen.
+
 ### Recording
 
 > Why doesn't this tool do speaker verification?

@@ -1,5 +1,6 @@
 {
   "name": "say",
+  "main": "out/main.js",
   "devDependencies": {
     "electron": "^29.0.0",
     "prettier": "3.2.5",

@@ -21,8 +21,7 @@ jobs:
       - name: Install devenv.sh
         run: nix profile install --accept-flake-config tarball+https://install.devenv.sh/latest
 
-      - name: Build the devenv shell and run any pre-commit hooks
-        run: devenv ci
+      - run: devenv shell pre-commit run -a
 
       - name: Run a single command in the devenv shell
         run: devenv shell hello

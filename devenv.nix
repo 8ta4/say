@@ -6,6 +6,8 @@
 
   # https://devenv.sh/packages/
   packages = [
+    # JDK is required for shadow-cljs compilation. Without it, shadow-cljs fails with "Unable to locate a Java Runtime.
+    pkgs.jdk
     pkgs.git
     pkgs.gitleaks
 
@@ -28,6 +30,7 @@
   # https://devenv.sh/pre-commit-hooks/
   # pre-commit.hooks.shellcheck.enable = true;
   pre-commit.hooks = {
+    cljfmt.enable = true;
     gitleaks = {
       enable = true;
 

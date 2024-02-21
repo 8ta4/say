@@ -2,6 +2,7 @@
   "name": "say",
   "packageManager": "yarn@4.0.1",
   "devDependencies": {
-    "electron": "^29.0.0"
+    "electron": "^29.0.0",
+    "shadow-cljs": "^2.27.4"
   }
 }

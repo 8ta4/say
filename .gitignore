@@ -1,3 +1,6 @@
+### Calva
+.calva/
+
 ### Devenv
 .devenv*
 devenv.local.nix
@@ -144,6 +147,3 @@ dist
 
 ### Shadow CLJS
 .shadow-cljs/
-
-### Calva
-.calva/

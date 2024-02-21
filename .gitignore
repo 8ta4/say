@@ -143,4 +143,7 @@ dist
 .pnp.*
 
 ### Shadow CLJS
-.shadow-cljs
+.shadow-cljs/
+
+### Calva
+.calva/

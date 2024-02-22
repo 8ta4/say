@@ -17,6 +17,7 @@
 
   # https://devenv.sh/scripts/
   scripts.hello.exec = "echo hello from $GREET";
+  scripts.run.exec = "electron .";
 
   enterShell = ''
     hello

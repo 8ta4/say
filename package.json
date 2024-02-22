@@ -1,6 +1,10 @@
 {
   "name": "say",
   "main": "out/main.js",
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
   "devDependencies": {
     "electron": "^29.0.0",
     "prettier": "3.2.5",

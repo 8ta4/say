@@ -8,4 +8,4 @@
 
 (defn main []
   (println "Hello, Electron!")
-  (.then (.whenReady app) (fn [] (create-window))))
+  (.then (.whenReady app) create-window))

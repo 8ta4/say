@@ -1,13 +1,14 @@
 {
   "calva.replConnectSequences": [
     {
-      "name": "main",
-      "projectType": "shadow-cljs",
+      "autoSelectForJackIn": true,
       "cljsType": "shadow-cljs",
       "menuSelections": {
-        "cljsLaunchBuilds": [":main"],
-        "cljsDefaultBuild": ":main"
-      }
+        "cljsDefaultBuild": ":main",
+        "cljsLaunchBuilds": [":main", ":renderer"]
+      },
+      "name": "main",
+      "projectType": "shadow-cljs"
     }
   ]
 }

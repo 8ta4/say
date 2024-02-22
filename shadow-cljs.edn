@@ -2,7 +2,7 @@
  ["src"]
 
  :dependencies
- []
+ [[binaryage/devtools "1.0.7"]]
 
  :builds
  {:main

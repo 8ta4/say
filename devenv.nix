@@ -18,16 +18,13 @@
   # https://devenv.sh/scripts/
   scripts.hello.exec = "echo hello from $GREET";
   scripts.run.exec = "electron .";
-  scripts.build.exec = ''
-    yarn install
-    shadow-cljs compile :main
-  '';
 
   enterShell = ''
     hello
     git --version
     export PATH="$DEVENV_ROOT/node_modules/.bin:$PATH"
-    build
+    yarn install
+    shadow-cljs compile :main
   '';
 
   # https://devenv.sh/languages/

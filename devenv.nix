@@ -27,6 +27,7 @@
     hello
     git --version
     export PATH="$DEVENV_ROOT/node_modules/.bin:$PATH"
+    build
   '';
 
   # https://devenv.sh/languages/

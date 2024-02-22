@@ -24,7 +24,7 @@
     git --version
     export PATH="$DEVENV_ROOT/node_modules/.bin:$PATH"
     yarn install
-    shadow-cljs compile :main
+    shadow-cljs compile :main :renderer
   '';
 
   # https://devenv.sh/languages/

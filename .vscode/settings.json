@@ -5,7 +5,7 @@
       "cljsType": "shadow-cljs",
       "menuSelections": {
         "cljsDefaultBuild": ":main",
-        "cljsLaunchBuilds": [":main"]
+        "cljsLaunchBuilds": [":main", ":renderer"]
       },
       "name": "main",
       "projectType": "shadow-cljs"

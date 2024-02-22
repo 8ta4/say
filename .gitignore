@@ -147,3 +147,4 @@ dist
 
 ### Shadow CLJS
 .shadow-cljs/
+public/js/

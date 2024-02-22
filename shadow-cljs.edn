@@ -1,4 +1,3 @@
-;; shadow-cljs configuration
 {:source-paths
  ["src"]
 
@@ -8,5 +7,8 @@
  :builds
  {:main
   {:target :node-script
-   :output-to "out/main.js" ;; Specify the output file path
-   :main main/main}}}
+   :output-to "out/main.js"
+   :main main/main}
+  :renderer
+  {:target :browser
+   :modules {:renderer {:init-fn renderer/init}}}}}

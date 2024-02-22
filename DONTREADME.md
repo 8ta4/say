@@ -341,6 +341,10 @@ Yes, indeed! `say` will give it another shot if a transcription API call fails. 
 
 The renderer process handles transcription. It captures audio data and user input directly, so it avoids IPC and complexity.
 
+> Does the renderer have Node.js integration on?
+
+Yeah, say enables Node.js integration for the renderer. This lets the renderer process do more stuff, like read and write files, get system info, etc. `say` keeps things secure by not [loading any remote content](https://github.com/electron/electron/blob/26131b23b81a661fb65d37437b9a1f63b4408fae/docs/tutorial/security.md?plain=1#L170-L175).
+
 ### Transcript
 
 > Why does each day gets its own file?

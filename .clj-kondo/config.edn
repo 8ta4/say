@@ -1,0 +1,1 @@
+{:lint-as {shadow.cljs.modern/js-await clojure.core/let}}

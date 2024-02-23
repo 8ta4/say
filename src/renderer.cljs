@@ -1,7 +1,7 @@
 (ns renderer
-  (:require [reagent.dom.client :as client]
+  (:require ["@mui/material/TextField" :default TextField]
             [reagent.core :as reagent]
-            ["@mui/material/TextField" :default TextField]))
+            [reagent.dom.client :as client]))
 
 (defonce root
   ;; Using defonce to ensure the root is only created once. This prevents warnings about

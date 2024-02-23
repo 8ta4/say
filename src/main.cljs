@@ -11,9 +11,12 @@
                                                        :contextIsolation false}}))]
     (.loadFile win "public/index.html")))
 
+(defn register-shortcut []
+  (.register globalShortcut "Command+;" (fn []
+                                          (js/console.log "Command+; is pressed"))))
+
 (defn main []
   (println "Hello, Electron!")
   (.then (.whenReady app) (fn []
                             (create-window)
-                            (.register globalShortcut "Command+;" (fn []
-                                                                    (js/console.log "Command+; is pressed"))))))
+                            (register-shortcut))))

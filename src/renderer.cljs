@@ -4,6 +4,12 @@
             [reagent.core :as reagent]
             [reagent.dom.client :as client]))
 
+(def os
+  (js/require "os"))
+
+(def path
+  (js/require "path"))
+
 (defonce root
   ;; Using defonce to ensure the root is only created once. This prevents warnings about
   ;; calling ReactDOMClient.createRoot() on a container that has already been passed to
@@ -18,3 +24,5 @@
                                      :on-change (fn [event]
                                                   (specter/setval [specter/ATOM :key] event.target.value secrets))}])
   (println "Hello, Renderer!"))
+
+(def config-path (path.join (os.homedir) ".config/say/secrets.yaml"))

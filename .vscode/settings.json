@@ -4,10 +4,10 @@
       "autoSelectForJackIn": true,
       "cljsType": "shadow-cljs",
       "menuSelections": {
-        "cljsDefaultBuild": ":main",
+        "cljsDefaultBuild": ":renderer",
         "cljsLaunchBuilds": [":main", ":renderer"]
       },
-      "name": "main",
+      "name": "renderer",
       "projectType": "shadow-cljs"
     }
   ]

@@ -1,5 +1,5 @@
 (ns main
-  (:require [electron :refer [app BrowserWindow]]))
+  (:require [electron :refer [app BrowserWindow globalShortcut]]))
 
 (defn create-window
   []
@@ -13,4 +13,7 @@
 
 (defn main []
   (println "Hello, Electron!")
-  (.then (.whenReady app) create-window))
+  (.then (.whenReady app) (fn []
+                            (create-window)
+                            (.register globalShortcut "Command+;" (fn []
+                                                                    (js/console.log "Command+; is pressed"))))))

@@ -34,6 +34,12 @@
   # pre-commit.hooks.shellcheck.enable = true;
   pre-commit.hooks = {
     cljfmt.enable = true;
+    eslint = {
+      enable = true;
+
+      # https://github.com/cachix/pre-commit-hooks.nix/blob/9d3d7e18c6bc4473d7520200d4ddab12f8402d38/modules/hooks.nix#L1649
+      entry = lib.mkForce "eslint --fix";
+    };
     gitleaks = {
       enable = true;
 

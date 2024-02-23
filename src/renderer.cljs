@@ -56,3 +56,10 @@
                                (spit secrets-path (yaml/stringify (clj->js secrets*)))))
   (record))
 
+(defn append-float-32-array
+  [x y]
+  (let [combined (js/Float32Array. (+ (.-length x)
+                                      (.-length y)))]
+    (.set combined x)
+    (.set combined y (.-length x))
+    combined))

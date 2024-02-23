@@ -29,4 +29,4 @@
                                                   (specter/setval [specter/ATOM :key] event.target.value secrets))}])
   (println "Hello, Renderer!"))
 
-(def config-path (path.join (os.homedir) ".config/say/secrets.yaml"))
+(def secrets-path (path.join (os.homedir) ".config/say/secrets.yaml"))

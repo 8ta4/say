@@ -27,6 +27,8 @@
                                      :type "password"
                                      :on-change (fn [event]
                                                   (specter/setval [specter/ATOM :key] event.target.value secrets))}])
+  (add-watch secrets :change (fn [_ _ _ _]
+                               (js/console.log "Secrets updated")))
   (println "Hello, Renderer!"))
 
 (def secrets-path (path.join (os.homedir) ".config/say/secrets.yaml"))

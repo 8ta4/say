@@ -1,5 +1,5 @@
 (ns main
-  (:require [electron :refer [app BrowserWindow]]))
+  (:require [electron :refer [app BrowserWindow globalShortcut]]))
 
 (defn create-window
   []
@@ -11,6 +11,12 @@
                                                        :contextIsolation false}}))]
     (.loadFile win "public/index.html")))
 
+(defn register-shortcut []
+  (.register globalShortcut "Command+;" (fn []
+                                          (js/console.log "Command+; is pressed"))))
+
 (defn main []
-  (println "Hello, Electron!")
-  (.then (.whenReady app) create-window))
+  (js/console.log "Hello, Electron!")
+  (.then (.whenReady app) (fn []
+                            (create-window)
+                            (register-shortcut))))

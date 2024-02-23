@@ -16,7 +16,7 @@
                                           (js/console.log "Command+; is pressed"))))
 
 (defn main []
-  (println "Hello, Electron!")
+  (js/console.log "Hello, Electron!")
   (.then (.whenReady app) (fn []
                             (create-window)
                             (register-shortcut))))

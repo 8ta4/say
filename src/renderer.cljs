@@ -1,5 +1,6 @@
 (ns renderer
   (:require ["@mui/material/TextField" :default TextField]
+            [com.rpl.specter :as specter]
             [reagent.core :as reagent]
             [reagent.dom.client :as client]))
 
@@ -9,11 +10,11 @@
   ;; createRoot() before during hot reloads or re-evaluations of the code.
   (client/create-root (js/document.getElementById "app")))
 
-(defonce api-key (reagent/atom ""))
+(defonce state (reagent/atom {:key ""}))
 
 (defn init []
   (client/render root [:> TextField {:label "Deepgram API Key"
                                      :type "password"
                                      :on-change (fn [event]
-                                                  (reset! api-key event.target.value))}])
+                                                  (specter/setval [specter/ATOM :key] event.target.value state))}])
   (println "Hello, Renderer!"))

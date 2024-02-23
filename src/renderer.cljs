@@ -1,5 +1,6 @@
 (ns renderer
   (:require [reagent.dom.client :as client]
+            [reagent.core :as reagent]
             ["@mui/material/TextField" :default TextField]))
 
 (defonce root
@@ -8,6 +9,11 @@
   ;; createRoot() before during hot reloads or re-evaluations of the code.
   (client/create-root (js/document.getElementById "app")))
 
+(defonce api-key (reagent/atom ""))
+
 (defn init []
-  (client/render root [:> TextField {:label "Deepgram API Key" :type "password"}])
+  (client/render root [:> TextField {:label "Deepgram API Key"
+                                     :type "password"
+                                     :on-change (fn [event]
+                                                  (reset! api-key event.target.value))}])
   (println "Hello, Renderer!"))

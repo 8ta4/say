@@ -1,6 +1,6 @@
 (ns renderer
   (:require ["@mui/material/TextField" :default TextField]
-            ["yaml" :as yaml]
+            [yaml :as yaml]
             [cljs-node-io.core :refer [slurp spit]]
             [com.rpl.specter :as specter]
             [reagent.core :as reagent]

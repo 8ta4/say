@@ -27,7 +27,7 @@
 (def secrets-path (path.join (os.homedir) ".config/say/secrets.yaml"))
 
 (defn init []
-  (println "Hello, Renderer!")
+  (js/console.log "Hello, Renderer!")
   (client/render root [:> TextField {:label "Deepgram API Key"
                                      :type "password"
                                      :on-change (fn [event]

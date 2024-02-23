@@ -1,7 +1,7 @@
 (ns renderer
   (:require ["@mui/material/TextField" :default TextField]
             ["yaml" :as yaml]
-            [cljs-node-io.core :refer [spit slurp]]
+            [cljs-node-io.core :refer [slurp spit]]
             [com.rpl.specter :as specter]
             [reagent.core :as reagent]
             [reagent.dom.client :as client]))
@@ -29,14 +29,18 @@
 
 (def secrets-path (path.join (os.homedir) ".config/say/secrets.yaml"))
 
+(defn api-key []
+  [:> TextField {:label "Deepgram API Key"
+                 :type "password"
+                 :value (:key @secrets)
+                 :on-change (fn [event]
+                              (specter/setval [specter/ATOM :key] event.target.value secrets))}])
+
 (defn init []
   (js/console.log "Hello, Renderer!")
   (when (fs.existsSync secrets-path)
     (reset! secrets (js->clj (yaml/parse (slurp secrets-path)) :keywordize-keys true)))
-  (client/render root [:> TextField {:label "Deepgram API Key"
-                                     :type "password"
-                                     :on-change (fn [event]
-                                                  (specter/setval [specter/ATOM :key] event.target.value secrets))}])
+  (client/render root [api-key])
   (add-watch secrets :change (fn [_ _ _ secrets*]
                                (js/console.log "Secrets updated")
                                (spit secrets-path (yaml/stringify (clj->js secrets*))))))

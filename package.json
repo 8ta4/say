@@ -11,6 +11,10 @@
   },
   "devDependencies": {
     "electron": "^29.0.0",
+    "eslint": "^7.32.0 || ^8.2.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.25.2",
     "prettier": "3.2.5",
     "prettier-plugin-packagejson": "^2.4.11",
     "shadow-cljs": "^2.27.4"

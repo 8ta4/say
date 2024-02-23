@@ -9,5 +9,5 @@
   (client/create-root (js/document.getElementById "app")))
 
 (defn init []
-  (client/render root [:> TextField {:type "password"}])
+  (client/render root [:> TextField {:label "Deepgram API Key" :type "password"}])
   (println "Hello, Renderer!"))

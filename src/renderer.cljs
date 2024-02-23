@@ -27,11 +27,11 @@
 (def secrets-path (path.join (os.homedir) ".config/say/secrets.yaml"))
 
 (defn init []
+  (println "Hello, Renderer!")
   (client/render root [:> TextField {:label "Deepgram API Key"
                                      :type "password"
                                      :on-change (fn [event]
                                                   (specter/setval [specter/ATOM :key] event.target.value secrets))}])
   (add-watch secrets :change (fn [_ _ _ secrets*]
                                (js/console.log "Secrets updated")
-                               (spit secrets-path (yaml/stringify (clj->js secrets*)))))
-  (println "Hello, Renderer!"))
+                               (spit secrets-path (yaml/stringify (clj->js secrets*))))))

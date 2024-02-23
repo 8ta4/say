@@ -5,7 +5,8 @@
  [[binaryage/devtools "1.0.7"]
   [reagent "1.2.0"]
   [com.rpl/specter "1.1.4"]
-  [com.github.pkpkpk/cljs-node-io "2.0.339"]]
+  [com.github.pkpkpk/cljs-node-io "2.0.339"]
+  [applied-science/js-interop "0.4.2"]]
 
  :builds
  {:main

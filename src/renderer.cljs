@@ -4,7 +4,9 @@
             [cljs-node-io.core :refer [slurp spit]]
             [com.rpl.specter :as specter]
             [reagent.core :as reagent]
-            [reagent.dom.client :as client]))
+            [reagent.dom.client :as client]
+            [shadow.cljs.modern :refer [js-await]]
+            [applied-science.js-interop :as j]))
 
 ;; Using js/require to directly require Node.js modules like "os" and "path" because
 ;; they are not available in the browser environment by default. The ClojureScript
@@ -36,6 +38,14 @@
                  :on-change (fn [event]
                               (specter/setval [specter/ATOM :key] event.target.value secrets))}])
 
+(defn record []
+  (js-await [stream (js/navigator.mediaDevices.getUserMedia #js {:audio true})]
+            (let [context (js/AudioContext. {:sampleRate 16000})]
+              (js-await [_ (.audioWorklet.addModule context "audio.js")]
+                        (let [processor (js/AudioWorkletNode. context "processor")]
+                          (.connect (.createMediaStreamSource context stream) processor)
+                          (j/assoc-in! processor [:port :onmessage] (fn [message])))))))
+
 (defn init []
   (js/console.log "Hello, Renderer!")
   (when (fs.existsSync secrets-path)
@@ -43,4 +53,6 @@
   (client/render root [api-key])
   (add-watch secrets :change (fn [_ _ _ secrets*]
                                (js/console.log "Secrets updated")
-                               (spit secrets-path (yaml/stringify (clj->js secrets*))))))
+                               (spit secrets-path (yaml/stringify (clj->js secrets*)))))
+  (record))
+

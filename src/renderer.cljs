@@ -1,7 +1,7 @@
 (ns renderer
   (:require ["@mui/material/TextField" :default TextField]
             ["yaml" :as yaml]
-            [cljs-node-io.core :refer [spit]]
+            [cljs-node-io.core :refer [spit slurp]]
             [com.rpl.specter :as specter]
             [reagent.core :as reagent]
             [reagent.dom.client :as client]))
@@ -16,6 +16,9 @@
 (def path
   (js/require "path"))
 
+(def fs
+  (js/require "fs"))
+
 (defonce root
   ;; Using defonce to ensure the root is only created once. This prevents warnings about
   ;; calling ReactDOMClient.createRoot() on a container that has already been passed to
@@ -28,6 +31,8 @@
 
 (defn init []
   (js/console.log "Hello, Renderer!")
+  (when (fs.existsSync secrets-path)
+    (reset! secrets (js->clj (yaml/parse (slurp secrets-path)) :keywordize-keys true)))
   (client/render root [:> TextField {:label "Deepgram API Key"
                                      :type "password"
                                      :on-change (fn [event]

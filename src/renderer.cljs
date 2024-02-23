@@ -1,5 +1,6 @@
 (ns renderer
-  (:require [reagent.dom.client :as client]))
+  (:require [reagent.dom.client :as client]
+            ["@mui/material/TextField" :default TextField]))
 
 (defonce root
   ;; Using defonce to ensure the root is only created once. This prevents warnings about
@@ -8,5 +9,5 @@
   (client/create-root (js/document.getElementById "app")))
 
 (defn init []
-  (client/render root [:div "Hello, Renderer!"])
+  (client/render root [:> TextField {:type "password"}])
   (println "Hello, Renderer!"))

@@ -3,7 +3,9 @@
 
  :dependencies
  [[binaryage/devtools "1.0.7"]
-  [reagent "1.2.0"]]
+  [reagent "1.2.0"]
+  [com.rpl/specter "1.1.4"]
+  [com.github.pkpkpk/cljs-node-io "2.0.339"]]
 
  :builds
  {:main
@@ -12,4 +14,5 @@
    :main main/main}
   :renderer
   {:target :browser
-   :modules {:renderer {:init-fn renderer/init}}}}}
+   :modules {:renderer {:init-fn renderer/init}}
+   :devtools {:after-load renderer/init}}}}

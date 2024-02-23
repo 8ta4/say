@@ -4,6 +4,10 @@
             [reagent.core :as reagent]
             [reagent.dom.client :as client]))
 
+;; Using js/require to directly require Node.js modules like "os" and "path" because
+;; they are not available in the browser environment by default. The ClojureScript
+;; ns form and :require cannot be used for Node.js built-in modules in non-Node
+;; environments.
 (def os
   (js/require "os"))
 

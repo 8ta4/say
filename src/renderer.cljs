@@ -10,11 +10,11 @@
   ;; createRoot() before during hot reloads or re-evaluations of the code.
   (client/create-root (js/document.getElementById "app")))
 
-(defonce state (reagent/atom {:key ""}))
+(defonce secrets (reagent/atom {:key ""}))
 
 (defn init []
   (client/render root [:> TextField {:label "Deepgram API Key"
                                      :type "password"
                                      :on-change (fn [event]
-                                                  (specter/setval [specter/ATOM :key] event.target.value state))}])
+                                                  (specter/setval [specter/ATOM :key] event.target.value secrets))}])
   (println "Hello, Renderer!"))

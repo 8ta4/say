@@ -12,4 +12,5 @@
    :main main/main}
   :renderer
   {:target :browser
-   :modules {:renderer {:init-fn renderer/init}}}}}
+   :modules {:renderer {:init-fn renderer/init}}
+   :devtools {:after-load renderer/init}}}}

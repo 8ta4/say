@@ -1,8 +1,7 @@
 (ns main
   (:require [electron :refer [app BrowserWindow globalShortcut]]))
 
-(defn create-window
-  []
+(defn create-window []
   (let [win (BrowserWindow. (clj->js {:width 800
                                       :height 600
                                       :webPreferences {:nodeIntegration true

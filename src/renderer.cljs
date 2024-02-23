@@ -40,11 +40,11 @@
 
 (defn record []
   (js-await [stream (js/navigator.mediaDevices.getUserMedia #js {:audio true})]
-            (let [context (js/AudioContext. {:sampleRate 16000})]
-              (js-await [_ (.audioWorklet.addModule context "audio.js")]
-                        (let [processor (js/AudioWorkletNode. context "processor")]
-                          (.connect (.createMediaStreamSource context stream) processor)
-                          (j/assoc-in! processor [:port :onmessage] (fn [message])))))))
+    (let [context (js/AudioContext. {:sampleRate 16000})]
+      (js-await [_ (.audioWorklet.addModule context "audio.js")]
+        (let [processor (js/AudioWorkletNode. context "processor")]
+          (.connect (.createMediaStreamSource context stream) processor)
+          (j/assoc-in! processor [:port :onmessage] (fn [message])))))))
 
 (defn init []
   (js/console.log "Hello, Renderer!")

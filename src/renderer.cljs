@@ -2,6 +2,7 @@
   (:require ["@mui/material/TextField" :default TextField]
             [applied-science.js-interop :as j]
             [cljs-node-io.core :refer [slurp spit]]
+            [cljs.core.async :as async]
             [com.rpl.specter :as specter]
             [reagent.core :as reagent]
             [reagent.dom.client :as client]
@@ -38,14 +39,17 @@
                  :on-change (fn [event]
                               (specter/setval [specter/ATOM :key] event.target.value secrets))}])
 
+(def chan
+  (async/chan))
+
 (defn record []
   (js-await [stream (js/navigator.mediaDevices.getUserMedia #js {:audio true})]
     (let [context (js/AudioContext. {:sampleRate 16000})]
       (js-await [_ (.audioWorklet.addModule context "audio.js")]
         (let [processor (js/AudioWorkletNode. context "processor")]
           (.connect (.createMediaStreamSource context stream) processor)
-          (j/assoc-in! processor [:port :onmessage] (fn [message])))))))
-
+          (j/assoc-in! processor [:port :onmessage] (fn [message]
+                                                      (async/put! chan message.data))))))))
 (defn init []
   (js/console.log "Hello, Renderer!")
   (when (fs.existsSync secrets-path)
@@ -54,7 +58,10 @@
   (add-watch secrets :change (fn [_ _ _ secrets*]
                                (js/console.log "Secrets updated")
                                (spit secrets-path (yaml/stringify (clj->js secrets*)))))
-  (record))
+  (record)
+  (async/go-loop []
+    (let [data (async/<! chan)]
+      (recur))))
 
 (defn append-float-32-array
   [x y]

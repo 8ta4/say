@@ -1,12 +1,13 @@
 (ns renderer
   (:require ["@mui/material/TextField" :default TextField]
-            [yaml :as yaml]
+            [applied-science.js-interop :as j]
             [cljs-node-io.core :refer [slurp spit]]
+            [cljs.core.async :as async]
             [com.rpl.specter :as specter]
             [reagent.core :as reagent]
             [reagent.dom.client :as client]
             [shadow.cljs.modern :refer [js-await]]
-            [applied-science.js-interop :as j]))
+            [yaml :as yaml]))
 
 ;; Using js/require to directly require Node.js modules like "os" and "path" because
 ;; they are not available in the browser environment by default. The ClojureScript
@@ -21,10 +22,10 @@
 (def fs
   (js/require "fs"))
 
+;; Using defonce to ensure the root is only created once. This prevents warnings about
+;; calling ReactDOMClient.createRoot() on a container that has already been passed to
+;; createRoot() before during hot reloads or re-evaluations of the code.
 (defonce root
-  ;; Using defonce to ensure the root is only created once. This prevents warnings about
-  ;; calling ReactDOMClient.createRoot() on a container that has already been passed to
-  ;; createRoot() before during hot reloads or re-evaluations of the code.
   (client/create-root (js/document.getElementById "app")))
 
 (defonce secrets (reagent/atom {:key ""}))
@@ -38,13 +39,27 @@
                  :on-change (fn [event]
                               (specter/setval [specter/ATOM :key] event.target.value secrets))}])
 
+(def chan
+  (async/chan))
+
 (defn record []
   (js-await [stream (js/navigator.mediaDevices.getUserMedia #js {:audio true})]
     (let [context (js/AudioContext. {:sampleRate 16000})]
       (js-await [_ (.audioWorklet.addModule context "audio.js")]
         (let [processor (js/AudioWorkletNode. context "processor")]
           (.connect (.createMediaStreamSource context stream) processor)
-          (j/assoc-in! processor [:port :onmessage] (fn [message])))))))
+          (j/assoc-in! processor [:port :onmessage] (fn [message]
+                                                      (async/put! chan message.data))))))))
+(defn append-float-32-array
+  [x y]
+  (let [combined (js/Float32Array. (+ (.-length x)
+                                      (.-length y)))]
+    (.set combined x)
+    (.set combined y (.-length x))
+    combined))
+
+(def state
+  (atom {:raw (js/Float32Array.)}))
 
 (defn init []
   (js/console.log "Hello, Renderer!")
@@ -54,12 +69,12 @@
   (add-watch secrets :change (fn [_ _ _ secrets*]
                                (js/console.log "Secrets updated")
                                (spit secrets-path (yaml/stringify (clj->js secrets*)))))
-  (record))
+  (record)
+  (async/go-loop []
+    (let [data (async/<! chan)]
+      (specter/transform [specter/ATOM :raw] (fn [raw] (append-float-32-array raw data)) state)
+      (recur))))
 
-(defn append-float-32-array
-  [x y]
-  (let [combined (js/Float32Array. (+ (.-length x)
-                                      (.-length y)))]
-    (.set combined x)
-    (.set combined y (.-length x))
-    combined))
+;; https://github.com/snakers4/silero-vad/blob/5e7ee10ee065ab2b98751dd82b28e3c6360e19aa/utils_vad.py#L207
+(def window-size-samples
+  1536)

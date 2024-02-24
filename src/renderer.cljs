@@ -104,10 +104,11 @@
         (if (<= window-size-samples (.-length combined))
           (let [before (js/Float32Array. (take window-size-samples combined))
                 input (ort.Tensor. before (clj->js [1 (.-length before)]))
-                result (<p! (.run session (clj->js {:input input
-                                                    :sr sr
-                                                    :h tensor
-                                                    :c tensor})))]
-            (specter/setval specter/ATOM (merge state* {:raw (js/Float32Array. (drop window-size-samples combined))}) state))
+                result (js->clj (<p! (.run session (clj->js (merge state* {:input input
+                                                                           :sr sr}))))
+                                :keywordize-keys true)]
+            (specter/setval specter/ATOM (merge state* {:raw (js/Float32Array. (drop window-size-samples combined))
+                                                        :h (:hn result)
+                                                        :c (:cn result)}) state))
           (specter/setval [specter/ATOM :raw] combined state))
         (recur)))))

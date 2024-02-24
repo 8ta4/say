@@ -98,3 +98,9 @@
 
 (def sr
   (ort.Tensor. (js/BigInt64Array. [(js/BigInt 16000)])))
+
+(def shape
+  [2 1 64])
+
+(def tensor
+  (ort.Tensor. (js/Float32Array. (apply * shape)) (clj->js shape)))

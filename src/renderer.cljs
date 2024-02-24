@@ -1,12 +1,12 @@
 (ns renderer
   (:require ["@mui/material/TextField" :default TextField]
-            [yaml :as yaml]
+            [applied-science.js-interop :as j]
             [cljs-node-io.core :refer [slurp spit]]
             [com.rpl.specter :as specter]
             [reagent.core :as reagent]
             [reagent.dom.client :as client]
             [shadow.cljs.modern :refer [js-await]]
-            [applied-science.js-interop :as j]))
+            [yaml :as yaml]))
 
 ;; Using js/require to directly require Node.js modules like "os" and "path" because
 ;; they are not available in the browser environment by default. The ClojureScript

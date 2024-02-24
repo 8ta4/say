@@ -67,8 +67,14 @@
     (.set combined y (.-length x))
     combined))
 
+(def shape
+  [2 1 64])
+
+(def tensor
+  (ort.Tensor. (js/Float32Array. (apply * shape)) (clj->js shape)))
+
 (defonce state
-  (atom {:raw (js/Float32Array.)}))
+  (atom {:raw (js/Float32Array.) :h tensor :c tensor}))
 
 (defn load []
   (js/console.log "Hello, Renderer!")
@@ -100,9 +106,3 @@
 
 (def sr
   (ort.Tensor. (js/BigInt64Array. [(js/BigInt 16000)])))
-
-(def shape
-  [2 1 64])
-
-(def tensor
-  (ort.Tensor. (js/Float32Array. (apply * shape)) (clj->js shape)))

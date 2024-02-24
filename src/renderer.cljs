@@ -50,6 +50,17 @@
           (.connect (.createMediaStreamSource context stream) processor)
           (j/assoc-in! processor [:port :onmessage] (fn [message]
                                                       (async/put! chan message.data))))))))
+(defn append-float-32-array
+  [x y]
+  (let [combined (js/Float32Array. (+ (.-length x)
+                                      (.-length y)))]
+    (.set combined x)
+    (.set combined y (.-length x))
+    combined))
+
+(def state
+  (atom {:raw (js/Float32Array.)}))
+
 (defn init []
   (js/console.log "Hello, Renderer!")
   (when (fs.existsSync secrets-path)
@@ -61,15 +72,5 @@
   (record)
   (async/go-loop []
     (let [data (async/<! chan)]
+      (specter/transform [specter/ATOM :raw] (fn [raw] (append-float-32-array raw data)) state)
       (recur))))
-
-(defn append-float-32-array
-  [x y]
-  (let [combined (js/Float32Array. (+ (.-length x)
-                                      (.-length y)))]
-    (.set combined x)
-    (.set combined y (.-length x))
-    combined))
-
-(def state
-  (atom {:raw (js/Float32Array.)}))

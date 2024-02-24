@@ -39,10 +39,10 @@
                  :on-change (fn [event]
                               (specter/setval [specter/ATOM :key] event.target.value secrets))}])
 
-(def chan
+(defonce chan
   (async/chan))
 
-(def context (js/AudioContext. {:sampleRate 16000}))
+(defonce context (js/AudioContext. {:sampleRate 16000}))
 
 (defn record []
   (js-await [stream (js/navigator.mediaDevices.getUserMedia #js {:audio true})]
@@ -59,22 +59,25 @@
     (.set combined y (.-length x))
     combined))
 
-(def state
+(defonce state
   (atom {:raw (js/Float32Array.)}))
 
-(defn init []
+(defn load []
   (js/console.log "Hello, Renderer!")
   (when (fs.existsSync secrets-path)
     (reset! secrets (js->clj (yaml/parse (slurp secrets-path)) :keywordize-keys true)))
   (client/render root [api-key])
   (add-watch secrets :change (fn [_ _ _ secrets*]
                                (js/console.log "Secrets updated")
-                               (spit secrets-path (yaml/stringify (clj->js secrets*)))))
+                               (spit secrets-path (yaml/stringify (clj->js secrets*))))))
+
+(defn init []
+  (load)
+  (record)
   (async/go-loop []
     (let [data (async/<! chan)]
       (specter/transform [specter/ATOM :raw] (fn [raw] (append-float-32-array raw data)) state)
-      (recur)))
-  (record))
+      (recur))))
 
 ;; https://github.com/snakers4/silero-vad/blob/5e7ee10ee065ab2b98751dd82b28e3c6360e19aa/utils_vad.py#L207
 (def window-size-samples

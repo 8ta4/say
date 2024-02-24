@@ -85,16 +85,17 @@
 (defn init []
   (load)
   (record)
-  (async/go-loop []
-    (let [data (async/<! chan)]
-      (specter/transform [specter/ATOM :raw]
-                         (fn [raw]
-                           (let [combined (append-float-32-array raw data)]
-                             (if (<= window-size-samples (.-length combined))
-                               (js/Float32Array. (drop window-size-samples combined))
-                               combined)))
-                         state)
-      (recur))))
+  (js-await [session (ort.InferenceSession.create "vad.onnx")]
+    (async/go-loop []
+      (let [data (async/<! chan)]
+        (specter/transform [specter/ATOM :raw]
+                           (fn [raw]
+                             (let [combined (append-float-32-array raw data)]
+                               (if (<= window-size-samples (.-length combined))
+                                 (js/Float32Array. (drop window-size-samples combined))
+                                 combined)))
+                           state)
+        (recur)))))
 
 (def sr
   (ort.Tensor. (js/BigInt64Array. [(js/BigInt 16000)])))

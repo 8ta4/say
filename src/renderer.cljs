@@ -45,7 +45,7 @@
 (defonce context (js/AudioContext. {:sampleRate 16000}))
 
 (defn record []
-  (js-await [stream (js/navigator.mediaDevices.getUserMedia #js {:audio true})]
+  (js-await [stream (js/navigator.mediaDevices.getUserMedia (clj->js {:audio true}))]
     (js-await [_ (.audioWorklet.addModule context "audio.js")]
       (let [processor (js/AudioWorkletNode. context "processor")]
         (.connect (.createMediaStreamSource context stream) processor)

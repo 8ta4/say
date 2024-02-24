@@ -45,7 +45,7 @@
 (defonce context (js/AudioContext. {:sampleRate 16000}))
 
 (defn record []
-  (js-await [stream (js/navigator.mediaDevices.getUserMedia #js {:audio true})]
+  (js-await [stream (js/navigator.mediaDevices.getUserMedia (clj->js {:audio true}))]
     (js-await [_ (.audioWorklet.addModule context "audio.js")]
       (let [processor (js/AudioWorkletNode. context "processor")]
         (.connect (.createMediaStreamSource context stream) processor)
@@ -71,14 +71,20 @@
                                (js/console.log "Secrets updated")
                                (spit secrets-path (yaml/stringify (clj->js secrets*))))))
 
+;; https://github.com/snakers4/silero-vad/blob/5e7ee10ee065ab2b98751dd82b28e3c6360e19aa/utils_vad.py#L207
+(def window-size-samples
+  1536)
+
 (defn init []
   (load)
   (record)
   (async/go-loop []
     (let [data (async/<! chan)]
-      (specter/transform [specter/ATOM :raw] (fn [raw] (append-float-32-array raw data)) state)
+      (specter/transform [specter/ATOM :raw]
+                         (fn [raw]
+                           (let [combined (append-float-32-array raw data)]
+                             (if (<= window-size-samples (.-length combined))
+                               (js/Float32Array. (drop window-size-samples combined))
+                               combined)))
+                         state)
       (recur))))
-
-;; https://github.com/snakers4/silero-vad/blob/5e7ee10ee065ab2b98751dd82b28e3c6360e19aa/utils_vad.py#L207
-(def window-size-samples
-  1536)

@@ -70,3 +70,6 @@
     (.set combined x)
     (.set combined y (.-length x))
     combined))
+
+(def state
+  (atom {:raw (js/Float32Array.)}))

@@ -17,4 +17,4 @@
   :renderer
   {:target :browser
    :modules {:renderer {:init-fn renderer/init}}
-   :devtools {:after-load renderer/init}}}}
+   :devtools {:after-load renderer/load}}}}

@@ -39,17 +39,18 @@
                  :on-change (fn [event]
                               (specter/setval [specter/ATOM :key] event.target.value secrets))}])
 
-(def chan
+(defonce chan
   (async/chan))
+
+(defonce context (js/AudioContext. {:sampleRate 16000}))
 
 (defn record []
   (js-await [stream (js/navigator.mediaDevices.getUserMedia #js {:audio true})]
-    (let [context (js/AudioContext. {:sampleRate 16000})]
-      (js-await [_ (.audioWorklet.addModule context "audio.js")]
-        (let [processor (js/AudioWorkletNode. context "processor")]
-          (.connect (.createMediaStreamSource context stream) processor)
-          (j/assoc-in! processor [:port :onmessage] (fn [message]
-                                                      (async/put! chan message.data))))))))
+    (js-await [_ (.audioWorklet.addModule context "audio.js")]
+      (let [processor (js/AudioWorkletNode. context "processor")]
+        (.connect (.createMediaStreamSource context stream) processor)
+        (j/assoc-in! processor [:port :onmessage] (fn [message]
+                                                    (async/put! chan message.data)))))))
 (defn append-float-32-array
   [x y]
   (let [combined (js/Float32Array. (+ (.-length x)
@@ -58,17 +59,20 @@
     (.set combined y (.-length x))
     combined))
 
-(def state
+(defonce state
   (atom {:raw (js/Float32Array.)}))
 
-(defn init []
+(defn load []
   (js/console.log "Hello, Renderer!")
   (when (fs.existsSync secrets-path)
     (reset! secrets (js->clj (yaml/parse (slurp secrets-path)) :keywordize-keys true)))
   (client/render root [api-key])
   (add-watch secrets :change (fn [_ _ _ secrets*]
                                (js/console.log "Secrets updated")
-                               (spit secrets-path (yaml/stringify (clj->js secrets*)))))
+                               (spit secrets-path (yaml/stringify (clj->js secrets*))))))
+
+(defn init []
+  (load)
   (record)
   (async/go-loop []
     (let [data (async/<! chan)]

@@ -22,6 +22,14 @@
 (def fs
   (js/require "fs"))
 
+(def ort
+  ;; https://github.com/microsoft/onnxruntime/issues/11181#issuecomment-1733461246
+  ;; Using js/require to load onnxruntime-node due to an error encountered when
+  ;; attempting to use the ClojureScript :require syntax. The error is as follows:
+  ;; "Module not provided: ../bin/napi-v3/undefined/undefined/onnxruntime_binding.node",
+  ;; which prevents successful module resolution by Shadow CLJS.
+  (js/require "onnxruntime-node"))
+
 ;; Using defonce to ensure the root is only created once. This prevents warnings about
 ;; calling ReactDOMClient.createRoot() on a container that has already been passed to
 ;; createRoot() before during hot reloads or re-evaluations of the code.
@@ -78,13 +86,23 @@
 (defn init []
   (load)
   (record)
-  (async/go-loop []
-    (let [data (async/<! chan)]
-      (specter/transform [specter/ATOM :raw]
-                         (fn [raw]
-                           (let [combined (append-float-32-array raw data)]
-                             (if (<= window-size-samples (.-length combined))
-                               (js/Float32Array. (drop window-size-samples combined))
-                               combined)))
-                         state)
-      (recur))))
+  (js-await [session (ort.InferenceSession.create "vad.onnx")]
+    (async/go-loop []
+      (let [data (async/<! chan)]
+        (specter/transform [specter/ATOM :raw]
+                           (fn [raw]
+                             (let [combined (append-float-32-array raw data)]
+                               (if (<= window-size-samples (.-length combined))
+                                 (js/Float32Array. (drop window-size-samples combined))
+                                 combined)))
+                           state)
+        (recur)))))
+
+(def sr
+  (ort.Tensor. (js/BigInt64Array. [(js/BigInt 16000)])))
+
+(def shape
+  [2 1 64])
+
+(def tensor
+  (ort.Tensor. (js/Float32Array. (apply * shape)) (clj->js shape)))

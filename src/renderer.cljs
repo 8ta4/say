@@ -22,6 +22,10 @@
 (def fs
   (js/require "fs"))
 
+;; Using js/require to load onnxruntime-node due to an error encountered when
+;; attempting to use the ClojureScript :require syntax. The error is as follows:
+;; "Module not provided: ../bin/napi-v3/undefined/undefined/onnxruntime_binding.node",
+;; which prevents successful module resolution by Shadow CLJS.
 (def ort
   (js/require "onnxruntime-node"))
 

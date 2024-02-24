@@ -22,11 +22,12 @@
 (def fs
   (js/require "fs"))
 
-;; Using js/require to load onnxruntime-node due to an error encountered when
-;; attempting to use the ClojureScript :require syntax. The error is as follows:
-;; "Module not provided: ../bin/napi-v3/undefined/undefined/onnxruntime_binding.node",
-;; which prevents successful module resolution by Shadow CLJS.
 (def ort
+  ;; https://github.com/microsoft/onnxruntime/issues/11181#issuecomment-1733461246
+  ;; Using js/require to load onnxruntime-node due to an error encountered when
+  ;; attempting to use the ClojureScript :require syntax. The error is as follows:
+  ;; "Module not provided: ../bin/napi-v3/undefined/undefined/onnxruntime_binding.node",
+  ;; which prevents successful module resolution by Shadow CLJS.
   (js/require "onnxruntime-node"))
 
 ;; Using defonce to ensure the root is only created once. This prevents warnings about

@@ -3,6 +3,7 @@
             [applied-science.js-interop :as j]
             [cljs-node-io.core :refer [slurp spit]]
             [cljs.core.async :as async]
+            [cljs.core.async.interop :refer-macros [<p!]]
             [com.rpl.specter :as specter]
             [reagent.core :as reagent]
             [reagent.dom.client :as client]
@@ -89,20 +90,24 @@
 (def window-size-samples
   1536)
 
+(def sr
+  (ort.Tensor. (js/BigInt64Array. [(js/BigInt 16000)])))
+
 (defn init []
   (load)
   (record)
   (js-await [session (ort.InferenceSession.create "vad.onnx")]
     (async/go-loop []
-      (let [data (async/<! chan)]
-        (specter/transform [specter/ATOM :raw]
-                           (fn [raw]
-                             (let [combined (append-float-32-array raw data)]
-                               (if (<= window-size-samples (.-length combined))
-                                 (js/Float32Array. (drop window-size-samples combined))
-                                 combined)))
-                           state)
+      (let [data (async/<! chan)
+            state* @state
+            combined (append-float-32-array (:raw state*) data)]
+        (if (<= window-size-samples (.-length combined))
+          (let [before (js/Float32Array. (take window-size-samples combined))
+                input (ort.Tensor. before (clj->js [1 (.-length before)]))
+                result (<p! (.run session (clj->js {:input input
+                                                    :sr sr
+                                                    :h tensor
+                                                    :c tensor})))]
+            (specter/setval specter/ATOM (merge state* {:raw (js/Float32Array. (drop window-size-samples combined))}) state))
+          (specter/setval [specter/ATOM :raw] combined state))
         (recur)))))
-
-(def sr
-  (ort.Tensor. (js/BigInt64Array. [(js/BigInt 16000)])))

@@ -22,6 +22,9 @@
 (def fs
   (js/require "fs"))
 
+(def ort
+  (js/require "onnxruntime-node"))
+
 ;; Using defonce to ensure the root is only created once. This prevents warnings about
 ;; calling ReactDOMClient.createRoot() on a container that has already been passed to
 ;; createRoot() before during hot reloads or re-evaluations of the code.
@@ -88,3 +91,6 @@
                                combined)))
                          state)
       (recur))))
+
+(def sr
+  (ort.Tensor. (js/BigInt64Array. [(js/BigInt 16000)])))

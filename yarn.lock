@@ -3386,6 +3386,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"onnxruntime-common@npm:1.17.0":
+  version: 1.17.0
+  resolution: "onnxruntime-common@npm:1.17.0"
+  checksum: 5d711197a2f0facb0dfc0597cf7f8c46b00ccadf28c9923e5159213f18697c90e3f2a7df40d7e7311de92c55eccd5bd254a771daf203f2b2df06bf806d1e0b62
+  languageName: node
+  linkType: hard
+
+"onnxruntime-node@npm:^1.17.0":
+  version: 1.17.0
+  resolution: "onnxruntime-node@npm:1.17.0"
+  dependencies:
+    onnxruntime-common: "npm:1.17.0"
+  checksum: 407b35baf75280b78eaaa41528356628f495121933b7aeaaaf5e5b8d85c9df368626dbfc09091992a24f4f0403bf061b14f02b9f44d6ed339ecb05c6e1813ad6
+  conditions: (os=win32 | os=darwin | os=linux)
+  languageName: node
+  linkType: hard
+
 "optionator@npm:^0.9.3":
   version: 0.9.3
   resolution: "optionator@npm:0.9.3"
@@ -4000,6 +4017,7 @@ __metadata:
     eslint-config-airbnb-base: "npm:^15.0.0"
     eslint-config-prettier: "npm:^9.1.0"
     eslint-plugin-import: "npm:^2.25.2"
+    onnxruntime-node: "npm:^1.17.0"
     prettier: "npm:3.2.5"
     prettier-plugin-packagejson: "npm:^2.4.11"
     react: "npm:^18.2.0"

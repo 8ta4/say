@@ -63,10 +63,10 @@
   (js/AudioContext. (clj->js {:sampleRate sample-rate})))
 
 (defn record []
-  (js-await [stream (js/navigator.mediaDevices.getUserMedia (clj->js {:audio true}))]
+  (js-await [media (js/navigator.mediaDevices.getUserMedia (clj->js {:audio true}))]
     (js-await [_ (.audioWorklet.addModule context "audio.js")]
       (let [processor (js/AudioWorkletNode. context "processor")]
-        (.connect (.createMediaStreamSource context stream) processor)
+        (.connect (.createMediaStreamSource context media) processor)
         (j/assoc-in! processor [:port :onmessage] (fn [message]
                                                     (async/put! chan message.data)))))))
 

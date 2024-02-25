@@ -166,3 +166,9 @@
 
 (defonce app-temp-directory
   (fs.mkdtempSync (str temp-directory "/say-")))
+
+(defn generate-filename []
+  (str (random-uuid) ".opus"))
+
+(defn generate-filepath []
+  (path.join app-temp-directory (generate-filename)))

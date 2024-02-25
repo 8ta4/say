@@ -53,7 +53,8 @@
 
 (def sample-rate 16000)
 
-(defonce context (js/AudioContext. {:sampleRate sample-rate}))
+(defonce context
+  (js/AudioContext. (clj->js {:sampleRate sample-rate})))
 
 (defn record []
   (js-await [stream (js/navigator.mediaDevices.getUserMedia (clj->js {:audio true}))]

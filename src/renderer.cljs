@@ -101,7 +101,9 @@
       (let [data (async/<! chan)
             state* @state
             combined (append-float-32-array (:raw state*) data)]
-        (if (<= window-size-samples (.-length combined))
+        ;; https://developer.mozilla.org/en-US/docs/Web/API/AudioWorkletProcessor/process#sect1
+        (if (< (.-length combined) window-size-samples)
+          (specter/setval [specter/ATOM :raw] combined state)
           (let [before (js/Float32Array. (take window-size-samples combined))
                 input (ort.Tensor. before (clj->js [1 (.-length before)]))
                 result (js->clj (<p! (.run session (clj->js (merge state* {:input input
@@ -109,6 +111,5 @@
                                 :keywordize-keys true)]
             (specter/setval specter/ATOM (merge state* {:raw (js/Float32Array. (drop window-size-samples combined))
                                                         :h (:hn result)
-                                                        :c (:cn result)}) state))
-          (specter/setval [specter/ATOM :raw] combined state))
+                                                        :c (:cn result)}) state)))
         (recur)))))

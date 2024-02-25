@@ -104,6 +104,13 @@
 
 (def samples-in-pause (* ar pause-duration))
 
+(def stream-duration 60)
+
+(def samples-in-stream (* ar stream-duration))
+
+(defn save []
+  (js/console.log "Current stream length:" (:stream-length @state)))
+
 (defn init []
   (load)
   (record)
@@ -141,9 +148,9 @@
                                      {:stream-length (+ (:stream-length state*) (.-length before))
                                       :pause-length 0
                                       :vad true}))
-                            state)))
+                            state)
+            (let [state** @state]
+              (when (and (< samples-in-stream (:stream-length state**))
+                         (< samples-in-pause (:pause-length state**)))
+                (save)))))
         (recur)))))
-
-(def stream-duration 60)
-
-(def samples-in-stream (* ar stream-duration))

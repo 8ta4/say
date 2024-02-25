@@ -109,9 +109,19 @@
                 result (js->clj (<p! (.run session (clj->js (merge state* {:input input
                                                                            :sr sr}))))
                                 :keywordize-keys true)]
-            (specter/setval specter/ATOM (merge state* {:raw (js/Float32Array. (drop window-size-samples combined))
-                                                        :h (:hn result)
-                                                        :c (:cn result)}) state)))
+            (specter/setval specter/ATOM
+                            (merge state*
+                                   {:raw (js/Float32Array. (drop window-size-samples combined))
+                                    :h (:hn result)
+                                    :c (:cn result)}
+                                   (if (-> result
+                                           :output
+                                           .-data
+                                           first
+                                           (<= 0.5))
+                                     {:pause-length (+ (:pause-length state*) (.-length before))}
+                                     {:pause-length 0}))
+                            state)))
         (recur)))))
 
 (def ar 16000)

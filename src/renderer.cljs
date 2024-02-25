@@ -72,6 +72,7 @@
 
 (defonce state
   (atom {:stream-length 0
+         :pad []
          :pause-length 0
          :raw []
          :vad false
@@ -107,8 +108,9 @@
     (js/console.log "Current stream length:" (:stream-length state*))
     (specter/setval specter/ATOM
                     (merge state* {:stream-length 0
-                                   :raw []
+                                   :pad []
                                    :pause-length 0
+                                   :raw []
                                    :vad false})
                     state)))
 
@@ -144,8 +146,9 @@
                                      (merge {:pause-length (+ (:pause-length state*) (count before))}
                                             (if (and (<= (:pause-length state*) samples-in-pause) (:vad state*))
                                               {:stream-length (+ (:stream-length state*) (count before))}
-                                              {}))
-                                     {:stream-length (+ (:stream-length state*) (count before))
+                                              {:pad (take-last samples-in-pause (concat (:pad state*) before))}))
+                                     {:stream-length (+ (:stream-length state*) (count (:pad state*)) (count before))
+                                      :pad []
                                       :pause-length 0
                                       :vad true}))
                             state)

@@ -19,4 +19,7 @@
   {:target :browser
    :modules {:renderer {:init-fn renderer/init}}
    :devtools {:after-load renderer/load
-              :preloads [hashp.core]}}}}
+              :preloads [hashp.core]}
+
+   ;; https://shadow-cljs.github.io/docs/UsersGuide.html
+   :compiler-options {:infer-externs true}}}}

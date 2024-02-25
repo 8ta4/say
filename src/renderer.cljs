@@ -51,7 +51,10 @@
 (defonce chan
   (async/chan))
 
-(defonce context (js/AudioContext. {:sampleRate 16000}))
+(def sample-rate 16000)
+
+(defonce context
+  (js/AudioContext. (clj->js {:sampleRate sample-rate})))
 
 (defn record []
   (js-await [stream (js/navigator.mediaDevices.getUserMedia (clj->js {:audio true}))]
@@ -60,13 +63,6 @@
         (.connect (.createMediaStreamSource context stream) processor)
         (j/assoc-in! processor [:port :onmessage] (fn [message]
                                                     (async/put! chan message.data)))))))
-(defn append-float-32-array
-  [x y]
-  (let [combined (js/Float32Array. (+ (.-length x)
-                                      (.-length y)))]
-    (.set combined x)
-    (.set combined y (.-length x))
-    combined))
 
 (def shape
   [2 1 64])
@@ -75,7 +71,13 @@
   (ort.Tensor. (js/Float32Array. (apply * shape)) (clj->js shape)))
 
 (defonce state
-  (atom {:raw (js/Float32Array.) :h tensor :c tensor}))
+  (atom {:stream-length 0
+         :pad []
+         :pause-length 0
+         :raw []
+         :vad false
+         :h tensor
+         :c tensor}))
 
 (defn load []
   (js/console.log "Hello, Renderer!")
@@ -91,24 +93,67 @@
   1536)
 
 (def sr
-  (ort.Tensor. (js/BigInt64Array. [(js/BigInt 16000)])))
+  (ort.Tensor. (js/BigInt64Array. [(js/BigInt sample-rate)])))
+
+(def pause-duration 1.5)
+
+(def samples-in-pause (* sample-rate pause-duration))
+
+(def stream-duration 60)
+
+(def samples-in-stream (* sample-rate stream-duration))
+
+(defn save []
+  (let [state* @state]
+    (js/console.log "Current stream length:" (:stream-length state*))
+    (specter/setval specter/ATOM
+                    (merge state* {:stream-length 0
+                                   :pad []
+                                   :pause-length 0
+                                   :raw []
+                                   :vad false})
+                    state)))
 
 (defn init []
   (load)
   (record)
   (js-await [session (ort.InferenceSession.create "vad.onnx")]
     (async/go-loop []
-      (let [data (async/<! chan)
-            state* @state
-            combined (append-float-32-array (:raw state*) data)]
-        (if (<= window-size-samples (.-length combined))
-          (let [before (js/Float32Array. (take window-size-samples combined))
-                input (ort.Tensor. before (clj->js [1 (.-length before)]))
-                result (js->clj (<p! (.run session (clj->js (merge state* {:input input
-                                                                           :sr sr}))))
+      (let [state* @state
+            combined (concat (:raw state*) (async/<! chan))]
+        ;; https://developer.mozilla.org/en-US/docs/Web/API/AudioWorkletProcessor/process#sect1
+        (if (< (count combined) window-size-samples)
+          (specter/setval [specter/ATOM :raw] combined state)
+          (let [before (take window-size-samples combined)
+                input (ort.Tensor. (js/Float32Array. before) (clj->js [1 (count before)]))
+                result (js->clj (->> {:input input
+                                      :sr sr}
+                                     (merge state*)
+                                     clj->js
+                                     (.run session)
+                                     <p!)
                                 :keywordize-keys true)]
-            (specter/setval specter/ATOM (merge state* {:raw (js/Float32Array. (drop window-size-samples combined))
-                                                        :h (:hn result)
-                                                        :c (:cn result)}) state))
-          (specter/setval [specter/ATOM :raw] combined state))
+            (specter/setval specter/ATOM
+                            (merge state*
+                                   {:raw (drop window-size-samples combined)
+                                    :h (:hn result)
+                                    :c (:cn result)}
+                                   (if (-> result
+                                           :output
+                                           .-data
+                                           first
+                                           (<= 0.5))
+                                     (merge {:pause-length (+ (:pause-length state*) (count before))}
+                                            (if (and (<= (:pause-length state*) samples-in-pause) (:vad state*))
+                                              {:stream-length (+ (:stream-length state*) (count before))}
+                                              {:pad (take-last samples-in-pause (concat (:pad state*) before))}))
+                                     {:stream-length (+ (:stream-length state*) (count (:pad state*)) (count before))
+                                      :pad []
+                                      :pause-length 0
+                                      :vad true}))
+                            state)
+            (let [state** @state]
+              (when (and (< samples-in-stream (:stream-length state**))
+                         (< samples-in-pause (:pause-length state**)))
+                (save)))))
         (recur)))))

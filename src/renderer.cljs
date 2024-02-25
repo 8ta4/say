@@ -134,3 +134,7 @@
 (def pause-duration 1.5)
 
 (def samples-in-pause (* ar pause-duration))
+
+(def stream-duration 60)
+
+(def samples-in-stream (* ar stream-duration))

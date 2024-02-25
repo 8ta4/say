@@ -109,7 +109,14 @@
 (def samples-in-stream (* ar stream-duration))
 
 (defn save []
-  (js/console.log "Current stream length:" (:stream-length @state)))
+  (let [state* @state]
+    (js/console.log "Current stream length:" (:stream-length state*))
+    (specter/setval specter/ATOM
+                    (merge state* {:stream-length 0
+                                   :raw (js/Float32Array.)
+                                   :pause-length 0
+                                   :vad false})
+                    state)))
 
 (defn init []
   (load)

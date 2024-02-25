@@ -128,7 +128,7 @@
 
 (def stream-duration 60)
 
-(def samples-in-stream (* sample-rate stream-duration))
+(def samples-in-readable (* sample-rate stream-duration))
 
 (defn push [readable audio]
   (.push readable (js/Buffer.from (.-buffer (js/Float32Array. audio)))))
@@ -185,7 +185,7 @@
                                         :vad true})))
                             state)
             (let [state** @state]
-              (when (and (< samples-in-stream (:readable-length state**))
+              (when (and (< samples-in-readable (:readable-length state**))
                          (< samples-in-pause (:pause-length state**)))
                 (save)))))
         (recur)))))

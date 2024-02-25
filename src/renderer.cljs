@@ -114,9 +114,7 @@
                                    :vad false})
                     state)))
 
-(defn init []
-  (load)
-  (record)
+(defn process []
   (js-await [session (ort.InferenceSession.create "vad.onnx")]
     (async/go-loop []
       (let [state* @state
@@ -157,3 +155,8 @@
                          (< samples-in-pause (:pause-length state**)))
                 (save)))))
         (recur)))))
+
+(defn init []
+  (load)
+  (record)
+  (process))

@@ -106,8 +106,12 @@
           (specter/setval [specter/ATOM :raw] combined state)
           (let [before (js/Float32Array. (take window-size-samples combined))
                 input (ort.Tensor. before (clj->js [1 (.-length before)]))
-                result (js->clj (<p! (.run session (clj->js (merge state* {:input input
-                                                                           :sr sr}))))
+                result (js->clj (->> {:input input
+                                      :sr sr}
+                                     (merge state*)
+                                     clj->js
+                                     (.run session)
+                                     <p!)
                                 :keywordize-keys true)]
             (specter/setval specter/ATOM
                             (merge state*

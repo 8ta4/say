@@ -51,7 +51,9 @@
 (defonce chan
   (async/chan))
 
-(defonce context (js/AudioContext. {:sampleRate 16000}))
+(def sample-rate 16000)
+
+(defonce context (js/AudioContext. {:sampleRate sample-rate}))
 
 (defn record []
   (js-await [stream (js/navigator.mediaDevices.getUserMedia (clj->js {:audio true}))]
@@ -89,17 +91,15 @@
   1536)
 
 (def sr
-  (ort.Tensor. (js/BigInt64Array. [(js/BigInt 16000)])))
-
-(def ar 16000)
+  (ort.Tensor. (js/BigInt64Array. [(js/BigInt sample-rate)])))
 
 (def pause-duration 1.5)
 
-(def samples-in-pause (* ar pause-duration))
+(def samples-in-pause (* sample-rate pause-duration))
 
 (def stream-duration 60)
 
-(def samples-in-stream (* ar stream-duration))
+(def samples-in-stream (* sample-rate stream-duration))
 
 (defn save []
   (let [state* @state]

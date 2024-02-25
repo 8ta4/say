@@ -134,11 +134,10 @@
                                            .-data
                                            first
                                            (<= 0.5))
-                                     (let [pause-length (+ (:pause-length state*) (.-length before))]
-                                       (merge {:pause-length pause-length}
-                                              (if (and (<= pause-length samples-in-pause) (:vad state*))
-                                                {:stream-length (+ (:stream-length state*) (.-length before))}
-                                                {})))
+                                     (merge {:pause-length (+ (:pause-length state*) (.-length before))}
+                                            (if (and (<= (:pause-length state*) samples-in-pause) (:vad state*))
+                                              {:stream-length (+ (:stream-length state*) (.-length before))}
+                                              {}))
                                      {:stream-length (+ (:stream-length state*) (.-length before))
                                       :pause-length 0
                                       :vad true}))

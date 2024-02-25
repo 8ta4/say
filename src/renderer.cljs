@@ -23,6 +23,12 @@
 (def fs
   (js/require "fs"))
 
+(def stream
+  (js/require "stream"))
+
+(def child-process
+  (js/require "child_process"))
+
 (def ort
   ;; https://github.com/microsoft/onnxruntime/issues/11181#issuecomment-1733461246
   ;; Using js/require to load onnxruntime-node due to an error encountered when
@@ -70,8 +76,29 @@
 (def tensor
   (ort.Tensor. (js/Float32Array. (apply * shape)) (clj->js shape)))
 
+(defonce temp-directory
+  (os.tmpdir))
+
+(defonce app-temp-directory
+  (fs.mkdtempSync (str temp-directory "/say-")))
+
+(defn generate-filename []
+  (str (random-uuid) ".opus"))
+
+(defn generate-filepath []
+  (path.join app-temp-directory (generate-filename)))
+
+(defn create-readable []
+  (let [readable (stream.Readable. (clj->js {:read (fn [])}))
+        ffmpeg (child-process.spawn "ffmpeg" (clj->js ["-f" "f32le" "-ar" sample-rate "-i" "pipe:0" "-b:a" "24k" (generate-filepath)]))]
+    (.pipe readable ffmpeg.stdin)
+    (.on ffmpeg "close" (fn [_]
+                          (js/console.log "ffmpeg process closed")))
+    readable))
+
 (defonce state
-  (atom {:stream-length 0
+  (atom {:readable (create-readable)
+         :readable-length 0
          :pad []
          :pause-length 0
          :raw []
@@ -103,11 +130,15 @@
 
 (def samples-in-stream (* sample-rate stream-duration))
 
+(defn push [readable audio]
+  (.push readable (js/Buffer.from (.-buffer (js/Float32Array. audio)))))
+
 (defn save []
   (let [state* @state]
-    (js/console.log "Current stream length:" (:stream-length state*))
+    (js/console.log "Current stream length:" (:readable-length state*))
+    (push (:readable state*) (:raw state*))
     (specter/setval specter/ATOM
-                    (merge state* {:stream-length 0
+                    (merge state* {:readable-length 0
                                    :pad []
                                    :pause-length 0
                                    :raw []
@@ -143,15 +174,18 @@
                                            (<= 0.5))
                                      (merge {:pause-length (+ (:pause-length state*) (count before))}
                                             (if (and (<= (:pause-length state*) samples-in-pause) (:vad state*))
-                                              {:stream-length (+ (:stream-length state*) (count before))}
+                                              (do (push (:readable state*) before)
+                                                  {:readable-length (+ (:readable-length state*) (count before))})
                                               {:pad (take-last samples-in-pause (concat (:pad state*) before))}))
-                                     {:stream-length (+ (:stream-length state*) (count (:pad state*)) (count before))
-                                      :pad []
-                                      :pause-length 0
-                                      :vad true}))
+                                     (let [combined* (concat (:pad state*) before)]
+                                       (push (:readable state*) combined*)
+                                       {:readable-length (+ (:readable-length state*) (count combined*))
+                                        :pad []
+                                        :pause-length 0
+                                        :vad true})))
                             state)
             (let [state** @state]
-              (when (and (< samples-in-stream (:stream-length state**))
+              (when (and (< samples-in-stream (:readable-length state**))
                          (< samples-in-pause (:pause-length state**)))
                 (save)))))
         (recur)))))
@@ -160,15 +194,3 @@
   (load)
   (record)
   (process))
-
-(defonce temp-directory
-  (os.tmpdir))
-
-(defonce app-temp-directory
-  (fs.mkdtempSync (str temp-directory "/say-")))
-
-(defn generate-filename []
-  (str (random-uuid) ".opus"))
-
-(defn generate-filepath []
-  (path.join app-temp-directory (generate-filename)))

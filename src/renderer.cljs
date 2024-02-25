@@ -75,7 +75,12 @@
   (ort.Tensor. (js/Float32Array. (apply * shape)) (clj->js shape)))
 
 (defonce state
-  (atom {:stream-length 0 :raw (js/Float32Array.) :pause-length 0 :h tensor :c tensor}))
+  (atom {:stream-length 0
+         :raw (js/Float32Array.)
+         :pause-length 0
+         :vad false
+         :h tensor
+         :c tensor}))
 
 (defn load []
   (js/console.log "Hello, Renderer!")
@@ -125,7 +130,8 @@
                                            (<= 0.5))
                                      {:pause-length (+ (:pause-length state*) (.-length before))}
                                      {:stream-length (+ (:stream-length state*) (.-length before))
-                                      :pause-length 0}))
+                                      :pause-length 0
+                                      :vad true}))
                             state)))
         (recur)))))
 

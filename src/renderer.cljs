@@ -160,3 +160,9 @@
   (load)
   (record)
   (process))
+
+(defonce temp-directory
+  (os.tmpdir))
+
+(defonce app-temp-directory
+  (fs.mkdtempSync (str temp-directory "/say-")))

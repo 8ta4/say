@@ -76,8 +76,8 @@
 
 (defonce state
   (atom {:stream-length 0
-         :raw (js/Float32Array.)
          :pause-length 0
+         :raw (js/Float32Array.)
          :vad false
          :h tensor
          :c tensor}))

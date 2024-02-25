@@ -75,7 +75,7 @@
   (ort.Tensor. (js/Float32Array. (apply * shape)) (clj->js shape)))
 
 (defonce state
-  (atom {:raw (js/Float32Array.) :h tensor :c tensor}))
+  (atom {:raw (js/Float32Array.) :h tensor :c tensor :pause-length 0}))
 
 (defn load []
   (js/console.log "Hello, Renderer!")

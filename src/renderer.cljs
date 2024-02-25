@@ -113,3 +113,9 @@
                                                         :h (:hn result)
                                                         :c (:cn result)}) state)))
         (recur)))))
+
+(def ar 16000)
+
+(def pause-duration 1.5)
+
+(def samples-in-pause (* ar pause-duration))

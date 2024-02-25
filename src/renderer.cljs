@@ -60,13 +60,6 @@
         (.connect (.createMediaStreamSource context stream) processor)
         (j/assoc-in! processor [:port :onmessage] (fn [message]
                                                     (async/put! chan message.data)))))))
-(defn append-float-32-array
-  [x y]
-  (let [combined (js/Float32Array. (+ (.-length x)
-                                      (.-length y)))]
-    (.set combined x)
-    (.set combined y (.-length x))
-    combined))
 
 (def shape
   [2 1 64])
@@ -77,7 +70,7 @@
 (defonce state
   (atom {:stream-length 0
          :pause-length 0
-         :raw (js/Float32Array.)
+         :raw []
          :vad false
          :h tensor
          :c tensor}))
@@ -113,7 +106,7 @@
     (js/console.log "Current stream length:" (:stream-length state*))
     (specter/setval specter/ATOM
                     (merge state* {:stream-length 0
-                                   :raw (js/Float32Array.)
+                                   :raw []
                                    :pause-length 0
                                    :vad false})
                     state)))
@@ -123,18 +116,13 @@
   (record)
   (js-await [session (ort.InferenceSession.create "vad.onnx")]
     (async/go-loop []
-      (let [data (async/<! chan)
-            state* @state
-            ;; Using `concat` for array concatenation followed by `js/Float32Array` for conversion can be inefficient.
-            ;; This inefficiency may slow down data processing on the consumer's end. If the consumer processes data too slowly,
-            ;; it could lead to a buildup of unprocessed data "puts" on the channel. Once the number of pending puts surpasses
-            ;; the channel's maximum queue size, it triggers an error.
-            combined (append-float-32-array (:raw state*) data)]
+      (let [state* @state
+            combined (concat (:raw state*) (async/<! chan))]
         ;; https://developer.mozilla.org/en-US/docs/Web/API/AudioWorkletProcessor/process#sect1
-        (if (< (.-length combined) window-size-samples)
+        (if (< (count combined) window-size-samples)
           (specter/setval [specter/ATOM :raw] combined state)
-          (let [before (js/Float32Array. (take window-size-samples combined))
-                input (ort.Tensor. before (clj->js [1 (.-length before)]))
+          (let [before (take window-size-samples combined)
+                input (ort.Tensor. (js/Float32Array. before) (clj->js [1 (count before)]))
                 result (js->clj (->> {:input input
                                       :sr sr}
                                      (merge state*)
@@ -144,7 +132,7 @@
                                 :keywordize-keys true)]
             (specter/setval specter/ATOM
                             (merge state*
-                                   {:raw (js/Float32Array. (drop window-size-samples combined))
+                                   {:raw (drop window-size-samples combined)
                                     :h (:hn result)
                                     :c (:cn result)}
                                    (if (-> result
@@ -152,11 +140,11 @@
                                            .-data
                                            first
                                            (<= 0.5))
-                                     (merge {:pause-length (+ (:pause-length state*) (.-length before))}
+                                     (merge {:pause-length (+ (:pause-length state*) (count before))}
                                             (if (and (<= (:pause-length state*) samples-in-pause) (:vad state*))
-                                              {:stream-length (+ (:stream-length state*) (.-length before))}
+                                              {:stream-length (+ (:stream-length state*) (count before))}
                                               {}))
-                                     {:stream-length (+ (:stream-length state*) (.-length before))
+                                     {:stream-length (+ (:stream-length state*) (count before))
                                       :pause-length 0
                                       :vad true}))
                             state)

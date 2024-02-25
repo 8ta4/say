@@ -125,6 +125,10 @@
     (async/go-loop []
       (let [data (async/<! chan)
             state* @state
+            ;; Using `concat` for array concatenation followed by `js/Float32Array` for conversion can be inefficient.
+            ;; This inefficiency may slow down data processing on the consumer's end. If the consumer processes data too slowly,
+            ;; it could lead to a buildup of unprocessed data "puts" on the channel. Once the number of pending puts surpasses
+            ;; the channel's maximum queue size, it triggers an error.
             combined (append-float-32-array (:raw state*) data)]
         ;; https://developer.mozilla.org/en-US/docs/Web/API/AudioWorkletProcessor/process#sect1
         (if (< (.-length combined) window-size-samples)

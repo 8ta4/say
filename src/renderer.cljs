@@ -98,6 +98,12 @@
 (def sr
   (ort.Tensor. (js/BigInt64Array. [(js/BigInt 16000)])))
 
+(def ar 16000)
+
+(def pause-duration 1.5)
+
+(def samples-in-pause (* ar pause-duration))
+
 (defn init []
   (load)
   (record)
@@ -128,18 +134,16 @@
                                            .-data
                                            first
                                            (<= 0.5))
-                                     {:pause-length (+ (:pause-length state*) (.-length before))}
+                                     (let [pause-length (+ (:pause-length state*) (.-length before))]
+                                       (merge {:pause-length pause-length}
+                                              (if (and (<= pause-length samples-in-pause) (:vad state*))
+                                                {:stream-length (+ (:stream-length state*) (.-length before))}
+                                                {})))
                                      {:stream-length (+ (:stream-length state*) (.-length before))
                                       :pause-length 0
                                       :vad true}))
                             state)))
         (recur)))))
-
-(def ar 16000)
-
-(def pause-duration 1.5)
-
-(def samples-in-pause (* ar pause-duration))
 
 (def stream-duration 60)
 

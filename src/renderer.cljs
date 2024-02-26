@@ -35,6 +35,9 @@
                  :on-change (fn [event]
                               (specter/setval [specter/ATOM :key] event.target.value secrets))}])
 
+;; The core.async channel and go-loop are used to manage the asynchronous processing
+;; of audio chunks. This ensures that updates to the application state are serialized,
+;; preventing concurrent state modifications that could lead to inconsistencies.
 (defonce chan
   (async/chan))
 

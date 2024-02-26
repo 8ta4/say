@@ -17,14 +17,16 @@
 
   # https://devenv.sh/scripts/
   scripts.hello.exec = "echo hello from $GREET";
-  scripts.run.exec = "electron .";
+  scripts.build.exec = "shadow-cljs compile :main :renderer";
+  scripts.run.exec = ''
+    nodemon --watch out --exec 'pkill -f "node_modules/electron"; electron .'
+  '';
 
   enterShell = ''
     hello
     git --version
     export PATH="$DEVENV_ROOT/node_modules/.bin:$PATH"
     yarn install
-    shadow-cljs compile :main :renderer
   '';
 
   # https://devenv.sh/languages/

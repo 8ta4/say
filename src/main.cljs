@@ -1,5 +1,6 @@
 (ns main
-  (:require [electron :refer [app BrowserWindow globalShortcut]]))
+  (:require [electron :refer [app BrowserWindow globalShortcut]]
+            [shared :refer [channel]]))
 
 (def shortcut
   "Command+;")
@@ -14,7 +15,7 @@
     (.loadFile win "public/index.html")
     (.register globalShortcut shortcut (fn []
                                          (js/console.log "Global shortcut" shortcut "pressed.")
-                                         (.webContents.send win "shortcut")))))
+                                         (.webContents.send win channel)))))
 
 (defn main []
   (js/console.log "Hello, Electron!")

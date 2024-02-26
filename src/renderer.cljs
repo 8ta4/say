@@ -6,7 +6,9 @@
             [cljs-node-io.core :refer [slurp spit]]
             [cljs.core.async :as async]
             [cljs.core.async.interop :refer [<p!]]
+            [clojure.string :as str]
             [com.rpl.specter :as specter]
+            [dayjs]
             [electron]
             [fs]
             [onnxruntime-node :as ort]
@@ -17,8 +19,7 @@
             [shadow.cljs.modern :refer [js-await]]
             [shared :refer [channel]]
             [stream]
-            [yaml]
-            [clojure.string :as str]))
+            [yaml]))
 
 ;; Using defonce to ensure the root is only created once. This prevents warnings about
 ;; calling ReactDOMClient.createRoot() on a container that has already been passed to
@@ -68,11 +69,11 @@
 (defonce app-temp-directory
   (fs/mkdtempSync (str temp-directory "/say-")))
 
-(defn generate-filename []
+(defn generate-audio-filename []
   (str (random-uuid) ".opus"))
 
-(defn generate-filepath []
-  (path/join app-temp-directory (generate-filename)))
+(defn generate-audio-path []
+  (path/join app-temp-directory (generate-audio-filename)))
 
 (def url
   "https://api.deepgram.com/v1/listen?model=nova-2&smart_format=true")
@@ -93,7 +94,7 @@
 
 (defn create-readable []
   (let [readable (stream/Readable. (clj->js {:read (fn [])}))
-        filepath (generate-filepath)
+        filepath (generate-audio-path)
         ffmpeg (child_process/spawn "ffmpeg" (clj->js ["-f" "f32le" "-ar" sample-rate "-i" "pipe:0" "-b:a" "24k" filepath]))]
     (.pipe readable ffmpeg.stdin)
     (.on ffmpeg "close" (fn [_]
@@ -204,3 +205,6 @@
   (load)
   (record)
   (process))
+
+(defn generate-transcription-path []
+  (path/join "/.local/share/say/" (.format (dayjs) "YYYY/MM/DD") ".txt"))

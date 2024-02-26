@@ -17,7 +17,8 @@
             [shadow.cljs.modern :refer [js-await]]
             [shared :refer [channel]]
             [stream]
-            [yaml]))
+            [yaml]
+            [clojure.string :as str]))
 
 ;; Using defonce to ensure the root is only created once. This prevents warnings about
 ;; calling ReactDOMClient.createRoot() on a container that has already been passed to
@@ -73,6 +74,23 @@
 (defn generate-filepath []
   (path/join app-temp-directory (generate-filename)))
 
+(def url
+  "https://api.deepgram.com/v1/listen?model=nova-2&smart_format=true")
+
+(defn handler [response]
+  (js/console.log "handler called")
+  (->> response
+       :results
+       :channels
+       first
+       :alternatives
+       first
+       :paragraphs
+       :paragraphs
+       (mapcat :sentences)
+       (map :text)
+       (str/join "\n")))
+
 (defn create-readable []
   (let [readable (stream/Readable. (clj->js {:read (fn [])}))
         filepath (generate-filepath)
@@ -80,11 +98,12 @@
     (.pipe readable ffmpeg.stdin)
     (.on ffmpeg "close" (fn [_]
                           (js/console.log "ffmpeg process closed")
-                          (POST "https://api.deepgram.com/v1/listen" {:headers {:Content-Type "audio/*"
-                                                                                :Authorization (str "Token " (:key @secrets))}
-                                                                      :body (fs/readFileSync filepath)
-                                                                      :response-format :json
-                                                                      :keywords? true})))
+                          (POST url {:handler handler
+                                     :headers {:Content-Type "audio/*"
+                                               :Authorization (str "Token " (:key @secrets))}
+                                     :body (fs/readFileSync filepath)
+                                     :response-format :json
+                                     :keywords? true})))
     readable))
 
 (defonce manual

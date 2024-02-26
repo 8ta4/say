@@ -83,7 +83,7 @@
 (defn load []
   (js/console.log "Hello, Renderer!")
   (when (fs/existsSync secrets-path)
-    (reset! secrets (js->clj (yaml/parse (slurp secrets-path)) :keywordize-keys true)))
+    (specter/setval specter/ATOM (js->clj (yaml/parse (slurp secrets-path)) :keywordize-keys true) secrets))
   (client/render root [api-key])
   (add-watch secrets :change (fn [_ _ _ secrets*]
                                (js/console.log "Secrets updated")

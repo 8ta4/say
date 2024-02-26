@@ -1,5 +1,6 @@
 (ns renderer
   (:require ["@mui/material/TextField" :default TextField]
+            [ajax.core :refer [POST]]
             [applied-science.js-interop :as j]
             [child_process]
             [cljs-node-io.core :refer [slurp spit]]
@@ -74,10 +75,16 @@
 
 (defn create-readable []
   (let [readable (stream/Readable. (clj->js {:read (fn [])}))
-        ffmpeg (child_process/spawn "ffmpeg" (clj->js ["-f" "f32le" "-ar" sample-rate "-i" "pipe:0" "-b:a" "24k" (generate-filepath)]))]
+        filepath (generate-filepath)
+        ffmpeg (child_process/spawn "ffmpeg" (clj->js ["-f" "f32le" "-ar" sample-rate "-i" "pipe:0" "-b:a" "24k" filepath]))]
     (.pipe readable ffmpeg.stdin)
     (.on ffmpeg "close" (fn [_]
-                          (js/console.log "ffmpeg process closed")))
+                          (js/console.log "ffmpeg process closed")
+                          (POST "https://api.deepgram.com/v1/listen" {:headers {:Content-Type "audio/*"
+                                                                                :Authorization (str "Token " (:key @secrets))}
+                                                                      :body (fs/readFileSync filepath)
+                                                                      :response-format :json
+                                                                      :keywords? true})))
     readable))
 
 (defonce manual

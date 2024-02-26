@@ -3,7 +3,7 @@
             [ajax.core :refer [POST]]
             [applied-science.js-interop :as j]
             [child_process]
-            [cljs-node-io.core :refer [slurp spit]]
+            [cljs-node-io.core :refer [make-parents slurp spit]]
             [cljs.core.async :as async]
             [cljs.core.async.interop :refer [<p!]]
             [clojure.string :as str]
@@ -78,19 +78,31 @@
 (def url
   "https://api.deepgram.com/v1/listen?model=nova-2&smart_format=true")
 
+(defn generate-transcription-path []
+  (path/join (os/homedir) ".local/share/say" (str (.format (dayjs) "YYYY/MM/DD") ".txt")))
+
 (defn handler [response]
   (js/console.log "handler called")
-  (->> response
-       :results
-       :channels
-       first
-       :alternatives
-       first
-       :paragraphs
-       :paragraphs
-       (mapcat :sentences)
-       (map :text)
-       (str/join "\n")))
+  (let [transcription-text (->> response
+                                :results
+                                :channels
+                                first
+                                :alternatives
+                                first
+                                :paragraphs
+                                :paragraphs
+                                (mapcat :sentences)
+                                (map :text)
+                                (str/join "\n"))
+        transcription-path (generate-transcription-path)]
+    (when-not (empty? transcription-text)
+      (make-parents transcription-path)
+      (spit transcription-path
+            (str (if (fs/existsSync transcription-path)
+                   "\n\n"
+                   "")
+                 transcription-text)
+            :append true))))
 
 (defn create-readable []
   (let [readable (stream/Readable. (clj->js {:read (fn [])}))
@@ -205,6 +217,3 @@
   (load)
   (record)
   (process))
-
-(defn generate-transcription-path []
-  (path/join "/.local/share/say/" (.format (dayjs) "YYYY/MM/DD") ".txt"))

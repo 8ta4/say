@@ -5,17 +5,11 @@
             [cljs.core.async :as async]
             [cljs.core.async.interop :refer-macros [<p!]]
             [com.rpl.specter :as specter]
+            [os]
             [reagent.core :as reagent]
             [reagent.dom.client :as client]
             [shadow.cljs.modern :refer [js-await]]
             [yaml]))
-
-;; Using js/require to directly require Node.js modules like "os" and "path" because
-;; they are not available in the browser environment by default. The ClojureScript
-;; ns form and :require cannot be used for Node.js built-in modules in non-Node
-;; environments.
-(def os
-  (js/require "os"))
 
 (def path
   (js/require "path"))
@@ -45,7 +39,7 @@
 
 (defonce secrets (reagent/atom {:key ""}))
 
-(def secrets-path (path.join (os.homedir) ".config/say/secrets.yaml"))
+(def secrets-path (path.join (os/homedir) ".config/say/secrets.yaml"))
 
 (defn api-key []
   [:> TextField {:label "Deepgram API Key"
@@ -77,7 +71,7 @@
   (ort.Tensor. (js/Float32Array. (apply * shape)) (clj->js shape)))
 
 (defonce temp-directory
-  (os.tmpdir))
+  (os/tmpdir))
 
 (defonce app-temp-directory
   (fs.mkdtempSync (str temp-directory "/say-")))

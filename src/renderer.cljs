@@ -143,9 +143,9 @@
                                                 (do (push (:readable state) before)
                                                     {:readable-length (+ (:readable-length state) (count before))})
                                                 {:pad (take-last samples-in-pause (concat (:pad state) before))}))
-                                       (let [combined* (concat (:pad state) before)]
-                                         (push (:readable state) combined*)
-                                         {:readable-length (+ (:readable-length state) (count combined*))
+                                       (let [padded (concat (:pad state) before)]
+                                         (push (:readable state) padded)
+                                         {:readable-length (+ (:readable-length state) (count padded))
                                           :pad []
                                           :pause-length 0
                                           :vad true}))))))]

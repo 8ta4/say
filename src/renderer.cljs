@@ -8,14 +8,12 @@
             [fs]
             [os]
             [path]
+            [child_process :as child-process]
             [reagent.core :as reagent]
             [reagent.dom.client :as client]
             [shadow.cljs.modern :refer [js-await]]
             [stream]
             [yaml]))
-
-(def child-process
-  (js/require "child_process"))
 
 (def ort
   ;; https://github.com/microsoft/onnxruntime/issues/11181#issuecomment-1733461246
@@ -78,7 +76,7 @@
 
 (defn create-readable []
   (let [readable (stream/Readable. (clj->js {:read (fn [])}))
-        ffmpeg (child-process.spawn "ffmpeg" (clj->js ["-f" "f32le" "-ar" sample-rate "-i" "pipe:0" "-b:a" "24k" (generate-filepath)]))]
+        ffmpeg (child-process/spawn "ffmpeg" (clj->js ["-f" "f32le" "-ar" sample-rate "-i" "pipe:0" "-b:a" "24k" (generate-filepath)]))]
     (.pipe readable ffmpeg.stdin)
     (.on ffmpeg "close" (fn [_]
                           (js/console.log "ffmpeg process closed")))

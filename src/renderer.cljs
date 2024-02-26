@@ -1,27 +1,20 @@
 (ns renderer
   (:require ["@mui/material/TextField" :default TextField]
             [applied-science.js-interop :as j]
+            [child_process :as child-process]
             [cljs-node-io.core :refer [slurp spit]]
             [cljs.core.async :as async]
             [cljs.core.async.interop :refer-macros [<p!]]
             [com.rpl.specter :as specter]
             [fs]
+            [onnxruntime-node :as ort]
             [os]
             [path]
-            [child_process :as child-process]
             [reagent.core :as reagent]
             [reagent.dom.client :as client]
             [shadow.cljs.modern :refer [js-await]]
             [stream]
             [yaml]))
-
-(def ort
-  ;; https://github.com/microsoft/onnxruntime/issues/11181#issuecomment-1733461246
-  ;; Using js/require to load onnxruntime-node due to an error encountered when
-  ;; attempting to use the ClojureScript :require syntax. The error is as follows:
-  ;; "Module not provided: ../bin/napi-v3/undefined/undefined/onnxruntime_binding.node",
-  ;; which prevents successful module resolution by Shadow CLJS.
-  (js/require "onnxruntime-node"))
 
 ;; Using defonce to ensure the root is only created once. This prevents warnings about
 ;; calling ReactDOMClient.createRoot() on a container that has already been passed to
@@ -60,7 +53,7 @@
   [2 1 64])
 
 (def tensor
-  (ort.Tensor. (js/Float32Array. (apply * shape)) (clj->js shape)))
+  (ort/Tensor. (js/Float32Array. (apply * shape)) (clj->js shape)))
 
 (defonce temp-directory
   (os/tmpdir))
@@ -106,7 +99,7 @@
   1536)
 
 (def sr
-  (ort.Tensor. (js/BigInt64Array. [(js/BigInt sample-rate)])))
+  (ort/Tensor. (js/BigInt64Array. [(js/BigInt sample-rate)])))
 
 (def pause-duration 1.5)
 
@@ -132,7 +125,7 @@
                     state)))
 
 (defn process []
-  (js-await [session (ort.InferenceSession.create "vad.onnx")]
+  (js-await [session (ort/InferenceSession.create "vad.onnx")]
     (async/go-loop []
       (let [state* @state
             combined (concat (:raw state*) (async/<! chan))]
@@ -140,7 +133,7 @@
         (if (< (count combined) window-size-samples)
           (specter/setval [specter/ATOM :raw] combined state)
           (let [before (take window-size-samples combined)
-                input (ort.Tensor. (js/Float32Array. before) (clj->js [1 (count before)]))
+                input (ort/Tensor. (js/Float32Array. before) (clj->js [1 (count before)]))
                 result (js->clj (->> {:input input
                                       :sr sr}
                                      (merge state*)

@@ -4,7 +4,7 @@
             [child_process]
             [cljs-node-io.core :refer [slurp spit]]
             [cljs.core.async :as async]
-            [cljs.core.async.interop :refer-macros [<p!]]
+            [cljs.core.async.interop :refer [<p!]]
             [com.rpl.specter :as specter]
             [fs]
             [onnxruntime-node :as ort]

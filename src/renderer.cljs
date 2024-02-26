@@ -2,11 +2,11 @@
   (:require ["@mui/material/TextField" :default TextField]
             [applied-science.js-interop :as j]
             [child_process]
-            [electron]
             [cljs-node-io.core :refer [slurp spit]]
             [cljs.core.async :as async]
             [cljs.core.async.interop :refer [<p!]]
             [com.rpl.specter :as specter]
+            [electron]
             [fs]
             [onnxruntime-node :as ort]
             [os]
@@ -14,6 +14,7 @@
             [reagent.core :as reagent]
             [reagent.dom.client :as client]
             [shadow.cljs.modern :refer [js-await]]
+            [shared :refer [channel]]
             [stream]
             [yaml]))
 
@@ -94,8 +95,8 @@
   (add-watch secrets :change (fn [_ _ _ secrets*]
                                (js/console.log "Secrets updated")
                                (spit secrets-path (yaml/stringify (clj->js secrets*)))))
-  (electron/ipcRenderer.on "shortcut" (fn []
-                                        (js/console.log "Shortcut pressed"))))
+  (electron/ipcRenderer.on channel (fn []
+                                     (js/console.log "Shortcut pressed"))))
 
 ;; https://github.com/snakers4/silero-vad/blob/5e7ee10ee065ab2b98751dd82b28e3c6360e19aa/utils_vad.py#L207
 (def window-size-samples

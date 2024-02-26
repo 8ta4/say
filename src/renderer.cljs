@@ -77,16 +77,6 @@
                           (js/console.log "ffmpeg process closed")))
     readable))
 
-(defonce state
-  (atom {:readable (create-readable)
-         :readable-length 0
-         :pad []
-         :pause-length 0
-         :raw []
-         :vad false
-         :h tensor
-         :c tensor}))
-
 (defn load []
   (js/console.log "Hello, Renderer!")
   (when (fs/existsSync secrets-path)
@@ -116,62 +106,60 @@
 (defn push [readable audio]
   (.push readable (js/Buffer.from (.-buffer (js/Float32Array. audio)))))
 
-(defn save []
-  (let [state* @state]
-    (js/console.log "Current stream length:" (:readable-length state*))
-    (push (:readable state*) (:raw state*))
-    (specter/setval specter/ATOM
-                    (merge state* {:readable-length 0
-                                   :pad []
-                                   :pause-length 0
-                                   :raw []
-                                   :vad false})
-                    state)))
-
 (defn process []
   (js-await [session (ort/InferenceSession.create "vad.onnx")]
-    (async/go-loop []
-      (let [state* @state
-            combined (concat (:raw state*) (async/<! chan))]
-        ;; https://developer.mozilla.org/en-US/docs/Web/API/AudioWorkletProcessor/process#sect1
-        (if (< (count combined) window-size-samples)
-          (specter/setval [specter/ATOM :raw] combined state)
-          (let [before (take window-size-samples combined)
-                input (ort/Tensor. (js/Float32Array. before) (clj->js [1 (count before)]))
-                result (js->clj (->> {:input input
-                                      :sr sr}
-                                     (merge state*)
-                                     clj->js
-                                     (.run session)
-                                     <p!)
-                                :keywordize-keys true)]
-            (specter/setval specter/ATOM
-                            (merge state*
-                                   {:raw (drop window-size-samples combined)
-                                    :h (:hn result)
-                                    :c (:cn result)}
-                                   (if (-> result
-                                           :output
-                                           .-data
-                                           first
-                                           (<= 0.5))
-                                     (merge {:pause-length (+ (:pause-length state*) (count before))}
-                                            (if (and (<= (:pause-length state*) samples-in-pause) (:vad state*))
-                                              (do (push (:readable state*) before)
-                                                  {:readable-length (+ (:readable-length state*) (count before))})
-                                              {:pad (take-last samples-in-pause (concat (:pad state*) before))}))
-                                     (let [combined* (concat (:pad state*) before)]
-                                       (push (:readable state*) combined*)
-                                       {:readable-length (+ (:readable-length state*) (count combined*))
-                                        :pad []
-                                        :pause-length 0
-                                        :vad true})))
-                            state)
-            (let [state** @state]
-              (when (and (< samples-in-readable (:readable-length state**))
-                         (< samples-in-pause (:pause-length state**)))
-                (save)))))
-        (recur)))))
+    (async/go-loop [foo {:readable (create-readable)
+                         :readable-length 0
+                         :pad []
+                         :pause-length 0
+                         :raw []
+                         :vad false
+                         :h tensor
+                         :c tensor}]
+      (let [combined (concat (:raw foo) (async/<! chan))
+            bar (merge foo
+                       ;; https://developer.mozilla.org/en-US/docs/Web/API/AudioWorkletProcessor/process#sect1
+                       (if (< (count combined) window-size-samples)
+                         {:raw combined}
+                         (let [before (take window-size-samples combined)
+                               input (ort/Tensor. (js/Float32Array. before) (clj->js [1 (count before)]))
+                               result (js->clj (->> {:input input
+                                                     :sr sr}
+                                                    (merge foo)
+                                                    clj->js
+                                                    (.run session)
+                                                    <p!)
+                                               :keywordize-keys true)]
+                           (merge {:raw (drop window-size-samples combined)
+                                   :h (:hn result)
+                                   :c (:cn result)}
+                                  (if (-> result
+                                          :output
+                                          .-data
+                                          first
+                                          (<= 0.5))
+                                    (merge {:pause-length (+ (:pause-length foo) (count before))}
+                                           (if (and (<= (:pause-length foo) samples-in-pause) (:vad foo))
+                                             (do (push (:readable foo) before)
+                                                 {:readable-length (+ (:readable-length foo) (count before))})
+                                             {:pad (take-last samples-in-pause (concat (:pad foo) before))}))
+                                    (let [combined* (concat (:pad foo) before)]
+                                      (push (:readable foo) combined*)
+                                      {:readable-length (+ (:readable-length foo) (count combined*))
+                                       :pad []
+                                       :pause-length 0
+                                       :vad true}))))))]
+        (recur (merge bar (if (and (< samples-in-readable (:readable-length bar))
+                                   (< samples-in-pause (:pause-length bar)))
+                            (do
+                              (js/console.log "Current stream length:" (:readable-length bar))
+                              (push (:readable bar) (:raw bar))
+                              {:readable-length 0
+                               :pad []
+                               :pause-length 0
+                               :raw []
+                               :vad false})
+                            {})))))))
 
 (defn init []
   (load)

@@ -108,7 +108,11 @@
 (def samples-in-readable (* sample-rate stream-duration))
 
 (defn push [readable audio]
-  (.push readable (js/Buffer.from (.-buffer (js/Float32Array. audio)))))
+  (->> audio
+       js/Float32Array.
+       .-buffer
+       js/Buffer.from
+       (.push readable)))
 
 (defn process []
   (js-await [session (ort/InferenceSession.create "vad.onnx")]

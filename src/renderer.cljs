@@ -8,7 +8,7 @@
             [reagent.core :as reagent]
             [reagent.dom.client :as client]
             [shadow.cljs.modern :refer [js-await]]
-            [yaml :as yaml]))
+            [yaml]))
 
 ;; Using js/require to directly require Node.js modules like "os" and "path" because
 ;; they are not available in the browser environment by default. The ClojureScript

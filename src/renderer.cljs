@@ -5,20 +5,14 @@
             [cljs.core.async :as async]
             [cljs.core.async.interop :refer-macros [<p!]]
             [com.rpl.specter :as specter]
+            [fs]
             [os]
+            [path]
             [reagent.core :as reagent]
             [reagent.dom.client :as client]
             [shadow.cljs.modern :refer [js-await]]
+            [stream]
             [yaml]))
-
-(def path
-  (js/require "path"))
-
-(def fs
-  (js/require "fs"))
-
-(def stream
-  (js/require "stream"))
 
 (def child-process
   (js/require "child_process"))
@@ -39,7 +33,7 @@
 
 (defonce secrets (reagent/atom {:key ""}))
 
-(def secrets-path (path.join (os/homedir) ".config/say/secrets.yaml"))
+(def secrets-path (path/join (os/homedir) ".config/say/secrets.yaml"))
 
 (defn api-key []
   [:> TextField {:label "Deepgram API Key"
@@ -74,16 +68,16 @@
   (os/tmpdir))
 
 (defonce app-temp-directory
-  (fs.mkdtempSync (str temp-directory "/say-")))
+  (fs/mkdtempSync (str temp-directory "/say-")))
 
 (defn generate-filename []
   (str (random-uuid) ".opus"))
 
 (defn generate-filepath []
-  (path.join app-temp-directory (generate-filename)))
+  (path/join app-temp-directory (generate-filename)))
 
 (defn create-readable []
-  (let [readable (stream.Readable. (clj->js {:read (fn [])}))
+  (let [readable (stream/Readable. (clj->js {:read (fn [])}))
         ffmpeg (child-process.spawn "ffmpeg" (clj->js ["-f" "f32le" "-ar" sample-rate "-i" "pipe:0" "-b:a" "24k" (generate-filepath)]))]
     (.pipe readable ffmpeg.stdin)
     (.on ffmpeg "close" (fn [_]
@@ -102,7 +96,7 @@
 
 (defn load []
   (js/console.log "Hello, Renderer!")
-  (when (fs.existsSync secrets-path)
+  (when (fs/existsSync secrets-path)
     (reset! secrets (js->clj (yaml/parse (slurp secrets-path)) :keywordize-keys true)))
   (client/render root [api-key])
   (add-watch secrets :change (fn [_ _ _ secrets*]

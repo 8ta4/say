@@ -17,7 +17,9 @@
 
   # https://devenv.sh/scripts/
   scripts.hello.exec = "echo hello from $GREET";
-  scripts.run.exec = "electron .";
+  scripts.run.exec = ''
+    nodemon --watch out --exec 'pkill -f "node_modules/electron"; electron .'
+  '';
 
   enterShell = ''
     hello

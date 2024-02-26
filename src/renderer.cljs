@@ -1,7 +1,7 @@
 (ns renderer
   (:require ["@mui/material/TextField" :default TextField]
             [applied-science.js-interop :as j]
-            [child_process :as child-process]
+            [child_process]
             [cljs-node-io.core :refer [slurp spit]]
             [cljs.core.async :as async]
             [cljs.core.async.interop :refer-macros [<p!]]
@@ -69,7 +69,7 @@
 
 (defn create-readable []
   (let [readable (stream/Readable. (clj->js {:read (fn [])}))
-        ffmpeg (child-process/spawn "ffmpeg" (clj->js ["-f" "f32le" "-ar" sample-rate "-i" "pipe:0" "-b:a" "24k" (generate-filepath)]))]
+        ffmpeg (child_process/spawn "ffmpeg" (clj->js ["-f" "f32le" "-ar" sample-rate "-i" "pipe:0" "-b:a" "24k" (generate-filepath)]))]
     (.pipe readable ffmpeg.stdin)
     (.on ffmpeg "close" (fn [_]
                           (js/console.log "ffmpeg process closed")))

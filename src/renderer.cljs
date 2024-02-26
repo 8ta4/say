@@ -151,16 +151,15 @@
                                           :vad true}))))))]
         (recur (merge state* (if (and (< samples-in-readable (:readable-length state*))
                                       (< samples-in-pause (:pause-length state*)))
-                               (do
-                                 (js/console.log "Current stream length:" (:readable-length state*))
-                                 (push (:readable state*) (:raw state*))
-                                 (.push (:readable state*) nil)
-                                 {:readable (create-readable)
-                                  :readable-length 0
-                                  :pad []
-                                  :pause-length 0
-                                  :raw []
-                                  :vad false})
+                               (do (js/console.log "Current stream length:" (:readable-length state*))
+                                   (push (:readable state*) (:raw state*))
+                                   (.push (:readable state*) nil)
+                                   {:readable (create-readable)
+                                    :readable-length 0
+                                    :pad []
+                                    :pause-length 0
+                                    :raw []
+                                    :vad false})
                                {})))))))
 
 (defn init []

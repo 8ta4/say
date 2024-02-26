@@ -154,7 +154,9 @@
                             (do
                               (js/console.log "Current stream length:" (:readable-length bar))
                               (push (:readable bar) (:raw bar))
-                              {:readable-length 0
+                              (.push (:readable bar) nil)
+                              {:readable (create-readable)
+                               :readable-length 0
                                :pad []
                                :pause-length 0
                                :raw []

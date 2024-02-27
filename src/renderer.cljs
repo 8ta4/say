@@ -85,6 +85,10 @@
   (atom {:manual false
          :open false}))
 
+;; https://github.com/microsoft/vscode-docs/blob/a89ef7fa002d0eaed7f80661525294ee55c40c73/docs/editor/command-line.md?plain=1#L71
+(def line
+  10000)
+
 (defn handler [response]
   (js/console.log "handler called")
   (let [transcription-text (->> response
@@ -108,7 +112,8 @@
                  transcription-text)
             :append true)
       (when (:open @flags)
-        (specter/setval [specter/ATOM :open] false flags)))))
+        (specter/setval [specter/ATOM :open] false flags)
+        (child_process/spawn "code" (clj->js ["-g" (str transcription-path ":" line)]))))))
 
 (defn create-readable []
   (let [readable (stream/Readable. (clj->js {:read (fn [])}))

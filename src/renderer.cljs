@@ -87,6 +87,7 @@
 
 ;; https://github.com/microsoft/vscode-docs/blob/a89ef7fa002d0eaed7f80661525294ee55c40c73/docs/editor/command-line.md?plain=1#L71
 (def line
+  ;; This is an arbitrarily high number chosen to ensure that when a file is opened, it displays starting from the last line.
   10000)
 
 (defn handler [response]

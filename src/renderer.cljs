@@ -1,11 +1,14 @@
 (ns renderer
   (:require ["@mui/material/TextField" :default TextField]
+            [ajax.core :refer [POST]]
             [applied-science.js-interop :as j]
             [child_process]
-            [cljs-node-io.core :refer [slurp spit]]
+            [cljs-node-io.core :refer [make-parents slurp spit]]
             [cljs.core.async :as async]
             [cljs.core.async.interop :refer [<p!]]
+            [clojure.string :as str]
             [com.rpl.specter :as specter]
+            [dayjs]
             [electron]
             [fs]
             [onnxruntime-node :as ort]
@@ -66,18 +69,54 @@
 (defonce app-temp-directory
   (fs/mkdtempSync (str temp-directory "/say-")))
 
-(defn generate-filename []
+(defn generate-audio-filename []
   (str (random-uuid) ".opus"))
 
-(defn generate-filepath []
-  (path/join app-temp-directory (generate-filename)))
+(defn generate-audio-path []
+  (path/join app-temp-directory (generate-audio-filename)))
+
+(def url
+  "https://api.deepgram.com/v1/listen?model=nova-2&smart_format=true")
+
+(defn generate-transcription-path []
+  (path/join (os/homedir) ".local/share/say" (str (.format (dayjs) "YYYY/MM/DD") ".txt")))
+
+(defn handler [response]
+  (js/console.log "handler called")
+  (let [transcription-text (->> response
+                                :results
+                                :channels
+                                first
+                                :alternatives
+                                first
+                                :paragraphs
+                                :paragraphs
+                                (mapcat :sentences)
+                                (map :text)
+                                (str/join "\n"))
+        transcription-path (generate-transcription-path)]
+    (when-not (empty? transcription-text)
+      (make-parents transcription-path)
+      (spit transcription-path
+            (str (if (fs/existsSync transcription-path)
+                   "\n\n"
+                   "")
+                 transcription-text)
+            :append true))))
 
 (defn create-readable []
   (let [readable (stream/Readable. (clj->js {:read (fn [])}))
-        ffmpeg (child_process/spawn "ffmpeg" (clj->js ["-f" "f32le" "-ar" sample-rate "-i" "pipe:0" "-b:a" "24k" (generate-filepath)]))]
+        filepath (generate-audio-path)
+        ffmpeg (child_process/spawn "ffmpeg" (clj->js ["-f" "f32le" "-ar" sample-rate "-i" "pipe:0" "-b:a" "24k" filepath]))]
     (.pipe readable ffmpeg.stdin)
     (.on ffmpeg "close" (fn [_]
-                          (js/console.log "ffmpeg process closed")))
+                          (js/console.log "ffmpeg process closed")
+                          (POST url {:handler handler
+                                     :headers {:Content-Type "audio/*"
+                                               :Authorization (str "Token " (:key @secrets))}
+                                     :body (fs/readFileSync filepath)
+                                     :response-format :json
+                                     :keywords? true})))
     readable))
 
 (defonce manual

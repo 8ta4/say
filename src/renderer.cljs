@@ -81,6 +81,10 @@
 (defn generate-transcription-path []
   (path/join (os/homedir) ".local/share/say" (str (.format (dayjs) "YYYY/MM/DD") ".txt")))
 
+(defonce flags
+  (atom {:manual false
+         :open false}))
+
 (defn handler [response]
   (js/console.log "handler called")
   (let [transcription-text (->> response
@@ -102,7 +106,9 @@
                    "\n\n"
                    "")
                  transcription-text)
-            :append true))))
+            :append true)
+      (when (:open @flags)
+        (specter/setval [specter/ATOM :open] false flags)))))
 
 (defn create-readable []
   (let [readable (stream/Readable. (clj->js {:read (fn [])}))
@@ -119,9 +125,6 @@
                                      :keywords? true})))
     readable))
 
-(defonce manual
-  (atom false))
-
 (defn load []
   (js/console.log "Hello, Renderer!")
   (when (fs/existsSync secrets-path)
@@ -132,7 +135,10 @@
                                (spit secrets-path (yaml/stringify (clj->js secrets*)))))
   (electron/ipcRenderer.on channel (fn []
                                      (js/console.log "Shortcut pressed")
-                                     (specter/setval specter/ATOM true manual))))
+                                     (specter/setval specter/ATOM
+                                                     {:manual true
+                                                      :open true}
+                                                     flags))))
 
 ;; https://github.com/snakers4/silero-vad/blob/5e7ee10ee065ab2b98751dd82b28e3c6360e19aa/utils_vad.py#L207
 (def window-size-samples
@@ -199,10 +205,10 @@
                                           :pad []
                                           :pause-length 0
                                           :vad true}))))))]
-        (recur (merge state* (if (or @manual (and (< samples-in-readable (:readable-length state*))
-                                                  (< samples-in-pause (:pause-length state*))))
+        (recur (merge state* (if (or (:manual @flags) (and (< samples-in-readable (:readable-length state*))
+                                                           (< samples-in-pause (:pause-length state*))))
                                (do (js/console.log "Current stream length:" (:readable-length state*))
-                                   (specter/setval specter/ATOM false manual)
+                                   (specter/setval [specter/ATOM :manual] false flags)
                                    (push (:readable state*) (:raw state*))
                                    (.push (:readable state*) nil)
                                    {:readable (create-readable)

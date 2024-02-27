@@ -49,13 +49,28 @@
 (defonce context
   (js/AudioContext. (clj->js {:sampleRate sample-rate})))
 
+(defn find-device-id [devices]
+  (->> devices
+       js->clj
+       (filter (fn [device]
+                 (and (str/ends-with? (.-label device) "(Built-in)")
+                      ;; Exclude the default device because when an external microphone is unplugged, the recording stops working if the default device is selected.
+                      (not= (.-deviceId device) "default")
+                      (not (str/includes? (.-label device) "External")))))
+       first
+       .-deviceId))
+
 (defn record []
-  (js-await [media (js/navigator.mediaDevices.getUserMedia (clj->js {:audio true}))]
-    (js-await [_ (.audioWorklet.addModule context "audio.js")]
-      (let [processor (js/AudioWorkletNode. context "processor")]
-        (.connect (.createMediaStreamSource context media) processor)
-        (j/assoc-in! processor [:port :onmessage] (fn [message]
-                                                    (async/put! chan message.data)))))))
+  (js-await [_ (js/navigator.mediaDevices.getUserMedia (clj->js {:audio true}))]
+    (js-await [devices (js/navigator.mediaDevices.enumerateDevices)]
+      (js-await [media (-> {:audio {:deviceId {:exact (find-device-id devices)}}}
+                           clj->js
+                           js/navigator.mediaDevices.getUserMedia)]
+        (js-await [_ (.audioWorklet.addModule context "audio.js")]
+          (let [processor (js/AudioWorkletNode. context "processor")]
+            (.connect (.createMediaStreamSource context media) processor)
+            (j/assoc-in! processor [:port :onmessage] (fn [message]
+                                                        (async/put! chan message.data)))))))))
 
 (def shape
   [2 1 64])

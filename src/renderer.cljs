@@ -207,7 +207,7 @@
                            :c tensor}]
       (let [combined (concat (:raw state) (async/<! chan))
             state* (merge state
-                       ;; https://developer.mozilla.org/en-US/docs/Web/API/AudioWorkletProcessor/process#sect1
+                          ;; https://developer.mozilla.org/en-US/docs/Web/API/AudioWorkletProcessor/process#sect1
                           (if (< (count combined) window-size-samples)
                             {:raw combined}
                             (let [before (take window-size-samples combined)

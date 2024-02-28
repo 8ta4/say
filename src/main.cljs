@@ -15,7 +15,8 @@
     (.loadFile win "public/index.html")
     (electron/globalShortcut.register  shortcut (fn []
                                                   (js/console.log "Global shortcut" shortcut "pressed.")
-                                                  (.webContents.send win channel)))))
+                                                  (.webContents.send win channel)))
+    (electron/powerSaveBlocker.start "prevent-app-suspension")))
 
 (defn main []
   (js/console.log "Hello, Electron!")

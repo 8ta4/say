@@ -11,6 +11,7 @@
             [com.rpl.specter :as specter]
             [dayjs]
             [electron]
+            [fix-esm]
             [fs]
             [onnxruntime-node :as ort]
             [os]
@@ -21,6 +22,11 @@
             [shared :refer [channel]]
             [stream]
             [yaml]))
+
+(def fix-path
+  ;; https://stackoverflow.com/a/73265958
+  ;; https://clojureverse.org/t/use-esm-with-node-shadow-cljs/9363/4
+  (fix-esm/require "fix-path"))
 
 ;; Using defonce to ensure the root is only created once. This prevents warnings about
 ;; calling ReactDOMClient.createRoot() on a container that has already been passed to
@@ -149,6 +155,7 @@
 
 (defn load []
   (js/console.log "Hello, Renderer!")
+  ((.-default fix-path))
   (when (fs/existsSync secrets-path)
     (specter/setval specter/ATOM (js->clj (yaml/parse (slurp secrets-path)) :keywordize-keys true) secrets))
   (client/render root [api-key])

@@ -5,7 +5,7 @@
 (def shortcut
   "Command+;")
 
-(defn initializeWindow []
+(defn initialize-window []
   (let [win (BrowserWindow. (clj->js {:width 800
                                       :height 600
                                       :webPreferences {:nodeIntegration true
@@ -19,4 +19,4 @@
 
 (defn main []
   (js/console.log "Hello, Electron!")
-  (.then (.whenReady app) initializeWindow))
+  (.then (.whenReady app) initialize-window))

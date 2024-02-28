@@ -156,6 +156,8 @@
 
 (defn load []
   (js/console.log "Hello, Renderer!")
+
+  ;; Using fix-path to ensure the system PATH is correctly set in the Electron environment. This resolves the "spawn ffmpeg ENOENT" error by making sure ffmpeg can be found and executed.
   ((.-default fix-path))
   (when (fs/existsSync secrets-path)
     (specter/setval specter/ATOM (js->clj (yaml/parse (slurp secrets-path)) :keywordize-keys true) secrets))

@@ -1,6 +1,7 @@
 (ns renderer
   (:require ["@mui/material/TextField" :default TextField]
             [ajax.core :refer [POST]]
+            [app-root-path]
             [applied-science.js-interop :as j]
             [child_process]
             [cljs-node-io.core :refer [make-parents slurp spit]]
@@ -183,8 +184,11 @@
        js/Buffer.from
        (.push readable)))
 
+(def vad-path
+  (path/join (app-root-path/toString) "vad.onnx"))
+
 (defn process []
-  (js-await [session (ort/InferenceSession.create "vad.onnx")]
+  (js-await [session (ort/InferenceSession.create vad-path)]
     (async/go-loop [state {:readable (create-readable)
                            :readable-length 0
                            :pad []

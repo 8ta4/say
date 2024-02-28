@@ -23,9 +23,10 @@
             [stream]
             [yaml]))
 
+;; https://stackoverflow.com/a/73265958
+;; https://clojureverse.org/t/use-esm-with-node-shadow-cljs/9363/4
+;; https://github.com/sindresorhus/fix-path/issues/19#issuecomment-1953641218
 (def fix-path
-  ;; https://stackoverflow.com/a/73265958
-  ;; https://clojureverse.org/t/use-esm-with-node-shadow-cljs/9363/4
   (fix-esm/require "fix-path"))
 
 ;; Using defonce to ensure the root is only created once. This prevents warnings about

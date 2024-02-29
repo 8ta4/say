@@ -29,6 +29,9 @@
   },
   "packageManager": "yarn@4.0.1",
   "build": {
-    "asar": false
+    "asar": false,
+    "mac": {
+      "artifactName": "${productName}.${ext}"
+    }
   }
 }

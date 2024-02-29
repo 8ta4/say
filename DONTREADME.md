@@ -239,6 +239,14 @@ Location Services often need an internet connection to work accurately indoors. 
 
 `say` tucks away the MAC address in `~/.config/say/secrets.yaml`. This way, it treats your network-specific sensitive info with the same care as an API key.
 
+> What devices are included in the mic selection list? (Planned)
+
+The mic selection list includes all currently available external mics and the currently selected but unavailable mic. This way, you can easily revert your choice if needed.
+
+> How is the mic selection list ordered? (Planned)
+
+The mic selection list is ordered alphabetically. This makes it predictable to find and select your desired microphone.
+
 > Where does this tool keep the mic settings for when I'm not at my hideaway? (Planned)
 
 The mic settings are also in `~/.config/say/secrets.yaml`.

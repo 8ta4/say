@@ -21,7 +21,7 @@
   scripts.hello.exec = "echo hello from $GREET";
   scripts.build.exec = ''
     shadow-cljs compile :main :renderer
-    electron-builder
+    electron-builder -p never
   '';
   scripts.run.exec = ''
     nodemon --watch out --exec 'pkill -f "node_modules/electron"; electron .'

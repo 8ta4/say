@@ -123,7 +123,7 @@ The sound intensity is inversely proportional to the square of the distance.
 
 1. Hit `Enter` when `say` pops up.
 
-1. Click `Add the current network as a hideaway`.
+1. Click `ENABLE HIDEAWAY`.
 
 > How do I set up an external mic for non-hideaway use? (Planned)
 
@@ -153,7 +153,7 @@ No. If you're not in a hideaway and there's no external mic, `say` won't use the
 
 1. Hit `Enter` when `say` pops up.
 
-1. Click `Disable hideaway`.
+1. Click `DISABLE HIDEAWAY`.
 
 > Does this tool keep a record of the audio? (Planned)
 

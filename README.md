@@ -145,6 +145,16 @@ The sound intensity is inversely proportional to the square of the distance.
 
 No. If you're not in a hideaway and there's no external mic, `say` won't use the built-in mic to avoid recording poor audio. You can either connect an external mic or mark your current location as a hideaway if you think the built-in mic is good enough.
 
+> How do I disable hideaway?
+
+1. Hit `⌘ + Space` to open your launcher.
+
+1. Type `say`.
+
+1. Hit `Enter` when `say` pops up.
+
+1. Click `Disable hideaway`.
+
 > Does this tool keep a record of the audio? (Planned)
 
 Nope, `say` doesn't store any audio after it's transcribed.

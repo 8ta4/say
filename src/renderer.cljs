@@ -1,6 +1,7 @@
 (ns renderer
   (:require ["@mui/material/TextField" :default TextField]
             [ajax.core :refer [POST]]
+            [app-root-path]
             [applied-science.js-interop :as j]
             [child_process]
             [cljs-node-io.core :refer [make-parents slurp spit]]
@@ -10,6 +11,7 @@
             [com.rpl.specter :as specter]
             [dayjs]
             [electron]
+            [fix-esm]
             [fs]
             [onnxruntime-node :as ort]
             [os]
@@ -20,6 +22,12 @@
             [shared :refer [channel]]
             [stream]
             [yaml]))
+
+;; https://stackoverflow.com/a/73265958
+;; https://clojureverse.org/t/use-esm-with-node-shadow-cljs/9363/4
+;; https://github.com/sindresorhus/fix-path/issues/19#issuecomment-1953641218
+(def fix-path
+  (fix-esm/require "fix-path"))
 
 ;; Using defonce to ensure the root is only created once. This prevents warnings about
 ;; calling ReactDOMClient.createRoot() on a container that has already been passed to
@@ -148,6 +156,9 @@
 
 (defn load []
   (js/console.log "Hello, Renderer!")
+
+  ;; Using fix-path to ensure the system PATH is correctly set in the Electron environment. This resolves the "spawn ffmpeg ENOENT" error by making sure ffmpeg can be found and executed.
+  ((.-default fix-path))
   (when (fs/existsSync secrets-path)
     (specter/setval specter/ATOM (js->clj (yaml/parse (slurp secrets-path)) :keywordize-keys true) secrets))
   (client/render root [api-key])
@@ -183,8 +194,11 @@
        js/Buffer.from
        (.push readable)))
 
+(def vad-path
+  (path/join (app-root-path/toString) "vad.onnx"))
+
 (defn process []
-  (js-await [session (ort/InferenceSession.create "vad.onnx")]
+  (js-await [session (ort/InferenceSession.create vad-path)]
     (async/go-loop [state {:readable (create-readable)
                            :readable-length 0
                            :pad []
@@ -195,7 +209,7 @@
                            :c tensor}]
       (let [combined (concat (:raw state) (async/<! chan))
             state* (merge state
-                       ;; https://developer.mozilla.org/en-US/docs/Web/API/AudioWorkletProcessor/process#sect1
+                          ;; https://developer.mozilla.org/en-US/docs/Web/API/AudioWorkletProcessor/process#sect1
                           (if (< (count combined) window-size-samples)
                             {:raw combined}
                             (let [before (take window-size-samples combined)

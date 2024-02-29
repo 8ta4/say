@@ -7,7 +7,6 @@
   [com.rpl/specter "1.1.4"]
   [com.github.pkpkpk/cljs-node-io "2.0.339"]
   [applied-science/js-interop "0.4.2"]
-  [org.clojure/core.async "1.6.681"]
   [hashp "0.2.2"]
   [cljs-ajax "0.8.4"]]
 

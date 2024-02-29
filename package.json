@@ -30,6 +30,12 @@
   "packageManager": "yarn@4.0.1",
   "build": {
     "asar": false,
+    "files": [
+      ".shadow-cljs/**/*",
+      "out",
+      "public",
+      "vad.onnx"
+    ],
     "mac": {
       "artifactName": "${productName}.${ext}"
     }

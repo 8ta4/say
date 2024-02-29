@@ -21,6 +21,9 @@
   scripts.hello.exec = "echo hello from $GREET";
   scripts.build.exec = ''
     shadow-cljs compile :main :renderer
+
+    # Using '-p never' to prevent electron-builder from attempting to publish the build artifacts.
+    # This is necessary because without this flag, electron-builder fails due to the absence of a GitHub Personal Access Token.
     electron-builder -p never
   '';
   scripts.run.exec = ''

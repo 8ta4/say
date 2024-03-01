@@ -1,4 +1,4 @@
-# https://devenv.sh/integrations/github-actions/#complete-example
+# https://github.com/cachix/devenv/blob/c8468b947861a97a7fa3e99eb38a0907aa97f5e7/docs/integrations/github-actions.md?plain=1#L118-L151
 name: "Build and Release"
 
 on:
@@ -6,10 +6,10 @@ on:
   push:
 
 jobs:
-  job:
+  tests:
     strategy:
       matrix:
-        os: [macos-latest]
+        os: [macos-14]
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -19,11 +19,9 @@ jobs:
         with:
           name: devenv
       - name: Install devenv.sh
-        run: nix profile install tarball+https://install.devenv.sh/latest
-
+        run: nix profile install --accept-flake-config tarball+https://install.devenv.sh/latest
       - run: devenv shell pre-commit run -a
-
-      - run: devenv shell dist
+      - run: devenv shell build
 
       # https://github.com/softprops/action-gh-release/blob/c9b46fe7aad9f02afd89b12450b780f52dacfb2d/README.md?plain=1#L45-L47
       - name: Release

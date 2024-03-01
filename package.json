@@ -1,48 +1,43 @@
 {
-  "build": {
-    "asar": false,
-    "files": [
-      "audio.js",
-      "index.html",
-      "main.js",
-      "output",
-      "renderer.js",
-      "vad.onnx"
-    ],
-    "mac": {
-      "artifactName": "${productName}.${ext}",
-      "target": [
-        {
-          "arch": [
-            "arm64"
-          ],
-          "target": "dmg"
-        }
-      ]
-    }
-  },
+  "name": "say",
+  "version": "1.0.0",
+  "main": "out/main.js",
   "dependencies": {
-    "@deepgram/sdk": "^3.0.1",
+    "@emotion/react": "^11.11.3",
+    "@emotion/styled": "^11.11.0",
+    "@mui/material": "^5.15.10",
     "app-root-path": "^3.1.0",
     "dayjs": "^1.11.10",
+    "fix-esm": "^1.0.1",
     "fix-path": "^4.0.0",
-    "onnxruntime-node": "^1.16.3",
-    "uuid": "^9.0.1"
+    "onnxruntime-node": "^1.17.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "yaml": "^2.3.4"
   },
   "devDependencies": {
-    "@trivago/prettier-plugin-sort-imports": "^4.3.0",
-    "electron": "^28.0.0",
-    "electron-builder": "^24.9.1",
+    "electron": "^29.0.0",
+    "electron-builder": "24.12.0",
     "eslint": "^7.32.0 || ^8.2.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.25.2",
-    "nodemon": "^3.0.2",
-    "prettier": "3.1.1",
-    "spago": "0.21.0"
+    "nodemon": "^3.1.0",
+    "prettier": "3.2.5",
+    "prettier-plugin-packagejson": "^2.4.11",
+    "shadow-cljs": "^2.27.4"
   },
-  "main": "main.js",
-  "name": "say",
-  "type": "module",
-  "version": "1.0.0"
+  "packageManager": "yarn@4.0.1",
+  "build": {
+    "asar": false,
+    "files": [
+      ".shadow-cljs/**/*",
+      "out",
+      "public",
+      "vad.onnx"
+    ],
+    "mac": {
+      "artifactName": "${productName}.${ext}"
+    }
+  }
 }

@@ -1,0 +1,28 @@
+{:source-paths
+ ["src"]
+
+ :dependencies
+ [[binaryage/devtools "1.0.7"]
+  [reagent "1.2.0"]
+  [com.rpl/specter "1.1.4"]
+  [com.github.pkpkpk/cljs-node-io "2.0.339"]
+  [applied-science/js-interop "0.4.2"]
+  [hashp "0.2.2"]
+  [cljs-ajax "0.8.4"]]
+
+ :builds
+ {:main
+  {:target :node-script
+   :output-to "out/main.js"
+   :main main/main}
+  :renderer
+  {:target :browser
+   :modules {:renderer {:init-fn renderer/init}}
+   :devtools {:after-load renderer/load
+              :preloads [hashp.core]}
+
+;; https://shadow-cljs.github.io/docs/UsersGuide.html
+   :compiler-options {:infer-externs true}
+
+;; https://github.com/thheller/shadow-cljs/issues/376#issuecomment-414696297
+   :js-options {:js-provider :require}}}}

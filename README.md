@@ -22,10 +22,6 @@
 
 1. If you have already installed Visual Studio Code not using Homebrew, [add it to your system's PATH](https://code.visualstudio.com/docs/setup/mac#_launching-from-the-command-line).
 
-1. Head over to the [Deepgram website](https://deepgram.com/) and copy a Deepgram API key.
-
-1. Paste your API key in `~/.config/say/key`.
-
 1. Hit `⌘ + Space` to open your launcher.
 
 1. Type `say`.
@@ -33,6 +29,10 @@
 1. Hit `Enter` when `say` pops up.
 
 1. If asked, allow `say` to access your mic.
+
+1. Copy a Deepgram API key from [their website](https://deepgram.com/).
+
+1. Paste your API key when `say` asks for it.
 
 ## Cost
 
@@ -99,15 +99,19 @@ Here are some pro tips:
 
 > Which mic does this tool use by default?
 
-`say` defaults to your built-in microphone.
+`say` defaults to your built-in mic.
 
-> How does the intensity of sound change as the microphone is moved further away?
+> How does the intensity of sound change as the mic is moved further away?
 
 The sound intensity is inversely proportional to the square of the distance.
 
 > When does this tool start using my external mic? (Planned)
 
-When you're not in a hideaway and your external mic is plugged in, `say` jumps on it to reduce background noise.
+`say` will use your external mic if:
+
+- You're not in a hideaway.
+- You've specified an external mic to use outside of your hideaway.
+- Your configured external mic is connected.
 
 > How do I set up a hideaway? (Planned)
 
@@ -119,7 +123,19 @@ When you're not in a hideaway and your external mic is plugged in, `say` jumps o
 
 1. Hit `Enter` when `say` pops up.
 
-1. Click `Add the current network as a hideaway`.
+1. Click `ENABLE HIDEAWAY`.
+
+> How do I set up an external mic for non-hideaway use? (Planned)
+
+1. Plug in the external mic you want to use.
+
+1. Hit `⌘ + Space` to bring up your launcher.
+
+1. Type `say`.
+
+1. Hit `Enter` when `say` shows up. You'll see a list of mics.
+
+1. Pick the external mic you want.
 
 > Which mic does this tool use in a hideaway? (Planned)
 
@@ -128,6 +144,16 @@ When you're not in a hideaway and your external mic is plugged in, `say` jumps o
 > Will this tool use the built-in mic if there's no external mic and I'm not in a hideaway? (Planned)
 
 No. If you're not in a hideaway and there's no external mic, `say` won't use the built-in mic to avoid recording poor audio. You can either connect an external mic or mark your current location as a hideaway if you think the built-in mic is good enough.
+
+> How do I disable hideaway?
+
+1. Hit `⌘ + Space` to open your launcher.
+
+1. Type `say`.
+
+1. Hit `Enter` when `say` pops up.
+
+1. Click `DISABLE HIDEAWAY`.
 
 > Does this tool keep a record of the audio? (Planned)
 

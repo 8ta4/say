@@ -1,0 +1,2 @@
+{:lint-as {shadow.cljs.modern/js-await clojure.core/let}
+ :linters {:unresolved-symbol {:exclude [dayjs]}}}

@@ -102,9 +102,20 @@ Because iOS won't let you do continuous real-time voice detection and transcript
 
 ### Background Process
 
-> Where does this tool store the API key?
+> Where does this tool store the API key? (Planned)
 
-The API key is in `~/.config/say/key`.
+The API key is in `~/.config/say/secrets.yaml`.
+
+> Why not JSON?
+
+YAML is better than JSON because it
+
+- lets you add comments.
+- doesn't need extra commas.
+
+> Why the `.yaml` and not `.yml`?
+
+YAML FAQ says "[use '.yaml' when possible.](https://yaml.org/faq.html#:~:text=Is%20there%20an,yaml%22%20when%20possible.)"
 
 > Why not `Application Support`?
 
@@ -130,13 +141,21 @@ Yes, `say` uses macOS Launch Agents to start itself automatically.
 
 Login Items only work when you log in. They won't help you if `say` stops working for some reason.
 
+> When does this tool appear in the application switcher? (Planned)
+
+You'll only see `say` in the application switcher when the settings window is open.
+
+That's because you might need to switch between the settings window and other apps, like the documentation, a web browser, or a text editor.
+
+When you close the settings window, `say` disappears from the application switcher. This way, it doesn't clutter your screen.
+
 ### Recording
 
 > Why doesn't this tool do speaker verification?
 
 Well, if `say` tried to filter voices, it might accidentally filter yours too.
 
-> Why does this tool use the built-in microphone by default?
+> Why does this tool use the built-in mic by default?
 
 I wanted to make `say` easy to try out.
 
@@ -208,15 +227,35 @@ Confidence intervals are great for estimating the mean, but a tolerance interval
 
 I want to be safe and avoid cutting off your words in the middle.
 
-### Hideaway (Planned)
-
-> How does this tool know when I'm at my hideaway?
+> How does this tool know when I'm at my hideaway? (Planned)
 
 `say` uses your network router's MAC address to pinpoint your hideaway.
 
-> Why doesn't this tool use Location Services?
+> Why doesn't this tool use Location Services? (Planned)
 
 Location Services often need an internet connection to work accurately indoors. But if you're online, `say` can just use your network info to confirm your hideaway.
+
+> Where does this tool store the MAC address? (Planned)
+
+`say` tucks away the MAC address in `~/.config/say/secrets.yaml`. This way, it treats your network-specific sensitive info with the same care as an API key.
+
+> What devices are included in the mic selection list? (Planned)
+
+The mic selection list includes all currently available external mics and the currently selected but unavailable mic. This way, you can easily revert your choice if needed.
+
+> How is the mic selection list ordered? (Planned)
+
+The mic selection list is ordered alphabetically. This makes it predictable to find and select your desired microphone.
+
+> Where does this tool keep the mic settings for when I'm not at my hideaway? (Planned)
+
+The mic settings are also in `~/.config/say/secrets.yaml`.
+
+> Why two config files and not one? (Planned)
+
+`secrets.yaml` is for sensitive data only.
+
+`config.yaml` is for general settings that you might want to version control like a dotfile.
 
 ### Trigger
 
@@ -305,6 +344,14 @@ Nope, you won't. `say` is designed to be non-intrusive.
 > Does this tool retry if a transcription API call fails? (Planned)
 
 Yes, indeed! `say` will give it another shot if a transcription API call fails. If any future transcription API call succeeds, it triggers a retry.
+
+> Which Electron process is responsible to handle transcription, main or renderer?
+
+The renderer process handles transcription. It captures audio data and user input directly, so it avoids IPC and complexity.
+
+> Does the renderer have Node.js integration on?
+
+Yeah, say enables Node.js integration for the renderer. This lets the renderer process do more stuff, like read and write files, get system info, etc. `say` keeps things secure by not [loading any remote content](https://github.com/electron/electron/blob/26131b23b81a661fb65d37437b9a1f63b4408fae/docs/tutorial/security.md?plain=1#L170-L175).
 
 ### Transcript
 

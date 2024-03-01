@@ -10,59 +10,40 @@
     pkgs.git
     pkgs.gitleaks
 
-    # https://github.com/NixOS/nixpkgs/issues/253198
-    # The package spago-0.20.9 is marked as broken in the Nix packages repository, which caused the error.
-    # https://github.com/cachix/devenv/blob/7354096fc026f79645fdac73e9aeea71a09412c3/src/modules/languages/purescript.nix#L28-L30
-    # https://github.com/cachix/devenv/blob/7354096fc026f79645fdac73e9aeea71a09412c3/src/modules/languages/purescript.nix#L18
-    # I am using `yarn` to install `spago` due to issues encountered when trying to use `pkgs.spago` and `languages.purescript.enable`.
+    # JDK is required for shadow-cljs compilation. Without it, shadow-cljs fails with "Unable to locate a Java Runtime.
+    pkgs.jdk
+
     # https://github.com/electron-userland/electron-builder/blob/47e66ca64a89395a49300e8b2da1d9baeb93825a/docs/index.md?plain=1#L33
-    pkgs.nodePackages.purescript-language-server
-    pkgs.nodePackages.purs-tidy
-    pkgs.purescript
-    pkgs.purescript-psa
     pkgs.yarn-berry
   ];
 
   # https://devenv.sh/scripts/
   scripts.hello.exec = "echo hello from $GREET";
+  scripts.build.exec = ''
+    shadow-cljs compile :main :renderer
 
-  # https://github.com/electron-userland/electron-builder/blob/47e66ca64a89395a49300e8b2da1d9baeb93825a/docs/index.md?plain=1#L93
-  scripts.dist.exec = ''
-    build
+    # Using '-p never' to prevent electron-builder from attempting to publish the build artifacts.
+    # This is necessary because without this flag, electron-builder fails due to the absence of a GitHub Personal Access Token.
     electron-builder -p never
   '';
-
-  scripts.build.exec = ''
-    yarn install
-    spago build
-  '';
-
-  # https://github.com/electron-userland/electron-builder/blob/47e66ca64a89395a49300e8b2da1d9baeb93825a/docs/index.md?plain=1#L92
-  scripts.pack.exec = ''
-    build
-    electron-builder --dir
-  '';
   scripts.run.exec = ''
-    nodemon --watch output --exec 'pkill -f "node_modules/electron"; electron .'
-  '';
-  scripts.watch.exec = ''
-    spago build --watch
+    nodemon --watch out --exec 'pkill -f "node_modules/electron"; electron .'
   '';
 
   enterShell = ''
     hello
     git --version
     export PATH="$DEVENV_ROOT/node_modules/.bin:$PATH"
-    build
+    yarn install
   '';
 
   # https://devenv.sh/languages/
   # languages.nix.enable = true;
-  languages.javascript.enable = true;
 
   # https://devenv.sh/pre-commit-hooks/
   # pre-commit.hooks.shellcheck.enable = true;
   pre-commit.hooks = {
+    cljfmt.enable = true;
     eslint = {
       enable = true;
 
@@ -76,7 +57,6 @@
       entry = "gitleaks protect --verbose --redact --staged";
     };
     nixpkgs-fmt.enable = true;
-
     prettier = {
       enable = true;
 
@@ -86,7 +66,6 @@
       entry = lib.mkForce "yarn prettier --write --list-different --ignore-unknown";
       types = [ "text" ];
     };
-    purs-tidy.enable = true;
 
     # https://github.com/cachix/pre-commit-hooks.nix/issues/31#issuecomment-744657870
     trailing-whitespace = {

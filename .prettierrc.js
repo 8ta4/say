@@ -1,3 +1,3 @@
-export default {
-  plugins: ["@trivago/prettier-plugin-sort-imports"],
+module.exports = {
+  plugins: ["prettier-plugin-packagejson"],
 };

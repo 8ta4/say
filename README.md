@@ -175,6 +175,10 @@ But it uses Deepgram as the transcription service. And Deepgram say they only ho
 
 Each day's transcript is organized by year (`YYYY`), month (`MM`), and day (`DD`).
 
+> What decides the transcript file, the start or end time of my audio? (Planned)
+
+`say` uses audio end time to pick the right file for your transcript. This makes it easier to find what you said today, even if you started talking before midnight.
+
 > How does this tool segment each file?
 
 `say` splits each file into handy chunks for easy navigation with your [Neovim plugin](https://github.com/vscode-neovim/vscode-neovim/blob/79beb2c83aaec45e87fcb543b78d8b3a7e8ff9e1/README.md#neovim-configuration).

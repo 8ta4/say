@@ -46,7 +46,7 @@ To save some bucks, `say` uses voice activity detection (VAD) to cut down on unn
 
 ## Usage
 
-> How do I access recent transcriptions? (Planned)
+> How do I access recent transcriptions?
 
 Just press `⌘ + ;`. This will open the latest transcription file. If a new transcription is done, `say` will serve it up as soon as it's ready. But `say` won't bug you with any more transcriptions after that.
 

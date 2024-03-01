@@ -5207,6 +5207,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"recursive-readdir@npm:^2.2.3":
+  version: 2.2.3
+  resolution: "recursive-readdir@npm:2.2.3"
+  dependencies:
+    minimatch: "npm:^3.0.5"
+  checksum: d0238f137b03af9cd645e1e0b40ae78b6cda13846e3ca57f626fcb58a66c79ae018a10e926b13b3a460f1285acc946a4e512ea8daa2e35df4b76a105709930d1
+  languageName: node
+  linkType: hard
+
 "regenerator-runtime@npm:^0.14.0":
   version: 0.14.1
   resolution: "regenerator-runtime@npm:0.14.1"
@@ -5423,6 +5432,7 @@ __metadata:
     prettier-plugin-packagejson: "npm:^2.4.11"
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
+    recursive-readdir: "npm:^2.2.3"
     shadow-cljs: "npm:^2.27.4"
     yaml: "npm:^2.3.4"
   languageName: unknown

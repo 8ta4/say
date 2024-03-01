@@ -6,6 +6,7 @@
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
     "@mui/material": "^5.15.10",
+    "address": "^2.0.2",
     "app-root-path": "^3.1.0",
     "dayjs": "^1.11.10",
     "fix-esm": "^1.0.1",

@@ -1172,6 +1172,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"address@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "address@npm:2.0.2"
+  checksum: 1b2a57081361c0669511f03582b7db35daab771d35735ac458bd66291afaa5c27cda4da12c048ab2124075e26a83638893eae673fb380b6538c03799deced620
+  languageName: node
+  linkType: hard
+
 "agent-base@npm:6":
   version: 6.0.2
   resolution: "agent-base@npm:6.0.2"
@@ -5416,6 +5423,7 @@ __metadata:
     "@emotion/react": "npm:^11.11.3"
     "@emotion/styled": "npm:^11.11.0"
     "@mui/material": "npm:^5.15.10"
+    address: "npm:^2.0.2"
     app-root-path: "npm:^3.1.0"
     dayjs: "npm:^1.11.10"
     electron: "npm:^29.0.0"

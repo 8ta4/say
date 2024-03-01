@@ -1,5 +1,8 @@
 (ns renderer
-  (:require ["@mui/material/TextField" :default TextField]
+  (:require ["@mui/material/Button" :default Button]
+            ["@mui/material/Grid" :default Grid]
+            ["@mui/material/TextField" :default TextField]
+            ["address/promises" :as address]
             [ajax.core :refer [POST]]
             [app-root-path]
             [applied-science.js-interop :as j]
@@ -40,12 +43,37 @@
 
 (def secrets-path (path/join (os/homedir) ".config/say/secrets.yaml"))
 
-(defn api-key []
+(defn toggle-hideaway []
+  (if (:hideaway @secrets)
+    (specter/setval [specter/ATOM :hideaway] specter/NONE secrets)
+    (js-await [mac (address/mac)]
+      (specter/setval [specter/ATOM :hideaway] mac secrets))))
+
+(defn hideaway-button []
+  [:> Button {:variant "contained"
+              :on-click toggle-hideaway}
+   (if (:hideaway @secrets)
+     "DISABLE HIDEAWAY"
+     "ENABLE HIDEAWAY")])
+
+(defn key-field []
   [:> TextField {:label "Deepgram API Key"
                  :type "password"
                  :value (:key @secrets)
+                 :full-width true
                  :on-change (fn [event]
                               (specter/setval [specter/ATOM :key] event.target.value secrets))}])
+
+(defn grid []
+  [:> Grid {:container true
+            :p 2
+            :spacing 2}
+   [:> Grid {:item true
+             :xs 12}
+    [key-field]]
+   [:> Grid {:item true
+             :xs 12}
+    [hideaway-button]]])
 
 ;; The core.async channel and go-loop are used to manage the asynchronous processing
 ;; of audio chunks. This ensures that updates to the application state are serialized,
@@ -169,7 +197,7 @@
   ((.-default fix-path))
   (when (fs/existsSync secrets-path)
     (specter/setval specter/ATOM (js->clj (yaml/parse (slurp secrets-path)) :keywordize-keys true) secrets))
-  (client/render root [api-key])
+  (client/render root [grid])
   (add-watch secrets :change (fn [_ _ _ secrets*]
                                (js/console.log "Secrets updated")
                                (spit secrets-path (yaml/stringify (clj->js secrets*)))))

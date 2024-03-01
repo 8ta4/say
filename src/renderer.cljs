@@ -90,7 +90,7 @@
   (os/tmpdir))
 
 (defonce app-temp-directory
-  (fs/mkdtempSync (str temp-directory "/say-")))
+  (fs/mkdtempSync (path/join temp-directory "say-")))
 
 (defn generate-audio-filename []
   (str (random-uuid) ".opus"))

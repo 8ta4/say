@@ -1,5 +1,6 @@
 (ns renderer
   (:require ["@mui/material/TextField" :default TextField]
+            ["@mui/material/Grid" :default Grid]
             [ajax.core :refer [POST]]
             [app-root-path]
             [applied-science.js-interop :as j]
@@ -41,11 +42,13 @@
 (def secrets-path (path/join (os/homedir) ".config/say/secrets.yaml"))
 
 (defn api-key []
-  [:> TextField {:label "Deepgram API Key"
-                 :type "password"
-                 :value (:key @secrets)
-                 :on-change (fn [event]
-                              (specter/setval [specter/ATOM :key] event.target.value secrets))}])
+  [:> Grid {:container true :p 2}
+   [:> Grid {:item true :xs 12}
+    [:> TextField {:label "Deepgram API Key"
+                   :type "password"
+                   :value (:key @secrets)
+                   :on-change (fn [event]
+                                (specter/setval [specter/ATOM :key] event.target.value secrets))}]]])
 
 ;; The core.async channel and go-loop are used to manage the asynchronous processing
 ;; of audio chunks. This ensures that updates to the application state are serialized,

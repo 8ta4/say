@@ -56,16 +56,24 @@
      "DISABLE HIDEAWAY"
      "ENABLE HIDEAWAY")])
 
-(defn api-key []
-  [:> Grid {:container true :p 2}
-   [:> Grid {:item true :xs 12}
-    [:> TextField {:label "Deepgram API Key"
-                   :type "password"
-                   :value (:key @secrets)
-                   :full-width true
-                   :on-change (fn [event]
-                                (specter/setval [specter/ATOM :key] event.target.value secrets))}]]
-   [hideaway-button]])
+(defn key-field []
+  [:> TextField {:label "Deepgram API Key"
+                 :type "password"
+                 :value (:key @secrets)
+                 :full-width true
+                 :on-change (fn [event]
+                              (specter/setval [specter/ATOM :key] event.target.value secrets))}])
+
+(defn grid []
+  [:> Grid {:container true
+            :p 2
+            :spacing 2}
+   [:> Grid {:item true
+             :xs 12}
+    [key-field]]
+   [:> Grid {:item true
+             :xs 12}
+    [hideaway-button]]])
 
 ;; The core.async channel and go-loop are used to manage the asynchronous processing
 ;; of audio chunks. This ensures that updates to the application state are serialized,
@@ -189,7 +197,7 @@
   ((.-default fix-path))
   (when (fs/existsSync secrets-path)
     (specter/setval specter/ATOM (js->clj (yaml/parse (slurp secrets-path)) :keywordize-keys true) secrets))
-  (client/render root [api-key])
+  (client/render root [grid])
   (add-watch secrets :change (fn [_ _ _ secrets*]
                                (js/console.log "Secrets updated")
                                (spit secrets-path (yaml/stringify (clj->js secrets*)))))

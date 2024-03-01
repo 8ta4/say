@@ -1,5 +1,6 @@
 (ns renderer
-  (:require ["@mui/material/Grid" :default Grid]
+  (:require ["@mui/material/Button" :default Button]
+            ["@mui/material/Grid" :default Grid]
             ["@mui/material/TextField" :default TextField]
             ["address/promises" :as address]
             [ajax.core :refer [POST]]
@@ -42,6 +43,19 @@
 
 (def secrets-path (path/join (os/homedir) ".config/say/secrets.yaml"))
 
+(defn toggle-hideaway []
+  (if (:hideaway @secrets)
+    (specter/setval [specter/ATOM :hideaway] specter/NONE secrets)
+    (js-await [mac (address/mac)]
+      (specter/setval [specter/ATOM :hideaway] mac secrets))))
+
+(defn hideaway-button []
+  [:> Button {:variant "contained"
+              :on-click toggle-hideaway}
+   (if (:hideaway @secrets)
+     "DISABLE HIDEAWAY"
+     "ENABLE HIDEAWAY")])
+
 (defn api-key []
   [:> Grid {:container true :p 2}
    [:> Grid {:item true :xs 12}
@@ -50,7 +64,8 @@
                    :value (:key @secrets)
                    :full-width true
                    :on-change (fn [event]
-                                (specter/setval [specter/ATOM :key] event.target.value secrets))}]]])
+                                (specter/setval [specter/ATOM :key] event.target.value secrets))}]]
+   [hideaway-button]])
 
 ;; The core.async channel and go-loop are used to manage the asynchronous processing
 ;; of audio chunks. This ensures that updates to the application state are serialized,

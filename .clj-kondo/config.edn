@@ -1,2 +1,3 @@
 {:lint-as {shadow.cljs.modern/js-await clojure.core/let}
- :linters {:unresolved-symbol {:exclude [dayjs recursive]}}}
+ :linters {:unresolved-symbol {:exclude [dayjs recursive]}
+           :unused-namespace {:exclude [recursive-readdir]}}}

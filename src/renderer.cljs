@@ -1,6 +1,6 @@
 (ns renderer
-  (:require ["@mui/material/TextField" :default TextField]
-            ["@mui/material/Grid" :default Grid]
+  (:require ["@mui/material/Grid" :default Grid]
+            ["@mui/material/TextField" :default TextField]
             [ajax.core :refer [POST]]
             [app-root-path]
             [applied-science.js-interop :as j]

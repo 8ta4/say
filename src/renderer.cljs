@@ -62,7 +62,7 @@
        js->clj
        (filter (fn [device]
                  (and (str/ends-with? (.-label device) "(Built-in)")
-                      ;; Exclude the default device because when an external microphone is unplugged, the recording stops working if the default device is selected.
+;; Exclude the default device because when an external microphone is unplugged, the recording stops working if the default device is selected.
                       (not= (.-deviceId device) "default")
                       (not (str/includes? (.-label device) "External")))))
        first
@@ -110,7 +110,7 @@
 
 ;; https://github.com/microsoft/vscode-docs/blob/a89ef7fa002d0eaed7f80661525294ee55c40c73/docs/editor/command-line.md?plain=1#L71
 (def line
-  ;; This is an arbitrarily high number chosen to ensure that when a file is opened, it displays starting from the last line.
+;; This is an arbitrarily high number chosen to ensure that when a file is opened, it displays starting from the last line.
   10000)
 
 (defn handler [response]
@@ -157,7 +157,7 @@
 (defn load []
   (js/console.log "Hello, Renderer!")
 
-  ;; Using fix-path to ensure the system PATH is correctly set in the Electron environment. This resolves the "spawn ffmpeg ENOENT" error by making sure ffmpeg can be found and executed.
+;; Using fix-path to ensure the system PATH is correctly set in the Electron environment. This resolves the "spawn ffmpeg ENOENT" error by making sure ffmpeg can be found and executed.
   ((.-default fix-path))
   (when (fs/existsSync secrets-path)
     (specter/setval specter/ATOM (js->clj (yaml/parse (slurp secrets-path)) :keywordize-keys true) secrets))
@@ -209,7 +209,7 @@
                            :c tensor}]
       (let [combined (concat (:raw state) (async/<! chan))
             state* (merge state
-                          ;; https://developer.mozilla.org/en-US/docs/Web/API/AudioWorkletProcessor/process#sect1
+;; https://developer.mozilla.org/en-US/docs/Web/API/AudioWorkletProcessor/process#sect1
                           (if (< (count combined) window-size-samples)
                             {:raw combined}
                             (let [before (take window-size-samples combined)

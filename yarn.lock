@@ -1172,6 +1172,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"address@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "address@npm:2.0.2"
+  checksum: 1b2a57081361c0669511f03582b7db35daab771d35735ac458bd66291afaa5c27cda4da12c048ab2124075e26a83638893eae673fb380b6538c03799deced620
+  languageName: node
+  linkType: hard
+
 "agent-base@npm:6":
   version: 6.0.2
   resolution: "agent-base@npm:6.0.2"
@@ -5207,6 +5214,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"recursive-readdir@npm:^2.2.3":
+  version: 2.2.3
+  resolution: "recursive-readdir@npm:2.2.3"
+  dependencies:
+    minimatch: "npm:^3.0.5"
+  checksum: d0238f137b03af9cd645e1e0b40ae78b6cda13846e3ca57f626fcb58a66c79ae018a10e926b13b3a460f1285acc946a4e512ea8daa2e35df4b76a105709930d1
+  languageName: node
+  linkType: hard
+
 "regenerator-runtime@npm:^0.14.0":
   version: 0.14.1
   resolution: "regenerator-runtime@npm:0.14.1"
@@ -5407,6 +5423,7 @@ __metadata:
     "@emotion/react": "npm:^11.11.3"
     "@emotion/styled": "npm:^11.11.0"
     "@mui/material": "npm:^5.15.10"
+    address: "npm:^2.0.2"
     app-root-path: "npm:^3.1.0"
     dayjs: "npm:^1.11.10"
     electron: "npm:^29.0.0"
@@ -5423,6 +5440,7 @@ __metadata:
     prettier-plugin-packagejson: "npm:^2.4.11"
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
+    recursive-readdir: "npm:^2.2.3"
     shadow-cljs: "npm:^2.27.4"
     yaml: "npm:^2.3.4"
   languageName: unknown

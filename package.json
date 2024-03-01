@@ -6,6 +6,7 @@
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
     "@mui/material": "^5.15.10",
+    "address": "^2.0.2",
     "app-root-path": "^3.1.0",
     "dayjs": "^1.11.10",
     "fix-esm": "^1.0.1",
@@ -13,6 +14,7 @@
     "onnxruntime-node": "^1.17.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "recursive-readdir": "^2.2.3",
     "yaml": "^2.3.4"
   },
   "devDependencies": {

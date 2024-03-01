@@ -47,6 +47,7 @@
     [:> TextField {:label "Deepgram API Key"
                    :type "password"
                    :value (:key @secrets)
+                   :full-width true
                    :on-change (fn [event]
                                 (specter/setval [specter/ATOM :key] event.target.value secrets))}]]])
 

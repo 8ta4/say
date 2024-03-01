@@ -16,6 +16,7 @@
             [onnxruntime-node :as ort]
             [os]
             [path]
+            [recursive-readdir :as recursive]
             [reagent.core :as reagent]
             [reagent.dom.client :as client]
             [shadow.cljs.modern :refer [js-await]]
@@ -101,8 +102,11 @@
 (def url
   "https://api.deepgram.com/v1/listen?model=nova-2&smart_format=true")
 
-(defn generate-transcription-path []
-  (path/join (os/homedir) ".local/share/say" (str (.format (dayjs) "YYYY/MM/DD") ".txt")))
+(def transcription-directory-path
+  (path/join (os/homedir) ".local/share/say"))
+
+(defn generate-transcription-filepath []
+  (path/join transcription-directory-path (str (.format (dayjs) "YYYY/MM/DD") ".txt")))
 
 (defonce flags
   (atom {:manual false
@@ -112,6 +116,10 @@
 (def line
 ;; This is an arbitrarily high number chosen to ensure that when a file is opened, it displays starting from the last line.
   10000)
+
+(defn open-transcription
+  [transcription-filepath]
+  (child_process/spawn "code" (clj->js ["-g" (str transcription-filepath ":" line)])))
 
 (defn handler [response]
   (js/console.log "handler called")
@@ -126,18 +134,18 @@
                                 (mapcat :sentences)
                                 (map :text)
                                 (str/join "\n"))
-        transcription-path (generate-transcription-path)]
+        transcription-filepath (generate-transcription-filepath)]
     (when-not (empty? transcription-text)
-      (make-parents transcription-path)
-      (spit transcription-path
-            (str (if (fs/existsSync transcription-path)
+      (make-parents transcription-filepath)
+      (spit transcription-filepath
+            (str (if (fs/existsSync transcription-filepath)
                    "\n\n"
                    "")
                  transcription-text)
             :append true)
       (when (:open @flags)
         (specter/setval [specter/ATOM :open] false flags)
-        (child_process/spawn "code" (clj->js ["-g" (str transcription-path ":" line)]))))))
+        (open-transcription transcription-filepath)))))
 
 (defn create-readable []
   (let [readable (stream/Readable. (clj->js {:read (fn [])}))
@@ -170,7 +178,11 @@
                                      (specter/setval specter/ATOM
                                                      {:manual true
                                                       :open true}
-                                                     flags))))
+                                                     flags)
+                                     (js-await [transcription-files (recursive transcription-directory-path)]
+                                       (let [transcription-files* (js->clj transcription-files)]
+                                         (when (not-empty transcription-files*)
+                                           (open-transcription (first (sort > transcription-files*)))))))))
 
 ;; https://github.com/snakers4/silero-vad/blob/5e7ee10ee065ab2b98751dd82b28e3c6360e19aa/utils_vad.py#L207
 (def window-size-samples

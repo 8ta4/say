@@ -49,8 +49,14 @@
     (js-await [mac (address/mac)]
       (specter/setval [specter/ATOM :hideaway] mac secrets))))
 
+(defonce state
+  (reagent/atom {:manual false
+                 :open false}))
+
 (defn hideaway-button []
-  [:> Button {:variant "contained"
+  [:> Button {:variant (if (or (:hideaway @secrets) (:mac @state))
+                         "contained"
+                         "disabled")
               :on-click toggle-hideaway}
    (if (:hideaway @secrets)
      "DISABLE HIDEAWAY"
@@ -135,10 +141,6 @@
 
 (defn generate-transcription-filepath []
   (path/join transcription-directory-path (str (.format (dayjs) "YYYY/MM/DD") ".txt")))
-
-(defonce state
-  (atom {:manual false
-         :open false}))
 
 ;; https://github.com/microsoft/vscode-docs/blob/a89ef7fa002d0eaed7f80661525294ee55c40c73/docs/editor/command-line.md?plain=1#L71
 (def line

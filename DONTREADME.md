@@ -249,7 +249,7 @@ The mic selection list is ordered alphabetically. This makes it predictable to f
 
 > Where does this tool keep the mic settings for when I'm not at my hideaway? (Planned)
 
-The mic settings are also in `~/.config/say/secrets.yaml`.
+The mic settings are in `~/.config/say/config.yaml`.
 
 > Why two config files and not one? (Planned)
 

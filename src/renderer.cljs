@@ -43,24 +43,25 @@
 
 (def secrets-path (path/join (os/homedir) ".config/say/secrets.yaml"))
 
-(defn toggle-hideaway []
-  (if (:hideaway @secrets)
-    (specter/setval [specter/ATOM :hideaway] specter/NONE secrets)
-    (js-await [mac (address/mac)]
-      (specter/setval [specter/ATOM :hideaway] mac secrets))))
-
 (defonce state
   (reagent/atom {:manual false
                  :open false}))
 
 (defn hideaway-button []
-  [:> Button {:variant (if (or (:hideaway @secrets) (:mac @state))
-                         "contained"
-                         "disabled")
-              :on-click toggle-hideaway}
-   (if (:hideaway @secrets)
-     "DISABLE HIDEAWAY"
-     "ENABLE HIDEAWAY")])
+  (let [secrets* @secrets
+        state* @state]
+    [:> Button {:variant (if (or (:hideaway secrets*) (:mac state*))
+                           "contained"
+                           "disabled")
+                :on-click (fn []
+                            (specter/setval [specter/ATOM :hideaway]
+                                            (if (:hideaway secrets*)
+                                              specter/NONE
+                                              (:mac state*))
+                                            secrets))}
+     (if (:hideaway secrets*)
+       "DISABLE HIDEAWAY"
+       "ENABLE HIDEAWAY")]))
 
 (defn key-field []
   [:> TextField {:label "Deepgram API Key"

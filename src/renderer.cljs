@@ -43,18 +43,25 @@
 
 (def secrets-path (path/join (os/homedir) ".config/say/secrets.yaml"))
 
-(defn toggle-hideaway []
-  (if (:hideaway @secrets)
-    (specter/setval [specter/ATOM :hideaway] specter/NONE secrets)
-    (js-await [mac (address/mac)]
-      (specter/setval [specter/ATOM :hideaway] mac secrets))))
+(defonce state
+  (reagent/atom {:manual false
+                 :open false}))
 
 (defn hideaway-button []
-  [:> Button {:variant "contained"
-              :on-click toggle-hideaway}
-   (if (:hideaway @secrets)
-     "DISABLE HIDEAWAY"
-     "ENABLE HIDEAWAY")])
+  (let [secrets* @secrets
+        state* @state]
+    [:> Button {:variant (if (or (:hideaway secrets*) (:mac state*))
+                           "contained"
+                           "disabled")
+                :on-click (fn []
+                            (specter/setval [specter/ATOM :hideaway]
+                                            (if (:hideaway secrets*)
+                                              specter/NONE
+                                              (:mac state*))
+                                            secrets))}
+     (if (:hideaway secrets*)
+       "DISABLE HIDEAWAY"
+       "ENABLE HIDEAWAY")]))
 
 (defn key-field []
   [:> TextField {:label "Deepgram API Key"
@@ -135,10 +142,6 @@
 
 (defn generate-transcription-filepath []
   (path/join transcription-directory-path (str (.format (dayjs) "YYYY/MM/DD") ".txt")))
-
-(defonce state
-  (atom {:manual false
-         :open false}))
 
 ;; https://github.com/microsoft/vscode-docs/blob/a89ef7fa002d0eaed7f80661525294ee55c40c73/docs/editor/command-line.md?plain=1#L71
 (def line

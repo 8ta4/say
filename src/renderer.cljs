@@ -190,6 +190,17 @@
                                      :keywords? true})))
     readable))
 
+(defn handle-shortcut []
+  (js/console.log "Shortcut pressed")
+  (specter/setval specter/ATOM
+                  {:manual true
+                   :open true}
+                  flags)
+  (js-await [transcription-files (recursive transcription-directory-path)]
+    (let [transcription-files* (js->clj transcription-files)]
+      (when (not-empty transcription-files*)
+        (open-transcription (last (sort transcription-files*)))))))
+
 (defn load []
   (js/console.log "Hello, Renderer!")
 
@@ -201,16 +212,7 @@
   (add-watch secrets :change (fn [_ _ _ secrets*]
                                (js/console.log "Secrets updated")
                                (spit secrets-path (yaml/stringify (clj->js secrets*)))))
-  (electron/ipcRenderer.on channel (fn []
-                                     (js/console.log "Shortcut pressed")
-                                     (specter/setval specter/ATOM
-                                                     {:manual true
-                                                      :open true}
-                                                     flags)
-                                     (js-await [transcription-files (recursive transcription-directory-path)]
-                                       (let [transcription-files* (js->clj transcription-files)]
-                                         (when (not-empty transcription-files*)
-                                           (open-transcription (last (sort transcription-files*)))))))))
+  (electron/ipcRenderer.on channel handle-shortcut))
 
 ;; https://github.com/snakers4/silero-vad/blob/5e7ee10ee065ab2b98751dd82b28e3c6360e19aa/utils_vad.py#L207
 (def window-size-samples

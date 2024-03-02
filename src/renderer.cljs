@@ -136,7 +136,7 @@
 (defn generate-transcription-filepath []
   (path/join transcription-directory-path (str (.format (dayjs) "YYYY/MM/DD") ".txt")))
 
-(defonce flags
+(defonce app-state
   (atom {:manual false
          :open false}))
 
@@ -171,8 +171,8 @@
                    "")
                  transcription-text)
             :append true)
-      (when (:open @flags)
-        (specter/setval [specter/ATOM :open] false flags)
+      (when (:open @app-state)
+        (specter/setval [specter/ATOM :open] false app-state)
         (open-transcription transcription-filepath)))))
 
 (defn create-readable []
@@ -190,12 +190,20 @@
                                      :keywords? true})))
     readable))
 
+(defn update-mac []
+  (js-await [mac (address/mac)]
+    (specter/setval [specter/ATOM :mac]
+                    (if (nil? mac)
+                      specter/NONE
+                      mac)
+                    app-state)))
+
 (defn handle-shortcut []
   (js/console.log "Shortcut pressed")
   (specter/setval specter/ATOM
                   {:manual true
                    :open true}
-                  flags)
+                  app-state)
   (js-await [transcription-files (recursive transcription-directory-path)]
     (let [transcription-files* (js->clj transcription-files)]
       (when (not-empty transcription-files*)
@@ -208,6 +216,7 @@
   ((.-default fix-path))
   (when (fs/existsSync secrets-path)
     (specter/setval specter/ATOM (js->clj (yaml/parse (slurp secrets-path)) :keywordize-keys true) secrets))
+  (.stdout.on (child_process/spawn "expect" (clj->js ["network.sh"])) "data" update-mac)
   (client/render root [grid])
   (add-watch secrets :change (fn [_ _ _ secrets*]
                                (js/console.log "Secrets updated")
@@ -282,10 +291,10 @@
                                           :pad []
                                           :pause-length 0
                                           :vad true}))))))]
-        (recur (merge state* (if (or (:manual @flags) (and (< samples-in-readable (:readable-length state*))
-                                                           (< samples-in-pause (:pause-length state*))))
+        (recur (merge state* (if (or (:manual @app-state) (and (< samples-in-readable (:readable-length state*))
+                                                               (< samples-in-pause (:pause-length state*))))
                                (do (js/console.log "Current stream length:" (:readable-length state*))
-                                   (specter/setval [specter/ATOM :manual] false flags)
+                                   (specter/setval [specter/ATOM :manual] false app-state)
                                    (push (:readable state*) (:raw state*))
                                    (.push (:readable state*) nil)
                                    {:readable (create-readable)

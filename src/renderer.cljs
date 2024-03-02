@@ -180,7 +180,7 @@
         filepath (generate-audio-path)
         ffmpeg (child_process/spawn "ffmpeg" (clj->js ["-f" "f32le" "-ar" sample-rate "-i" "pipe:0" "-b:a" "24k" filepath]))]
     (.pipe readable ffmpeg.stdin)
-    (.on ffmpeg "close" (fn [_]
+    (.on ffmpeg "close" (fn []
                           (js/console.log "ffmpeg process closed")
                           (POST url {:handler handler
                                      :headers {:Content-Type "audio/*"

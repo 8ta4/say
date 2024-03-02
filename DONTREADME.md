@@ -257,6 +257,14 @@ The mic settings are in `~/.config/say/config.yaml`.
 
 `config.yaml` is for general settings that you might want to version control like a dotfile.
 
+> Does this tool recycle `AudioContext` when it swaps mics?
+
+No, `say` creates a new `AudioContext`.
+
+This doesn't affect the performance or the resources much. I tested it and the latency was less than 100 ms and the memory usage was less than 1 GB.
+
+If I just updated the `MediaStreamAudioSourceNode`, I would have to keep track of three things: the `MediaStreamAudioSourceNode` itself, the `AudioContext`, and the `AudioWorkletNode`. But if I create a new `AudioContext`, I only have to worry about one thing: the `AudioContext`. This makes the code simpler.
+
 ### Trigger
 
 > Why does this tool use `⌘ + ;` to trigger transcription?

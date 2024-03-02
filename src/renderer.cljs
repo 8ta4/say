@@ -136,7 +136,7 @@
 (defn generate-transcription-filepath []
   (path/join transcription-directory-path (str (.format (dayjs) "YYYY/MM/DD") ".txt")))
 
-(defonce flags
+(defonce state
   (atom {:manual false
          :open false}))
 
@@ -171,8 +171,8 @@
                    "")
                  transcription-text)
             :append true)
-      (when (:open @flags)
-        (specter/setval [specter/ATOM :open] false flags)
+      (when (:open @state)
+        (specter/setval [specter/ATOM :open] false state)
         (open-transcription transcription-filepath)))))
 
 (defn create-readable []
@@ -180,7 +180,7 @@
         filepath (generate-audio-path)
         ffmpeg (child_process/spawn "ffmpeg" (clj->js ["-f" "f32le" "-ar" sample-rate "-i" "pipe:0" "-b:a" "24k" filepath]))]
     (.pipe readable ffmpeg.stdin)
-    (.on ffmpeg "close" (fn [_]
+    (.on ffmpeg "close" (fn []
                           (js/console.log "ffmpeg process closed")
                           (POST url {:handler handler
                                      :headers {:Content-Type "audio/*"
@@ -190,6 +190,25 @@
                                      :keywords? true})))
     readable))
 
+(defn update-mac []
+  (js-await [mac (address/mac)]
+    (specter/setval [specter/ATOM :mac]
+                    (if (nil? mac)
+                      specter/NONE
+                      mac)
+                    state)))
+
+(defn handle-shortcut []
+  (js/console.log "Shortcut pressed")
+  (specter/setval specter/ATOM
+                  {:manual true
+                   :open true}
+                  state)
+  (js-await [transcription-files (recursive transcription-directory-path)]
+    (let [transcription-files* (js->clj transcription-files)]
+      (when (not-empty transcription-files*)
+        (open-transcription (last (sort transcription-files*)))))))
+
 (defn load []
   (js/console.log "Hello, Renderer!")
 
@@ -197,20 +216,12 @@
   ((.-default fix-path))
   (when (fs/existsSync secrets-path)
     (specter/setval specter/ATOM (js->clj (yaml/parse (slurp secrets-path)) :keywordize-keys true) secrets))
+  (.stdout.on (child_process/spawn "expect" (clj->js ["network.sh"])) "data" update-mac)
   (client/render root [grid])
   (add-watch secrets :change (fn [_ _ _ secrets*]
                                (js/console.log "Secrets updated")
                                (spit secrets-path (yaml/stringify (clj->js secrets*)))))
-  (electron/ipcRenderer.on channel (fn []
-                                     (js/console.log "Shortcut pressed")
-                                     (specter/setval specter/ATOM
-                                                     {:manual true
-                                                      :open true}
-                                                     flags)
-                                     (js-await [transcription-files (recursive transcription-directory-path)]
-                                       (let [transcription-files* (js->clj transcription-files)]
-                                         (when (not-empty transcription-files*)
-                                           (open-transcription (last (sort transcription-files*)))))))))
+  (electron/ipcRenderer.on channel handle-shortcut))
 
 ;; https://github.com/snakers4/silero-vad/blob/5e7ee10ee065ab2b98751dd82b28e3c6360e19aa/utils_vad.py#L207
 (def window-size-samples
@@ -239,60 +250,60 @@
 
 (defn process []
   (js-await [session (ort/InferenceSession.create vad-path)]
-    (async/go-loop [state {:readable (create-readable)
-                           :readable-length 0
-                           :pad []
-                           :pause-length 0
-                           :raw []
-                           :vad false
-                           :h tensor
-                           :c tensor}]
-      (let [combined (concat (:raw state) (async/<! chan))
-            state* (merge state
+    (async/go-loop [process-state {:readable (create-readable)
+                                   :readable-length 0
+                                   :pad []
+                                   :pause-length 0
+                                   :raw []
+                                   :vad false
+                                   :h tensor
+                                   :c tensor}]
+      (let [combined (concat (:raw process-state) (async/<! chan))
+            process-state* (merge process-state
 ;; https://developer.mozilla.org/en-US/docs/Web/API/AudioWorkletProcessor/process#sect1
-                          (if (< (count combined) window-size-samples)
-                            {:raw combined}
-                            (let [before (take window-size-samples combined)
-                                  input (ort/Tensor. (js/Float32Array. before) (clj->js [1 (count before)]))
-                                  result (js->clj (->> {:input input
-                                                        :sr sr}
-                                                       (merge state)
-                                                       clj->js
-                                                       (.run session)
-                                                       <p!)
-                                                  :keywordize-keys true)]
-                              (merge {:raw (drop window-size-samples combined)
-                                      :h (:hn result)
-                                      :c (:cn result)}
-                                     (if (-> result
-                                             :output
-                                             .-data
-                                             first
-                                             (<= 0.5))
-                                       (merge {:pause-length (+ (:pause-length state) (count before))}
-                                              (if (and (<= (:pause-length state) samples-in-pause) (:vad state))
-                                                (do (push (:readable state) before)
-                                                    {:readable-length (+ (:readable-length state) (count before))})
-                                                {:pad (take-last samples-in-pause (concat (:pad state) before))}))
-                                       (let [padded (concat (:pad state) before)]
-                                         (push (:readable state) padded)
-                                         {:readable-length (+ (:readable-length state) (count padded))
-                                          :pad []
-                                          :pause-length 0
-                                          :vad true}))))))]
-        (recur (merge state* (if (or (:manual @flags) (and (< samples-in-readable (:readable-length state*))
-                                                           (< samples-in-pause (:pause-length state*))))
-                               (do (js/console.log "Current stream length:" (:readable-length state*))
-                                   (specter/setval [specter/ATOM :manual] false flags)
-                                   (push (:readable state*) (:raw state*))
-                                   (.push (:readable state*) nil)
-                                   {:readable (create-readable)
-                                    :readable-length 0
-                                    :pad []
-                                    :pause-length 0
-                                    :raw []
-                                    :vad false})
-                               {})))))))
+                                  (if (< (count combined) window-size-samples)
+                                    {:raw combined}
+                                    (let [before (take window-size-samples combined)
+                                          input (ort/Tensor. (js/Float32Array. before) (clj->js [1 (count before)]))
+                                          result (js->clj (->> {:input input
+                                                                :sr sr}
+                                                               (merge process-state)
+                                                               clj->js
+                                                               (.run session)
+                                                               <p!)
+                                                          :keywordize-keys true)]
+                                      (merge {:raw (drop window-size-samples combined)
+                                              :h (:hn result)
+                                              :c (:cn result)}
+                                             (if (-> result
+                                                     :output
+                                                     .-data
+                                                     first
+                                                     (<= 0.5))
+                                               (merge {:pause-length (+ (:pause-length process-state) (count before))}
+                                                      (if (and (<= (:pause-length process-state) samples-in-pause) (:vad process-state))
+                                                        (do (push (:readable process-state) before)
+                                                            {:readable-length (+ (:readable-length process-state) (count before))})
+                                                        {:pad (take-last samples-in-pause (concat (:pad process-state) before))}))
+                                               (let [padded (concat (:pad process-state) before)]
+                                                 (push (:readable process-state) padded)
+                                                 {:readable-length (+ (:readable-length process-state) (count padded))
+                                                  :pad []
+                                                  :pause-length 0
+                                                  :vad true}))))))]
+        (recur (merge process-state* (if (or (:manual @state) (and (< samples-in-readable (:readable-length process-state*))
+                                                                   (< samples-in-pause (:pause-length process-state*))))
+                                       (do (js/console.log "Current stream length:" (:readable-length process-state*))
+                                           (specter/setval [specter/ATOM :manual] false state)
+                                           (push (:readable process-state*) (:raw process-state*))
+                                           (.push (:readable process-state*) nil)
+                                           {:readable (create-readable)
+                                            :readable-length 0
+                                            :pad []
+                                            :pause-length 0
+                                            :raw []
+                                            :vad false})
+                                       {})))))))
 
 (defn init []
   (load)

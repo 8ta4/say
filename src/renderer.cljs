@@ -61,7 +61,8 @@
                                             (if (:hideaway secrets*)
                                               specter/NONE
                                               (:mac state*))
-                                            secrets))}
+                                            secrets))
+                :full-width true}
      (if (:hideaway secrets*)
        "DISABLE HIDEAWAY"
        "ENABLE HIDEAWAY")]))
@@ -73,9 +74,10 @@
   [:> ToggleButtonGroup
    {:value (:mic @config)
     :exclusive true
-    :orientation "vertical"
     :on-change (fn [_ value]
-                 (specter/setval [specter/ATOM :mic] value config))}
+                 (specter/setval [specter/ATOM :mic] value config))
+    :full-width true
+    :orientation "vertical"}
    (map (fn [mic]
           [:> ToggleButton
            {:value mic
@@ -87,9 +89,9 @@
   [:> TextField {:label "Deepgram API Key"
                  :type "password"
                  :value (:key @secrets)
-                 :full-width true
                  :on-change (fn [event]
-                              (specter/setval [specter/ATOM :key] event.target.value secrets))}])
+                              (specter/setval [specter/ATOM :key] event.target.value secrets))
+                 :full-width true}])
 
 (defn grid []
   [:> Grid {:container true

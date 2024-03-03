@@ -269,7 +269,7 @@
           (js->clj :keywordize-keys true)
           (merge-into-atom atom*)))
     (add-watch atom* :change (fn [_ _ _ value]
-                               (js/console.log "Atom value updated, writing to file")
+                               (js/console.log "Settings atom value updated, writing to file")
                                (spit path* (yaml/stringify (clj->js value)))))))
 
 (def secrets-filename "secrets.yaml")

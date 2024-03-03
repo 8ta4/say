@@ -311,5 +311,14 @@
 
 (defn init []
   (load)
+
+;; The `record` function initiates the audio recording process. It's called once to prevent
+;; excessive pending puts on the channel when called multiple times,
+;; which would exceed the limit of 1024.
   (record)
+
+;; The `process` function starts a go-loop for processing audio data. Calling it once here
+;; prevents multiple instances of the go-loop from being created, which would otherwise
+;; attempt to consume audio data simultaneously. This concurrent consumption could lead to
+;; corrupted audio files as multiple processes interfere with each other.
   (process))

@@ -45,7 +45,8 @@
 
 (defonce state
   (reagent/atom {:manual false
-                 :open false}))
+                 :open false
+                 :mics []}))
 
 (defn hideaway-button []
   (let [secrets* @secrets
@@ -203,14 +204,30 @@
 
 (defn handle-shortcut []
   (js/console.log "Shortcut pressed")
-  (specter/setval specter/ATOM
-                  {:manual true
-                   :open true}
-                  state)
+  (specter/transform specter/ATOM
+                     (fn [state*]
+                       (merge state* {:manual true
+                                      :open true}))
+                     state)
   (js-await [transcription-files (recursive transcription-directory-path)]
     (let [transcription-files* (js->clj transcription-files)]
       (when (not-empty transcription-files*)
         (open-transcription (last (sort transcription-files*)))))))
+
+(defn get-mic-labels [devices]
+  (->> devices
+       js->clj
+       (filter (fn [device]
+                 (and (= "audioinput" (.-kind device))
+                      (not= (.-deviceId device) "default"))))
+       (map (fn [device]
+              (.-label device)))))
+
+(defn update-mics []
+  (js/console.log "Attempting to update microphone list")
+  (js-await [_ (js/navigator.mediaDevices.getUserMedia (clj->js {:audio true}))]
+    (js-await [devices (js/navigator.mediaDevices.enumerateDevices)]
+      (specter/setval [specter/ATOM :mics] (get-mic-labels devices) state))))
 
 (defn load []
   (js/console.log "Hello, Renderer!")
@@ -220,10 +237,12 @@
   (when (fs/existsSync secrets-path)
     (specter/setval specter/ATOM (js->clj (yaml/parse (slurp secrets-path)) :keywordize-keys true) secrets))
   (.stdout.on (child_process/spawn "expect" (clj->js ["network.sh"])) "data" update-mac)
-  (client/render root [grid])
   (add-watch secrets :change (fn [_ _ _ secrets*]
                                (js/console.log "Secrets updated")
                                (spit secrets-path (yaml/stringify (clj->js secrets*)))))
+  (update-mics)
+  (set! js/navigator.mediaDevices.ondevicechange update-mics)
+  (client/render root [grid])
   (electron/ipcRenderer.on channel handle-shortcut))
 
 ;; https://github.com/snakers4/silero-vad/blob/5e7ee10ee065ab2b98751dd82b28e3c6360e19aa/utils_vad.py#L207
@@ -310,5 +329,14 @@
 
 (defn init []
   (load)
+
+;; The `record` function initiates the audio recording process. It's called once to prevent
+;; excessive pending puts on the channel when called multiple times,
+;; which would exceed the limit of 1024.
   (record)
+
+;; The `process` function starts a go-loop for processing audio data. Calling it once here
+;; prevents multiple instances of the go-loop from being created, which would otherwise
+;; attempt to consume audio data simultaneously. This concurrent consumption could lead to
+;; corrupted audio files as multiple processes interfere with each other.
   (process))

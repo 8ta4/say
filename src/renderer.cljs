@@ -221,10 +221,10 @@
   (when (fs/existsSync secrets-path)
     (specter/setval specter/ATOM (js->clj (yaml/parse (slurp secrets-path)) :keywordize-keys true) secrets))
   (.stdout.on (child_process/spawn "expect" (clj->js ["network.sh"])) "data" update-mac)
-  (client/render root [grid])
   (add-watch secrets :change (fn [_ _ _ secrets*]
                                (js/console.log "Secrets updated")
                                (spit secrets-path (yaml/stringify (clj->js secrets*)))))
+  (client/render root [grid])
   (electron/ipcRenderer.on channel handle-shortcut))
 
 ;; https://github.com/snakers4/silero-vad/blob/5e7ee10ee065ab2b98751dd82b28e3c6360e19aa/utils_vad.py#L207

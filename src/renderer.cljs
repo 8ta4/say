@@ -45,7 +45,8 @@
 
 (defonce state
   (reagent/atom {:manual false
-                 :open false}))
+                 :open false
+                 :mics []}))
 
 (defn hideaway-button []
   (let [secrets* @secrets
@@ -213,6 +214,18 @@
       (when (not-empty transcription-files*)
         (open-transcription (last (sort transcription-files*)))))))
 
+(defn update-mics []
+  (js-await [_ (js/navigator.mediaDevices.getUserMedia (clj->js {:audio true}))]
+    (js-await [devices (js/navigator.mediaDevices.enumerateDevices)]
+      (specter/setval [specter/ATOM :mics]
+                      (map (fn [device]
+                             (.-label device))
+                           (filter (fn [device]
+                                     (and (= "audioinput" (.-kind device))
+                                          (not= (.-deviceId device) "default")))
+                                   (js->clj devices)))
+                      state))))
+
 (defn load []
   (js/console.log "Hello, Renderer!")
 
@@ -224,6 +237,8 @@
   (add-watch secrets :change (fn [_ _ _ secrets*]
                                (js/console.log "Secrets updated")
                                (spit secrets-path (yaml/stringify (clj->js secrets*)))))
+  (update-mics)
+  (set! js/navigator.mediaDevices.ondevicechange update-mics)
   (client/render root [grid])
   (electron/ipcRenderer.on channel handle-shortcut))
 

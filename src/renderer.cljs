@@ -43,8 +43,6 @@
 
 (defonce secrets (reagent/atom {:key ""}))
 
-(def secrets-path (path/join (os/homedir) ".config/say/secrets.yaml"))
-
 (defonce state
   (reagent/atom {:manual false
                  :open false
@@ -258,21 +256,34 @@
     (js-await [devices (js/navigator.mediaDevices.enumerateDevices)]
       (specter/setval [specter/ATOM :mics] (get-mic-labels devices) state))))
 
+(defn get-path [filename]
+  (path/join (os/homedir) ".config/say" filename))
+
+(defn sync-settings
+  [filename atom*]
+  (let [path* (get-path filename)]
+    (when (fs/existsSync path*)
+      (-> path*
+          slurp
+          yaml/parse
+          (js->clj :keywordize-keys true)
+          (merge-into-atom atom*)))
+    (add-watch atom* :change (fn [_ _ _ value]
+                               (js/console.log "Atom value updated, writing to file")
+                               (spit path* (yaml/stringify (clj->js value)))))))
+
+(def secrets-filename "secrets.yaml")
+
+(def config-filename "config.yaml")
+
 (defn load []
   (js/console.log "Hello, Renderer!")
 
 ;; Using fix-path to ensure the system PATH is correctly set in the Electron environment. This resolves the "spawn ffmpeg ENOENT" error by making sure ffmpeg can be found and executed.
   ((.-default fix-path))
-  (when (fs/existsSync secrets-path)
-    (-> secrets-path
-        slurp
-        yaml/parse
-        (js->clj :keywordize-keys true)
-        (merge-into-atom secrets)))
+  (sync-settings secrets-filename secrets)
+  (sync-settings config-filename config)
   (.stdout.on (child_process/spawn "expect" (clj->js ["network.sh"])) "data" update-mac)
-  (add-watch secrets :change (fn [_ _ _ secrets*]
-                               (js/console.log "Secrets updated")
-                               (spit secrets-path (yaml/stringify (clj->js secrets*)))))
   (update-mics)
   (set! js/navigator.mediaDevices.ondevicechange update-mics)
   (client/render root [grid])

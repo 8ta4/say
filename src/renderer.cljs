@@ -203,10 +203,11 @@
 
 (defn handle-shortcut []
   (js/console.log "Shortcut pressed")
-  (specter/setval specter/ATOM
-                  {:manual true
-                   :open true}
-                  state)
+  (specter/transform specter/ATOM
+                     (fn [state*]
+                       (merge state* {:manual true
+                                      :open true}))
+                     state)
   (js-await [transcription-files (recursive transcription-directory-path)]
     (let [transcription-files* (js->clj transcription-files)]
       (when (not-empty transcription-files*)

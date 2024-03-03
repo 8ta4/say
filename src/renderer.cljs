@@ -2,6 +2,8 @@
   (:require ["@mui/material/Button" :default Button]
             ["@mui/material/Grid" :default Grid]
             ["@mui/material/TextField" :default TextField]
+            ["@mui/material/ToggleButton" :default ToggleButton]
+            ["@mui/material/ToggleButtonGroup" :default ToggleButtonGroup]
             ["address/promises" :as address]
             [ajax.core :refer [POST]]
             [app-root-path]
@@ -64,6 +66,22 @@
        "DISABLE HIDEAWAY"
        "ENABLE HIDEAWAY")]))
 
+(defonce config
+  (reagent/atom {}))
+
+(defn mic-toggle-buttons []
+  [:> ToggleButtonGroup
+   {:value (:mic @config)
+    :exclusive true
+    :on-change (fn [_ value]
+                 (specter/setval [specter/ATOM :mic] value config))}
+   (map (fn [mic]
+          [:> ToggleButton
+           {:value mic
+            :key mic}
+           mic])
+        (:mics @state))])
+
 (defn key-field []
   [:> TextField {:label "Deepgram API Key"
                  :type "password"
@@ -81,7 +99,10 @@
     [key-field]]
    [:> Grid {:item true
              :xs 12}
-    [hideaway-button]]])
+    [hideaway-button]]
+   [:> Grid {:item true
+             :xs 12}
+    [mic-toggle-buttons]]])
 
 ;; The core.async channel and go-loop are used to manage the asynchronous processing
 ;; of audio chunks. This ensures that updates to the application state are serialized,

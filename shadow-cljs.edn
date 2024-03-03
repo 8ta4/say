@@ -20,9 +20,7 @@
    :modules {:renderer {:init-fn renderer/init}}
    :devtools {:after-load renderer/load
               :preloads [hashp.core]}
-
 ;; https://shadow-cljs.github.io/docs/UsersGuide.html
    :compiler-options {:infer-externs true}
-
 ;; https://github.com/thheller/shadow-cljs/issues/376#issuecomment-414696297
    :js-options {:js-provider :require}}}}

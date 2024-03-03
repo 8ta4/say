@@ -22,7 +22,6 @@ jobs:
         run: nix profile install --accept-flake-config tarball+https://install.devenv.sh/latest
       - run: devenv shell pre-commit run -a
       - run: devenv shell build
-
       # https://github.com/softprops/action-gh-release/blob/c9b46fe7aad9f02afd89b12450b780f52dacfb2d/README.md?plain=1#L45-L47
       - name: Release
         uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844 # pin@v1

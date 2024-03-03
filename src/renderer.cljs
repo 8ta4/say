@@ -277,7 +277,7 @@
 
 (def config-filename "config.yaml")
 
-(defn load []
+(defn after-load []
   (js/console.log "Hello, Renderer!")
 ;; Using fix-path to ensure the system PATH is correctly set in the Electron environment. This resolves the "spawn ffmpeg ENOENT" error by making sure ffmpeg can be found and executed.
   ((.-default fix-path))
@@ -372,7 +372,7 @@
                                        {})))))))
 
 (defn init []
-  (load)
+  (after-load)
 ;; The `record` function initiates the audio recording process. It's called once to prevent
 ;; excessive pending puts on the channel when called multiple times,
 ;; which would exceed the limit of 1024.

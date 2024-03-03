@@ -79,7 +79,8 @@
    (map (fn [mic]
           [:> ToggleButton
            {:value mic
-            :key mic}
+            :key mic
+            :sx {:text-transform "none"}}
            mic])
         (:mics @state))])
 

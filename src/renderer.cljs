@@ -226,13 +226,18 @@
                       mac)
                     state)))
 
+(defn merge-into-atom
+  [map* atom*]
+  (specter/transform specter/ATOM
+                     (fn [value]
+                       (merge value map*))
+                     atom*))
+
 (defn handle-shortcut []
   (js/console.log "Shortcut pressed")
-  (specter/transform specter/ATOM
-                     (fn [state*]
-                       (merge state* {:manual true
-                                      :open true}))
-                     state)
+  (merge-into-atom {:manual true
+                    :open true}
+                   state)
   (js-await [transcription-files (recursive transcription-directory-path)]
     (let [transcription-files* (js->clj transcription-files)]
       (when (not-empty transcription-files*)
@@ -259,10 +264,11 @@
 ;; Using fix-path to ensure the system PATH is correctly set in the Electron environment. This resolves the "spawn ffmpeg ENOENT" error by making sure ffmpeg can be found and executed.
   ((.-default fix-path))
   (when (fs/existsSync secrets-path)
-    (specter/transform specter/ATOM
-                       (fn [secrets*]
-                         (merge secrets* (js->clj (yaml/parse (slurp secrets-path)) :keywordize-keys true)))
-                       secrets))
+    (-> secrets-path
+        slurp
+        yaml/parse
+        (js->clj :keywordize-keys true)
+        (merge-into-atom secrets)))
   (.stdout.on (child_process/spawn "expect" (clj->js ["network.sh"])) "data" update-mac)
   (add-watch secrets :change (fn [_ _ _ secrets*]
                                (js/console.log "Secrets updated")

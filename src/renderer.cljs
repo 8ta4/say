@@ -214,17 +214,19 @@
       (when (not-empty transcription-files*)
         (open-transcription (last (sort transcription-files*)))))))
 
+(defn get-mic-labels [devices]
+  (->> devices
+       js->clj
+       (filter (fn [device]
+                 (and (= "audioinput" (.-kind device))
+                      (not= (.-deviceId device) "default"))))
+       (map (fn [device]
+              (.-label device)))))
+
 (defn update-mics []
   (js-await [_ (js/navigator.mediaDevices.getUserMedia (clj->js {:audio true}))]
     (js-await [devices (js/navigator.mediaDevices.enumerateDevices)]
-      (specter/setval [specter/ATOM :mics]
-                      (map (fn [device]
-                             (.-label device))
-                           (filter (fn [device]
-                                     (and (= "audioinput" (.-kind device))
-                                          (not= (.-deviceId device) "default")))
-                                   (js->clj devices)))
-                      state))))
+      (specter/setval [specter/ATOM :mics] (get-mic-labels devices) state))))
 
 (defn load []
   (js/console.log "Hello, Renderer!")

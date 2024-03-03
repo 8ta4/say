@@ -73,6 +73,7 @@
   [:> ToggleButtonGroup
    {:value (:mic @config)
     :exclusive true
+    :orientation "vertical"
     :on-change (fn [_ value]
                  (specter/setval [specter/ATOM :mic] value config))}
    (map (fn [mic]

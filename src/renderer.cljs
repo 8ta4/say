@@ -2,6 +2,8 @@
   (:require ["@mui/material/Button" :default Button]
             ["@mui/material/Grid" :default Grid]
             ["@mui/material/TextField" :default TextField]
+            ["@mui/material/ToggleButton" :default ToggleButton]
+            ["@mui/material/ToggleButtonGroup" :default ToggleButtonGroup]
             ["address/promises" :as address]
             [ajax.core :refer [POST]]
             [app-root-path]
@@ -41,8 +43,6 @@
 
 (defonce secrets (reagent/atom {:key ""}))
 
-(def secrets-path (path/join (os/homedir) ".config/say/secrets.yaml"))
-
 (defonce state
   (reagent/atom {:manual false
                  :open false
@@ -59,18 +59,38 @@
                                             (if (:hideaway secrets*)
                                               specter/NONE
                                               (:mac state*))
-                                            secrets))}
+                                            secrets))
+                :full-width true}
      (if (:hideaway secrets*)
        "DISABLE HIDEAWAY"
        "ENABLE HIDEAWAY")]))
+
+(defonce config
+  (reagent/atom {}))
+
+(defn mic-toggle-buttons []
+  [:> ToggleButtonGroup
+   {:value (:mic @config)
+    :exclusive true
+    :on-change (fn [_ value]
+                 (specter/setval [specter/ATOM :mic] value config))
+    :full-width true
+    :orientation "vertical"}
+   (map (fn [mic]
+          [:> ToggleButton
+           {:value mic
+            :key mic
+            :sx {:text-transform "none"}}
+           mic])
+        (:mics @state))])
 
 (defn key-field []
   [:> TextField {:label "Deepgram API Key"
                  :type "password"
                  :value (:key @secrets)
-                 :full-width true
                  :on-change (fn [event]
-                              (specter/setval [specter/ATOM :key] event.target.value secrets))}])
+                              (specter/setval [specter/ATOM :key] event.target.value secrets))
+                 :full-width true}])
 
 (defn grid []
   [:> Grid {:container true
@@ -81,7 +101,10 @@
     [key-field]]
    [:> Grid {:item true
              :xs 12}
-    [hideaway-button]]])
+    [hideaway-button]]
+   [:> Grid {:item true
+             :xs 12}
+    [mic-toggle-buttons]]])
 
 ;; The core.async channel and go-loop are used to manage the asynchronous processing
 ;; of audio chunks. This ensures that updates to the application state are serialized,
@@ -202,13 +225,18 @@
                       mac)
                     state)))
 
+(defn merge-into-atom
+  [map* atom*]
+  (specter/transform specter/ATOM
+                     (fn [value]
+                       (merge value map*))
+                     atom*))
+
 (defn handle-shortcut []
   (js/console.log "Shortcut pressed")
-  (specter/transform specter/ATOM
-                     (fn [state*]
-                       (merge state* {:manual true
-                                      :open true}))
-                     state)
+  (merge-into-atom {:manual true
+                    :open true}
+                   state)
   (js-await [transcription-files (recursive transcription-directory-path)]
     (let [transcription-files* (js->clj transcription-files)]
       (when (not-empty transcription-files*)
@@ -229,17 +257,34 @@
     (js-await [devices (js/navigator.mediaDevices.enumerateDevices)]
       (specter/setval [specter/ATOM :mics] (get-mic-labels devices) state))))
 
+(defn get-path [filename]
+  (path/join (os/homedir) ".config/say" filename))
+
+(defn sync-settings
+  [filename atom*]
+  (let [path* (get-path filename)]
+    (when (fs/existsSync path*)
+      (-> path*
+          slurp
+          yaml/parse
+          (js->clj :keywordize-keys true)
+          (merge-into-atom atom*)))
+    (add-watch atom* :change (fn [_ _ _ value]
+                               (js/console.log "Settings atom value updated, writing to file")
+                               (spit path* (yaml/stringify (clj->js value)))))))
+
+(def secrets-filename "secrets.yaml")
+
+(def config-filename "config.yaml")
+
 (defn load []
   (js/console.log "Hello, Renderer!")
 
 ;; Using fix-path to ensure the system PATH is correctly set in the Electron environment. This resolves the "spawn ffmpeg ENOENT" error by making sure ffmpeg can be found and executed.
   ((.-default fix-path))
-  (when (fs/existsSync secrets-path)
-    (specter/setval specter/ATOM (js->clj (yaml/parse (slurp secrets-path)) :keywordize-keys true) secrets))
+  (sync-settings secrets-filename secrets)
+  (sync-settings config-filename config)
   (.stdout.on (child_process/spawn "expect" (clj->js ["network.sh"])) "data" update-mac)
-  (add-watch secrets :change (fn [_ _ _ secrets*]
-                               (js/console.log "Secrets updated")
-                               (spit secrets-path (yaml/stringify (clj->js secrets*)))))
   (update-mics)
   (set! js/navigator.mediaDevices.ondevicechange update-mics)
   (client/render root [grid])

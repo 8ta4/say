@@ -224,6 +224,7 @@
               (.-label device)))))
 
 (defn update-mics []
+  (js/console.log "Attempting to update microphone list")
   (js-await [_ (js/navigator.mediaDevices.getUserMedia (clj->js {:audio true}))]
     (js-await [devices (js/navigator.mediaDevices.enumerateDevices)]
       (specter/setval [specter/ATOM :mics] (get-mic-labels devices) state))))

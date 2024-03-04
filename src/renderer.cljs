@@ -115,31 +115,45 @@
 
 (def sample-rate 16000)
 
-(defonce context
-  (js/AudioContext. (clj->js {:sampleRate sample-rate})))
-
-(defn find-device-id [devices]
+(defn find-device-id [devices label]
   (->> devices
        js->clj
        (filter (fn [device]
-                 (and (str/ends-with? (.-label device) "(Built-in)")
-;; Exclude the default device because when an external microphone is unplugged, the recording stops working if the default device is selected.
-                      (not= (.-deviceId device) "default")
-                      (not (str/includes? (.-label device) "External")))))
+                 (= (.-label device) label)))
        first
        .-deviceId))
 
+(defonce mic-channel
+  (async/chan))
+
+(defn create-context []
+  (js/AudioContext. (clj->js {:sampleRate sample-rate})))
+
 (defn record []
-  (js-await [_ (js/navigator.mediaDevices.getUserMedia (clj->js {:audio true}))]
-    (js-await [devices (js/navigator.mediaDevices.enumerateDevices)]
-      (js-await [media (-> {:audio {:deviceId {:exact (find-device-id devices)}}}
-                           clj->js
-                           js/navigator.mediaDevices.getUserMedia)]
-        (js-await [_ (.audioWorklet.addModule context "audio.js")]
-          (let [processor (js/AudioWorkletNode. context "processor")]
-            (.connect (.createMediaStreamSource context media) processor)
-            (j/assoc-in! processor [:port :onmessage] (fn [message]
-                                                        (async/put! audio-channel message.data)))))))))
+  (async/go-loop [loop-state {}]
+    (let [mic (async/<! mic-channel)
+          mic* (if (empty? mic)
+                 nil
+                 mic)]
+      (if (= (:mic loop-state) mic*)
+        (recur loop-state)
+        (do (when (:context loop-state)
+              (.close (:context loop-state)))
+            (if mic*
+              (let [_ (<p! (js/navigator.mediaDevices.getUserMedia (clj->js {:audio true})))
+                    devices (<p! (js/navigator.mediaDevices.enumerateDevices))
+                    media (<p! (-> {:audio {:deviceId {:exact (find-device-id devices mic*)}}}
+                                   clj->js
+                                   js/navigator.mediaDevices.getUserMedia))
+                    context (create-context)
+                    _ (<p! (.audioWorklet.addModule context "audio.js"))
+                    processor (js/AudioWorkletNode. context "processor")]
+                (.connect (.createMediaStreamSource context media) processor)
+                (j/assoc-in! processor [:port :onmessage] (fn [message]
+                                                            (async/put! audio-channel message.data)))
+                (recur {:mic mic*
+                        :context context}))
+              (recur {})))))))
 
 (def shape
   [2 1 64])
@@ -285,9 +299,6 @@
                                                                        (filter is-built-in)
                                                                        first)
     (:mic map*) (some #{(:mic map*)} (:mics map*))))
-
-(defonce mic-channel
-  (async/chan))
 
 (defn update-mic []
 ;; An empty string "" is used as a fallback to avoid "Can't put nil on a channel" error.

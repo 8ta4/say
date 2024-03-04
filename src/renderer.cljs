@@ -274,6 +274,18 @@
 
 (def config-filename "config.yaml")
 
+(defn is-built-in [label]
+  (and (str/ends-with? label "(Built-in)")
+       (not (str/includes? label "External"))))
+
+(defn select-mic [map*]
+  (cond
+    (or (nil? (:hideaway map*)) (= (:hideaway map*) (:mac map*))) (->> map*
+                                                                       :mics
+                                                                       (filter is-built-in)
+                                                                       first)
+    (:mic map*) (some #{(:mic map*)} (:mics map*))))
+
 (defn after-load []
   (js/console.log "Hello, Renderer!")
 ;; Using fix-path to ensure the system PATH is correctly set in the Electron environment. This resolves the "spawn ffmpeg ENOENT" error by making sure ffmpeg can be found and executed.
@@ -285,7 +297,8 @@
   (client/render root [grid])
   (electron/ipcRenderer.on channel handle-shortcut)
   (js-await [_ (update-mac)]
-    (js-await [_ (update-mics)])))
+    (js-await [_ (update-mics)]
+      (utils/setval [specter/ATOM :active-mic] (select-mic (merge @secrets @config @state)) state))))
 
 ;; https://github.com/snakers4/silero-vad/blob/5e7ee10ee065ab2b98751dd82b28e3c6360e19aa/utils_vad.py#L207
 (def window-size-samples
@@ -380,15 +393,3 @@
 ;; attempt to consume audio data simultaneously. This concurrent consumption could lead to
 ;; corrupted audio files as multiple processes interfere with each other.
   (process))
-
-(defn is-built-in [label]
-  (and (str/ends-with? label "(Built-in)")
-       (not (str/includes? label "External"))))
-
-(defn select-mic [map*]
-  (cond
-    (or (nil? (:hideaway map*)) (= (:hideaway map*) (:mac map*))) (->> map*
-                                                                       :mics
-                                                                       (filter is-built-in)
-                                                                       first)
-    (:mic map*) (some #{(:mic map*)} (:mics map*))))

@@ -290,7 +290,8 @@
   (async/chan))
 
 (defn update-mic []
-  (async/put! mic-channel (select-mic (merge @secrets @config @state))))
+;; An empty string "" is used as a fallback to avoid "Can't put nil on a channel" error.
+  (async/put! mic-channel (or (select-mic (merge @secrets @config @state)) "")))
 
 (defn after-load []
   (js/console.log "Hello, Renderer!")

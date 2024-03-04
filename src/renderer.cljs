@@ -308,7 +308,7 @@
     [mic-toggle-buttons]]])
 
 (defn after-load []
-  (js/console.log "Hello, Renderer!")
+  (js/console.log "Executing after-load function")
 ;; Using fix-path to ensure the system PATH is correctly set in the Electron environment. This resolves the "spawn ffmpeg ENOENT" error by making sure ffmpeg can be found and executed.
   ((.-default fix-path))
   (sync-settings secrets-filename secrets)

@@ -27,6 +27,7 @@
             [shadow.cljs.modern :refer [js-await]]
             [shared :refer [channel]]
             [stream]
+            [utils]
             [yaml]))
 
 ;; https://stackoverflow.com/a/73265958
@@ -55,11 +56,11 @@
                            "contained"
                            "disabled")
                 :on-click (fn []
-                            (specter/setval [specter/ATOM :hideaway]
-                                            (if (:hideaway secrets*)
-                                              specter/NONE
-                                              (:mac state*))
-                                            secrets))
+                            (utils/setval [specter/ATOM :hideaway]
+                                          (if (:hideaway secrets*)
+                                            specter/NONE
+                                            (:mac state*))
+                                          secrets))
                 :full-width true}
      (if (:hideaway secrets*)
        "DISABLE HIDEAWAY"
@@ -73,7 +74,7 @@
    {:value (:mic @config)
     :exclusive true
     :on-change (fn [_ value]
-                 (specter/setval [specter/ATOM :mic] value config))
+                 (utils/setval [specter/ATOM :mic] value config))
     :full-width true
     :orientation "vertical"}
    (map (fn [mic]
@@ -89,7 +90,7 @@
                  :type "password"
                  :value (:key @secrets)
                  :on-change (fn [event]
-                              (specter/setval [specter/ATOM :key] event.target.value secrets))
+                              (utils/setval [specter/ATOM :key] event.target.value secrets))
                  :full-width true}])
 
 (defn grid []
@@ -199,7 +200,7 @@
                  transcription-text)
             :append true)
       (when (:open @state)
-        (specter/setval [specter/ATOM :open] false state)
+        (utils/setval [specter/ATOM :open] false state)
         (open-transcription transcription-filepath)))))
 
 (defn create-readable []
@@ -219,11 +220,7 @@
 
 (defn update-mac []
   (js-await [mac (address/mac)]
-    (specter/setval [specter/ATOM :mac]
-                    (if (nil? mac)
-                      specter/NONE
-                      mac)
-                    state)))
+    (utils/setval [specter/ATOM :mac] mac state)))
 
 (defn merge-into-atom
   [map* atom*]
@@ -255,7 +252,7 @@
   (js/console.log "Attempting to update microphone list")
   (js-await [_ (js/navigator.mediaDevices.getUserMedia (clj->js {:audio true}))]
     (js-await [devices (js/navigator.mediaDevices.enumerateDevices)]
-      (specter/setval [specter/ATOM :mics] (get-mic-labels devices) state))))
+      (utils/setval [specter/ATOM :mics] (get-mic-labels devices) state))))
 
 (defn get-path [filename]
   (path/join (os/homedir) ".config/say" filename))
@@ -277,6 +274,18 @@
 
 (def config-filename "config.yaml")
 
+(defn is-built-in [label]
+  (and (str/ends-with? label "(Built-in)")
+       (not (str/includes? label "External"))))
+
+(defn select-mic [map*]
+  (cond
+    (or (nil? (:hideaway map*)) (= (:hideaway map*) (:mac map*))) (->> map*
+                                                                       :mics
+                                                                       (filter is-built-in)
+                                                                       first)
+    (:mic map*) (some #{(:mic map*)} (:mics map*))))
+
 (defn after-load []
   (js/console.log "Hello, Renderer!")
 ;; Using fix-path to ensure the system PATH is correctly set in the Electron environment. This resolves the "spawn ffmpeg ENOENT" error by making sure ffmpeg can be found and executed.
@@ -284,10 +293,12 @@
   (sync-settings secrets-filename secrets)
   (sync-settings config-filename config)
   (.stdout.on (child_process/spawn "expect" (clj->js ["network.sh"])) "data" update-mac)
-  (update-mics)
   (set! js/navigator.mediaDevices.ondevicechange update-mics)
   (client/render root [grid])
-  (electron/ipcRenderer.on channel handle-shortcut))
+  (electron/ipcRenderer.on channel handle-shortcut)
+  (js-await [_ (update-mac)]
+    (js-await [_ (update-mics)]
+      (utils/setval [specter/ATOM :active-mic] (select-mic (merge @secrets @config @state)) state))))
 
 ;; https://github.com/snakers4/silero-vad/blob/5e7ee10ee065ab2b98751dd82b28e3c6360e19aa/utils_vad.py#L207
 (def window-size-samples
@@ -360,7 +371,7 @@
         (recur (merge process-state* (if (or (:manual @state) (and (< samples-in-readable (:readable-length process-state*))
                                                                    (< samples-in-pause (:pause-length process-state*))))
                                        (do (js/console.log "Current stream length:" (:readable-length process-state*))
-                                           (specter/setval [specter/ATOM :manual] false state)
+                                           (utils/setval [specter/ATOM :manual] false state)
                                            (push (:readable process-state*) (:raw process-state*))
                                            (.push (:readable process-state*) nil)
                                            {:readable (create-readable)
@@ -372,25 +383,13 @@
                                        {})))))))
 
 (defn init []
-  (after-load)
+  (js-await [_ (after-load)]
 ;; The `record` function initiates the audio recording process. It's called once to prevent
 ;; excessive pending puts on the channel when called multiple times,
 ;; which would exceed the limit of 1024.
-  (record)
+    (record))
 ;; The `process` function starts a go-loop for processing audio data. Calling it once here
 ;; prevents multiple instances of the go-loop from being created, which would otherwise
 ;; attempt to consume audio data simultaneously. This concurrent consumption could lead to
 ;; corrupted audio files as multiple processes interfere with each other.
   (process))
-
-(defn is-built-in [label]
-  (and (str/ends-with? label "(Built-in)")
-       (not (str/includes? label "External"))))
-
-(defn select-mic [map*]
-  (cond
-    (or (nil? (:hideaway map*)) (= (:hideaway map*) (:mac map*))) (->> map*
-                                                                       :mics
-                                                                       (filter is-built-in)
-                                                                       first)
-    (:mic map*) (some #{(:mic map*)} (:mics map*))))

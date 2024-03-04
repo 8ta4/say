@@ -105,7 +105,7 @@ Here are some pro tips:
 
 The sound intensity is inversely proportional to the square of the distance.
 
-> When does this tool start using my external mic? (Planned)
+> When does this tool start using my external mic?
 
 `say` will use your external mic if:
 
@@ -113,7 +113,7 @@ The sound intensity is inversely proportional to the square of the distance.
 - You've specified an external mic to use outside of your hideaway.
 - Your configured external mic is connected.
 
-> How do I set up a hideaway? (Planned)
+> How do I set up a hideaway?
 
 1. Connect to the Wi-Fi or Ethernet network you want to use as your hideaway.
 
@@ -125,7 +125,7 @@ The sound intensity is inversely proportional to the square of the distance.
 
 1. Click `ENABLE HIDEAWAY`.
 
-> How do I set up an external mic for non-hideaway use? (Planned)
+> How do I set up an external mic for non-hideaway use?
 
 1. Plug in the external mic you want to use.
 
@@ -137,11 +137,11 @@ The sound intensity is inversely proportional to the square of the distance.
 
 1. Pick the external mic you want.
 
-> Which mic does this tool use in a hideaway? (Planned)
+> Which mic does this tool use in a hideaway?
 
 `say` sticks with your built-in mic in a hideaway.
 
-> Will this tool use the built-in mic if there's no external mic and I'm not in a hideaway? (Planned)
+> Will this tool use the built-in mic if there's no external mic and I'm not in a hideaway?
 
 No. If you're not in a hideaway and there's no external mic, `say` won't use the built-in mic to avoid recording poor audio. You can either connect an external mic or mark your current location as a hideaway if you think the built-in mic is good enough.
 

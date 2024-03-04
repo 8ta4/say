@@ -102,7 +102,7 @@ Because iOS won't let you do continuous real-time voice detection and transcript
 
 ### Background Process
 
-> Where does this tool store the API key? (Planned)
+> Where does this tool store the API key?
 
 The API key is in `~/.config/say/secrets.yaml`.
 
@@ -227,31 +227,31 @@ Confidence intervals are great for estimating the mean, but a tolerance interval
 
 I want to be safe and avoid cutting off your words in the middle.
 
-> How does this tool know when I'm at my hideaway? (Planned)
+> How does this tool know when I'm at my hideaway?
 
 `say` uses your network router's MAC address to pinpoint your hideaway.
 
-> Why doesn't this tool use Location Services? (Planned)
+> Why doesn't this tool use Location Services?
 
 Location Services often need an internet connection to work accurately indoors. But if you're online, `say` can just use your network info to confirm your hideaway.
 
-> Where does this tool store the MAC address? (Planned)
+> Where does this tool store the MAC address?
 
 `say` tucks away the MAC address in `~/.config/say/secrets.yaml`. This way, it treats your network-specific sensitive info with the same care as an API key.
 
-> What devices are included in the mic selection list? (Planned)
+> What devices are included in the mic selection list?
 
 The mic selection list includes all currently available external mics and the currently selected but unavailable mic. This way, you can easily revert your choice if needed.
 
-> How is the mic selection list ordered? (Planned)
+> How is the mic selection list ordered?
 
 The mic selection list is ordered alphabetically. This makes it predictable to find and select your desired microphone.
 
-> Where does this tool keep the mic settings for when I'm not at my hideaway? (Planned)
+> Where does this tool keep the mic settings for when I'm not at my hideaway?
 
 The mic settings are in `~/.config/say/config.yaml`.
 
-> Why two config files and not one? (Planned)
+> Why two config files and not one?
 
 `secrets.yaml` is for sensitive data only.
 
@@ -301,11 +301,11 @@ From my experience, if the audio is 1 minute or less, the transcription API usua
 
 Speed, my friend! The ONNX model [may even run up to 4-5x faster](https://github.com/snakers4/silero-vad/blob/5e7ee10ee065ab2b98751dd82b28e3c6360e19aa/README.md?plain=1#L37), which means less CPU usage. That's awesome for `say`, since it's always on.
 
-> Can another transcription be triggered while one is already in progress? (Planned)
+> Can another transcription be triggered while one is already in progress?
 
 Absolutely! The likelihood depends on whether the second trigger is manual or automatic.
 
-> If transcription is already happening, is overlap more likely with a manual or automatic second trigger? (Planned)
+> If transcription is already happening, is overlap more likely with a manual or automatic second trigger?
 
 Overlap is more likely with a manual second trigger.
 
@@ -345,7 +345,7 @@ Error notification depends on whether transcription is triggered manually or aut
 
 Yup, you will.
 
-> Will I get notified if transcription fails when it is triggered automatically? (Planned)
+> Will I get notified if transcription fails when it is triggered automatically?
 
 Nope, you won't. `say` is designed to be non-intrusive.
 

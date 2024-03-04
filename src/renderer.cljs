@@ -27,6 +27,7 @@
             [shadow.cljs.modern :refer [js-await]]
             [shared :refer [channel]]
             [stream]
+            [utils]
             [yaml]))
 
 ;; https://stackoverflow.com/a/73265958
@@ -55,11 +56,11 @@
                            "contained"
                            "disabled")
                 :on-click (fn []
-                            (specter/setval [specter/ATOM :hideaway]
-                                            (if (:hideaway secrets*)
-                                              specter/NONE
-                                              (:mac state*))
-                                            secrets))
+                            (utils/setval [specter/ATOM :hideaway]
+                                          (if (:hideaway secrets*)
+                                            specter/NONE
+                                            (:mac state*))
+                                          secrets))
                 :full-width true}
      (if (:hideaway secrets*)
        "DISABLE HIDEAWAY"
@@ -73,7 +74,7 @@
    {:value (:mic @config)
     :exclusive true
     :on-change (fn [_ value]
-                 (specter/setval [specter/ATOM :mic] value config))
+                 (utils/setval [specter/ATOM :mic] value config))
     :full-width true
     :orientation "vertical"}
    (map (fn [mic]
@@ -89,7 +90,7 @@
                  :type "password"
                  :value (:key @secrets)
                  :on-change (fn [event]
-                              (specter/setval [specter/ATOM :key] event.target.value secrets))
+                              (utils/setval [specter/ATOM :key] event.target.value secrets))
                  :full-width true}])
 
 (defn grid []
@@ -199,7 +200,7 @@
                  transcription-text)
             :append true)
       (when (:open @state)
-        (specter/setval [specter/ATOM :open] false state)
+        (utils/setval [specter/ATOM :open] false state)
         (open-transcription transcription-filepath)))))
 
 (defn create-readable []
@@ -219,11 +220,11 @@
 
 (defn update-mac []
   (js-await [mac (address/mac)]
-    (specter/setval [specter/ATOM :mac]
-                    (if (nil? mac)
-                      specter/NONE
-                      mac)
-                    state)))
+    (utils/setval [specter/ATOM :mac]
+                  (if (nil? mac)
+                    specter/NONE
+                    mac)
+                  state)))
 
 (defn merge-into-atom
   [map* atom*]
@@ -255,7 +256,7 @@
   (js/console.log "Attempting to update microphone list")
   (js-await [_ (js/navigator.mediaDevices.getUserMedia (clj->js {:audio true}))]
     (js-await [devices (js/navigator.mediaDevices.enumerateDevices)]
-      (specter/setval [specter/ATOM :mics] (get-mic-labels devices) state))))
+      (utils/setval [specter/ATOM :mics] (get-mic-labels devices) state))))
 
 (defn get-path [filename]
   (path/join (os/homedir) ".config/say" filename))
@@ -360,7 +361,7 @@
         (recur (merge process-state* (if (or (:manual @state) (and (< samples-in-readable (:readable-length process-state*))
                                                                    (< samples-in-pause (:pause-length process-state*))))
                                        (do (js/console.log "Current stream length:" (:readable-length process-state*))
-                                           (specter/setval [specter/ATOM :manual] false state)
+                                           (utils/setval [specter/ATOM :manual] false state)
                                            (push (:readable process-state*) (:raw process-state*))
                                            (.push (:readable process-state*) nil)
                                            {:readable (create-readable)

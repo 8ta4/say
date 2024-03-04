@@ -77,6 +77,7 @@
       (if (= (:mic loop-state) mic*)
         (recur loop-state)
         (do (when (:context loop-state)
+              (js/console.log "Closing existing audio context.")
               (.close (:context loop-state)))
             (if mic*
               (let [_ (<p! (js/navigator.mediaDevices.getUserMedia (clj->js {:audio true})))

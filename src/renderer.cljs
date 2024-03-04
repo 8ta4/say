@@ -36,12 +36,6 @@
 (def fix-path
   (fix-esm/require "fix-path"))
 
-;; Using defonce to ensure the root is only created once. This prevents warnings about
-;; calling ReactDOMClient.createRoot() on a container that has already been passed to
-;; createRoot() before during hot reloads or re-evaluations of the code.
-(defonce root
-  (client/create-root (js/document.getElementById "app")))
-
 (defonce secrets (reagent/atom {:key ""}))
 
 (defonce state
@@ -49,63 +43,8 @@
                  :open false
                  :mics []}))
 
-(defn hideaway-button []
-  (let [secrets* @secrets
-        state* @state]
-    [:> Button {:variant (if (or (:hideaway secrets*) (:mac state*))
-                           "contained"
-                           "disabled")
-                :on-click (fn []
-                            (utils/setval [specter/ATOM :hideaway]
-                                          (if (:hideaway secrets*)
-                                            specter/NONE
-                                            (:mac state*))
-                                          secrets))
-                :full-width true}
-     (if (:hideaway secrets*)
-       "DISABLE HIDEAWAY"
-       "ENABLE HIDEAWAY")]))
-
 (defonce config
   (reagent/atom {}))
-
-(defn mic-toggle-buttons []
-  [:> ToggleButtonGroup
-   {:value (:mic @config)
-    :exclusive true
-    :on-change (fn [_ value]
-                 (utils/setval [specter/ATOM :mic] value config))
-    :full-width true
-    :orientation "vertical"}
-   (map (fn [mic]
-          [:> ToggleButton
-           {:value mic
-            :key mic
-            :sx {:text-transform "none"}}
-           mic])
-        (:mics @state))])
-
-(defn key-field []
-  [:> TextField {:label "Deepgram API Key"
-                 :type "password"
-                 :value (:key @secrets)
-                 :on-change (fn [event]
-                              (utils/setval [specter/ATOM :key] event.target.value secrets))
-                 :full-width true}])
-
-(defn grid []
-  [:> Grid {:container true
-            :p 2
-            :spacing 2}
-   [:> Grid {:item true
-             :xs 12}
-    [key-field]]
-   [:> Grid {:item true
-             :xs 12}
-    [hideaway-button]]
-   [:> Grid {:item true
-             :xs 12}
-    [mic-toggle-buttons]]])
 
 ;; The core.async channel and go-loop are used to manage the asynchronous processing
 ;; of audio chunks. This ensures that updates to the application state are serialized,
@@ -303,6 +242,67 @@
 (defn update-mic []
 ;; An empty string "" is used as a fallback to avoid "Can't put nil on a channel" error.
   (async/put! mic-channel (or (select-mic (merge @secrets @config @state)) "")))
+
+;; Using defonce to ensure the root is only created once. This prevents warnings about
+;; calling ReactDOMClient.createRoot() on a container that has already been passed to
+;; createRoot() before during hot reloads or re-evaluations of the code.
+(defonce root
+  (client/create-root (js/document.getElementById "app")))
+
+(defn key-field []
+  [:> TextField {:label "Deepgram API Key"
+                 :type "password"
+                 :value (:key @secrets)
+                 :on-change (fn [event]
+                              (utils/setval [specter/ATOM :key] event.target.value secrets))
+                 :full-width true}])
+
+(defn hideaway-button []
+  (let [secrets* @secrets
+        state* @state]
+    [:> Button {:variant (if (or (:hideaway secrets*) (:mac state*))
+                           "contained"
+                           "disabled")
+                :on-click (fn []
+                            (utils/setval [specter/ATOM :hideaway]
+                                          (if (:hideaway secrets*)
+                                            specter/NONE
+                                            (:mac state*))
+                                          secrets))
+                :full-width true}
+     (if (:hideaway secrets*)
+       "DISABLE HIDEAWAY"
+       "ENABLE HIDEAWAY")]))
+
+(defn mic-toggle-buttons []
+  [:> ToggleButtonGroup
+   {:value (:mic @config)
+    :exclusive true
+    :on-change (fn [_ value]
+                 (utils/setval [specter/ATOM :mic] value config))
+    :full-width true
+    :orientation "vertical"}
+   (map (fn [mic]
+          [:> ToggleButton
+           {:value mic
+            :key mic
+            :sx {:text-transform "none"}}
+           mic])
+        (:mics @state))])
+
+(defn grid []
+  [:> Grid {:container true
+            :p 2
+            :spacing 2}
+   [:> Grid {:item true
+             :xs 12}
+    [key-field]]
+   [:> Grid {:item true
+             :xs 12}
+    [hideaway-button]]
+   [:> Grid {:item true
+             :xs 12}
+    [mic-toggle-buttons]]])
 
 (defn after-load []
   (js/console.log "Hello, Renderer!")

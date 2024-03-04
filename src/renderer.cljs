@@ -285,13 +285,16 @@
                  (update-mic))
     :full-width true
     :orientation "vertical"}
-   (map (fn [mic]
-          [:> ToggleButton
-           {:value mic
-            :key mic
-            :sx {:text-transform "none"}}
-           mic])
-        (:mics @state))])
+   (->> @state
+        :mics
+        (cons (:mic @config))
+        (apply sorted-set)
+        (map (fn [mic]
+               [:> ToggleButton
+                {:value mic
+                 :key mic
+                 :sx {:text-transform "none"}}
+                mic])))])
 
 (defn grid []
   [:> Grid {:container true

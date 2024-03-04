@@ -268,7 +268,8 @@
                                           (if (:hideaway secrets*)
                                             specter/NONE
                                             (:mac state*))
-                                          secrets))
+                                          secrets)
+                            (update-mic))
                 :full-width true}
      (if (:hideaway secrets*)
        "DISABLE HIDEAWAY"
@@ -279,7 +280,8 @@
    {:value (:mic @config)
     :exclusive true
     :on-change (fn [_ value]
-                 (utils/setval [specter/ATOM :mic] value config))
+                 (utils/setval [specter/ATOM :mic] value config)
+                 (update-mic))
     :full-width true
     :orientation "vertical"}
    (map (fn [mic]

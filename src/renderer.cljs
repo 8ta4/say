@@ -36,12 +36,6 @@
 (def fix-path
   (fix-esm/require "fix-path"))
 
-;; Using defonce to ensure the root is only created once. This prevents warnings about
-;; calling ReactDOMClient.createRoot() on a container that has already been passed to
-;; createRoot() before during hot reloads or re-evaluations of the code.
-(defonce root
-  (client/create-root (js/document.getElementById "app")))
-
 (defonce secrets (reagent/atom {:key ""}))
 
 (defonce state
@@ -49,97 +43,57 @@
                  :open false
                  :mics []}))
 
-(defn hideaway-button []
-  (let [secrets* @secrets
-        state* @state]
-    [:> Button {:variant (if (or (:hideaway secrets*) (:mac state*))
-                           "contained"
-                           "disabled")
-                :on-click (fn []
-                            (utils/setval [specter/ATOM :hideaway]
-                                          (if (:hideaway secrets*)
-                                            specter/NONE
-                                            (:mac state*))
-                                          secrets))
-                :full-width true}
-     (if (:hideaway secrets*)
-       "DISABLE HIDEAWAY"
-       "ENABLE HIDEAWAY")]))
-
 (defonce config
   (reagent/atom {}))
-
-(defn mic-toggle-buttons []
-  [:> ToggleButtonGroup
-   {:value (:mic @config)
-    :exclusive true
-    :on-change (fn [_ value]
-                 (utils/setval [specter/ATOM :mic] value config))
-    :full-width true
-    :orientation "vertical"}
-   (map (fn [mic]
-          [:> ToggleButton
-           {:value mic
-            :key mic
-            :sx {:text-transform "none"}}
-           mic])
-        (:mics @state))])
-
-(defn key-field []
-  [:> TextField {:label "Deepgram API Key"
-                 :type "password"
-                 :value (:key @secrets)
-                 :on-change (fn [event]
-                              (utils/setval [specter/ATOM :key] event.target.value secrets))
-                 :full-width true}])
-
-(defn grid []
-  [:> Grid {:container true
-            :p 2
-            :spacing 2}
-   [:> Grid {:item true
-             :xs 12}
-    [key-field]]
-   [:> Grid {:item true
-             :xs 12}
-    [hideaway-button]]
-   [:> Grid {:item true
-             :xs 12}
-    [mic-toggle-buttons]]])
 
 ;; The core.async channel and go-loop are used to manage the asynchronous processing
 ;; of audio chunks. This ensures that updates to the application state are serialized,
 ;; preventing concurrent state modifications that could lead to inconsistencies.
-(defonce chan
+(defonce audio-channel
   (async/chan))
 
 (def sample-rate 16000)
 
-(defonce context
-  (js/AudioContext. (clj->js {:sampleRate sample-rate})))
-
-(defn find-device-id [devices]
+(defn find-device-id [devices label]
   (->> devices
        js->clj
        (filter (fn [device]
-                 (and (str/ends-with? (.-label device) "(Built-in)")
-;; Exclude the default device because when an external microphone is unplugged, the recording stops working if the default device is selected.
-                      (not= (.-deviceId device) "default")
-                      (not (str/includes? (.-label device) "External")))))
+                 (= (.-label device) label)))
        first
        .-deviceId))
 
+(defonce mic-channel
+  (async/chan))
+
+(defn create-context []
+  (js/AudioContext. (clj->js {:sampleRate sample-rate})))
+
 (defn record []
-  (js-await [_ (js/navigator.mediaDevices.getUserMedia (clj->js {:audio true}))]
-    (js-await [devices (js/navigator.mediaDevices.enumerateDevices)]
-      (js-await [media (-> {:audio {:deviceId {:exact (find-device-id devices)}}}
-                           clj->js
-                           js/navigator.mediaDevices.getUserMedia)]
-        (js-await [_ (.audioWorklet.addModule context "audio.js")]
-          (let [processor (js/AudioWorkletNode. context "processor")]
-            (.connect (.createMediaStreamSource context media) processor)
-            (j/assoc-in! processor [:port :onmessage] (fn [message]
-                                                        (async/put! chan message.data)))))))))
+  (async/go-loop [loop-state {}]
+    (let [mic (async/<! mic-channel)
+          mic* (if (empty? mic)
+                 nil
+                 mic)]
+      (if (= (:mic loop-state) mic*)
+        (recur loop-state)
+        (do (when (:context loop-state)
+              (js/console.log "Closing existing audio context.")
+              (.close (:context loop-state)))
+            (if mic*
+              (let [_ (<p! (js/navigator.mediaDevices.getUserMedia (clj->js {:audio true})))
+                    devices (<p! (js/navigator.mediaDevices.enumerateDevices))
+                    media (<p! (-> {:audio {:deviceId {:exact (find-device-id devices mic*)}}}
+                                   clj->js
+                                   js/navigator.mediaDevices.getUserMedia))
+                    context (create-context)
+                    _ (<p! (.audioWorklet.addModule context "audio.js"))
+                    processor (js/AudioWorkletNode. context "processor")]
+                (.connect (.createMediaStreamSource context media) processor)
+                (j/assoc-in! processor [:port :onmessage] (fn [message]
+                                                            (async/put! audio-channel message.data)))
+                (recur {:mic mic*
+                        :context context}))
+              (recur {})))))))
 
 (def shape
   [2 1 64])
@@ -286,14 +240,75 @@
                                                                        first)
     (:mic map*) (some #{(:mic map*)} (:mics map*))))
 
-(defonce mic-channel
-  (async/chan))
-
 (defn update-mic []
-  (async/put! mic-channel (select-mic (merge @secrets @config @state))))
+;; An empty string "" is used as a fallback to avoid "Can't put nil on a channel" error.
+  (async/put! mic-channel (or (select-mic (merge @secrets @config @state)) "")))
+
+;; Using defonce to ensure the root is only created once. This prevents warnings about
+;; calling ReactDOMClient.createRoot() on a container that has already been passed to
+;; createRoot() before during hot reloads or re-evaluations of the code.
+(defonce root
+  (client/create-root (js/document.getElementById "app")))
+
+(defn key-field []
+  [:> TextField {:label "Deepgram API Key"
+                 :type "password"
+                 :value (:key @secrets)
+                 :on-change (fn [event]
+                              (utils/setval [specter/ATOM :key] event.target.value secrets))
+                 :full-width true}])
+
+(defn hideaway-button []
+  (let [secrets* @secrets
+        state* @state]
+    [:> Button {:variant (if (or (:hideaway secrets*) (:mac state*))
+                           "contained"
+                           "disabled")
+                :on-click (fn []
+                            (utils/setval [specter/ATOM :hideaway]
+                                          (if (:hideaway secrets*)
+                                            specter/NONE
+                                            (:mac state*))
+                                          secrets)
+                            (update-mic))
+                :full-width true}
+     (if (:hideaway secrets*)
+       "DISABLE HIDEAWAY"
+       "ENABLE HIDEAWAY")]))
+
+(defn mic-toggle-buttons []
+  [:> ToggleButtonGroup
+   {:value (:mic @config)
+    :exclusive true
+    :on-change (fn [_ value]
+                 (utils/setval [specter/ATOM :mic] value config)
+                 (update-mic))
+    :full-width true
+    :orientation "vertical"}
+   (map (fn [mic]
+          [:> ToggleButton
+           {:value mic
+            :key mic
+            :sx {:text-transform "none"}}
+           mic])
+        (:mics @state))])
+
+(defn grid []
+  [:> Grid {:container true
+            :p 2
+            :spacing 2}
+   [:> Grid {:item true
+             :xs 12}
+    [key-field]]
+   [:> Grid {:item true
+             :xs 12}
+    [hideaway-button]]
+   [:> Grid {:item true
+             :xs 12}
+    [mic-toggle-buttons]]])
 
 (defn after-load []
-  (js/console.log "Hello, Renderer!")
+  (js/console.log "Executing after-load function")
 ;; Using fix-path to ensure the system PATH is correctly set in the Electron environment. This resolves the "spawn ffmpeg ENOENT" error by making sure ffmpeg can be found and executed.
   ((.-default fix-path))
   (sync-settings secrets-filename secrets)
@@ -339,60 +354,60 @@
 
 (defn process []
   (js-await [session (ort/InferenceSession.create vad-path)]
-    (async/go-loop [process-state {:readable (create-readable)
-                                   :readable-length 0
-                                   :pad []
-                                   :pause-length 0
-                                   :raw []
-                                   :vad false
-                                   :h tensor
-                                   :c tensor}]
-      (let [combined (concat (:raw process-state) (async/<! chan))
-            process-state* (merge process-state
+    (async/go-loop [loop-state {:readable (create-readable)
+                                :readable-length 0
+                                :pad []
+                                :pause-length 0
+                                :raw []
+                                :vad false
+                                :h tensor
+                                :c tensor}]
+      (let [combined (concat (:raw loop-state) (async/<! audio-channel))
+            loop-state* (merge loop-state
 ;; https://developer.mozilla.org/en-US/docs/Web/API/AudioWorkletProcessor/process#sect1
-                                  (if (< (count combined) window-size-samples)
-                                    {:raw combined}
-                                    (let [before (take window-size-samples combined)
-                                          input (ort/Tensor. (js/Float32Array. before) (clj->js [1 (count before)]))
-                                          result (js->clj (->> {:input input
-                                                                :sr sr}
-                                                               (merge process-state)
-                                                               clj->js
-                                                               (.run session)
-                                                               <p!)
-                                                          :keywordize-keys true)]
-                                      (merge {:raw (drop window-size-samples combined)
-                                              :h (:hn result)
-                                              :c (:cn result)}
-                                             (if (-> result
-                                                     :output
-                                                     .-data
-                                                     first
-                                                     (<= 0.5))
-                                               (merge {:pause-length (+ (:pause-length process-state) (count before))}
-                                                      (if (and (<= (:pause-length process-state) samples-in-pause) (:vad process-state))
-                                                        (do (push (:readable process-state) before)
-                                                            {:readable-length (+ (:readable-length process-state) (count before))})
-                                                        {:pad (take-last samples-in-pause (concat (:pad process-state) before))}))
-                                               (let [padded (concat (:pad process-state) before)]
-                                                 (push (:readable process-state) padded)
-                                                 {:readable-length (+ (:readable-length process-state) (count padded))
-                                                  :pad []
-                                                  :pause-length 0
-                                                  :vad true}))))))]
-        (recur (merge process-state* (if (or (:manual @state) (and (< samples-in-readable (:readable-length process-state*))
-                                                                   (< samples-in-pause (:pause-length process-state*))))
-                                       (do (js/console.log "Current stream length:" (:readable-length process-state*))
-                                           (utils/setval [specter/ATOM :manual] false state)
-                                           (push (:readable process-state*) (:raw process-state*))
-                                           (.push (:readable process-state*) nil)
-                                           {:readable (create-readable)
-                                            :readable-length 0
-                                            :pad []
-                                            :pause-length 0
-                                            :raw []
-                                            :vad false})
-                                       {})))))))
+                               (if (< (count combined) window-size-samples)
+                                 {:raw combined}
+                                 (let [before (take window-size-samples combined)
+                                       input (ort/Tensor. (js/Float32Array. before) (clj->js [1 (count before)]))
+                                       result (js->clj (->> {:input input
+                                                             :sr sr}
+                                                            (merge loop-state)
+                                                            clj->js
+                                                            (.run session)
+                                                            <p!)
+                                                       :keywordize-keys true)]
+                                   (merge {:raw (drop window-size-samples combined)
+                                           :h (:hn result)
+                                           :c (:cn result)}
+                                          (if (-> result
+                                                  :output
+                                                  .-data
+                                                  first
+                                                  (<= 0.5))
+                                            (merge {:pause-length (+ (:pause-length loop-state) (count before))}
+                                                   (if (and (<= (:pause-length loop-state) samples-in-pause) (:vad loop-state))
+                                                     (do (push (:readable loop-state) before)
+                                                         {:readable-length (+ (:readable-length loop-state) (count before))})
+                                                     {:pad (take-last samples-in-pause (concat (:pad loop-state) before))}))
+                                            (let [padded (concat (:pad loop-state) before)]
+                                              (push (:readable loop-state) padded)
+                                              {:readable-length (+ (:readable-length loop-state) (count padded))
+                                               :pad []
+                                               :pause-length 0
+                                               :vad true}))))))]
+        (recur (merge loop-state* (if (or (:manual @state) (and (< samples-in-readable (:readable-length loop-state*))
+                                                                (< samples-in-pause (:pause-length loop-state*))))
+                                    (do (js/console.log "Current stream length:" (:readable-length loop-state*))
+                                        (utils/setval [specter/ATOM :manual] false state)
+                                        (push (:readable loop-state*) (:raw loop-state*))
+                                        (.push (:readable loop-state*) nil)
+                                        {:readable (create-readable)
+                                         :readable-length 0
+                                         :pad []
+                                         :pause-length 0
+                                         :raw []
+                                         :vad false})
+                                    {})))))))
 
 (defn init []
   (after-load)

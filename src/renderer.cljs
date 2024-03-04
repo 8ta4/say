@@ -286,19 +286,31 @@
                                                                        first)
     (:mic map*) (some #{(:mic map*)} (:mics map*))))
 
+(defonce mic-channel
+  (async/chan))
+
+(defn update-mic []
+  (async/put! mic-channel (select-mic (merge @secrets @config @state))))
+
 (defn after-load []
   (js/console.log "Hello, Renderer!")
 ;; Using fix-path to ensure the system PATH is correctly set in the Electron environment. This resolves the "spawn ffmpeg ENOENT" error by making sure ffmpeg can be found and executed.
   ((.-default fix-path))
   (sync-settings secrets-filename secrets)
   (sync-settings config-filename config)
-  (.stdout.on (child_process/spawn "expect" (clj->js ["network.sh"])) "data" update-mac)
-  (set! js/navigator.mediaDevices.ondevicechange update-mics)
   (client/render root [grid])
   (electron/ipcRenderer.on channel handle-shortcut)
   (js-await [_ (update-mac)]
     (js-await [_ (update-mics)]
-      (utils/setval [specter/ATOM :active-mic] (select-mic (merge @secrets @config @state)) state))))
+      (.stdout.on (child_process/spawn "expect" (clj->js ["network.sh"]))
+                  "data"
+                  (fn []
+                    (js-await [_ (update-mac)]
+                      (update-mic))))
+      (set! js/navigator.mediaDevices.ondevicechange (fn []
+                                                       (js-await [_ (update-mics)]
+                                                         (update-mic))))
+      (update-mic))))
 
 ;; https://github.com/snakers4/silero-vad/blob/5e7ee10ee065ab2b98751dd82b28e3c6360e19aa/utils_vad.py#L207
 (def window-size-samples

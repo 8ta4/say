@@ -281,10 +281,11 @@
   (sync-settings secrets-filename secrets)
   (sync-settings config-filename config)
   (.stdout.on (child_process/spawn "expect" (clj->js ["network.sh"])) "data" update-mac)
-  (update-mics)
   (set! js/navigator.mediaDevices.ondevicechange update-mics)
   (client/render root [grid])
-  (electron/ipcRenderer.on channel handle-shortcut))
+  (electron/ipcRenderer.on channel handle-shortcut)
+  (js-await [_ (update-mac)]
+    (js-await [_ (update-mics)])))
 
 ;; https://github.com/snakers4/silero-vad/blob/5e7ee10ee065ab2b98751dd82b28e3c6360e19aa/utils_vad.py#L207
 (def window-size-samples
@@ -369,11 +370,11 @@
                                        {})))))))
 
 (defn init []
-  (after-load)
+  (js-await [_ (after-load)]
 ;; The `record` function initiates the audio recording process. It's called once to prevent
 ;; excessive pending puts on the channel when called multiple times,
 ;; which would exceed the limit of 1024.
-  (record)
+    (record))
 ;; The `process` function starts a go-loop for processing audio data. Calling it once here
 ;; prevents multiple instances of the go-loop from being created, which would otherwise
 ;; attempt to consume audio data simultaneously. This concurrent consumption could lead to

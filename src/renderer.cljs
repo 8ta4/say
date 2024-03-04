@@ -220,11 +220,7 @@
 
 (defn update-mac []
   (js-await [mac (address/mac)]
-    (utils/setval [specter/ATOM :mac]
-                  (if (nil? mac)
-                    specter/NONE
-                    mac)
-                  state)))
+    (utils/setval [specter/ATOM :mac] mac state)))
 
 (defn merge-into-atom
   [map* atom*]

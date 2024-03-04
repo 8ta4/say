@@ -382,3 +382,15 @@
 ;; attempt to consume audio data simultaneously. This concurrent consumption could lead to
 ;; corrupted audio files as multiple processes interfere with each other.
   (process))
+
+(defn is-built-in [label]
+  (and (str/ends-with? label "(Built-in)")
+       (not (str/includes? label "External"))))
+
+(defn select-mic [map*]
+  (cond
+    (or (nil? (:hideaway map*)) (= (:hideaway map*) (:mac map*))) (->> map*
+                                                                       :mics
+                                                                       (filter is-built-in)
+                                                                       first)
+    (:mic map*) (some #{(:mic map*)} (:mics map*))))

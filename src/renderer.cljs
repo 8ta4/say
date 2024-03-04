@@ -110,7 +110,7 @@
 ;; The core.async channel and go-loop are used to manage the asynchronous processing
 ;; of audio chunks. This ensures that updates to the application state are serialized,
 ;; preventing concurrent state modifications that could lead to inconsistencies.
-(defonce chan
+(defonce audio-channel
   (async/chan))
 
 (def sample-rate 16000)
@@ -139,7 +139,7 @@
           (let [processor (js/AudioWorkletNode. context "processor")]
             (.connect (.createMediaStreamSource context media) processor)
             (j/assoc-in! processor [:port :onmessage] (fn [message]
-                                                        (async/put! chan message.data)))))))))
+                                                        (async/put! audio-channel message.data)))))))))
 
 (def shape
   [2 1 64])
@@ -348,7 +348,7 @@
                                    :vad false
                                    :h tensor
                                    :c tensor}]
-      (let [combined (concat (:raw process-state) (async/<! chan))
+      (let [combined (concat (:raw process-state) (async/<! audio-channel))
             process-state* (merge process-state
 ;; https://developer.mozilla.org/en-US/docs/Web/API/AudioWorkletProcessor/process#sect1
                                   (if (< (count combined) window-size-samples)

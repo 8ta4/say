@@ -131,7 +131,7 @@
   [transcription-filepath]
   (child_process/spawn "code" (clj->js ["-g" (str transcription-filepath ":" line)])))
 
-(defn handler [response]
+(defn handler [transcription-filepath response]
   (js/console.log "handler called")
   (let [transcription-text (->> response
                                 :results
@@ -143,8 +143,7 @@
                                 :paragraphs
                                 (mapcat :sentences)
                                 (map :text)
-                                (str/join "\n"))
-        transcription-filepath (generate-transcription-filepath)]
+                                (str/join "\n"))]
     (when-not (empty? transcription-text)
       (make-parents transcription-filepath)
       (spit transcription-filepath
@@ -164,7 +163,7 @@
     (.pipe readable ffmpeg.stdin)
     (.on ffmpeg "close" (fn []
                           (js/console.log "ffmpeg process closed")
-                          (POST url {:handler handler
+                          (POST url {:handler (partial handler (generate-transcription-filepath))
                                      :headers {:Content-Type "audio/*"
                                                :Authorization (str "Token " (:key @secrets))}
                                      :body (fs/readFileSync filepath)

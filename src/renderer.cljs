@@ -149,15 +149,15 @@
                                 :paragraphs
                                 (mapcat :sentences)
                                 (map :text)
-                                (str/join "\n"))]
+                                (str/join "\n"))
+        text-path (generate-text-path)]
     (when-not (empty? transcription-text)
       (make-parents transcription-filepath)
-      (spit transcription-filepath
-            (str (if (fs/existsSync transcription-filepath)
-                   "\n\n"
-                   "")
-                 transcription-text)
-            :append true)
+      (if (fs/existsSync transcription-filepath)
+        (do (fs/copyFileSync transcription-filepath text-path)
+            (spit text-path (str "\n\n" transcription-text) :append true)
+            (fs/renameSync text-path transcription-filepath))
+        (spit transcription-filepath transcription-text))
       (when (:open @state)
         (utils/setval [specter/ATOM :open] false state)
         (open-transcription transcription-filepath)))))

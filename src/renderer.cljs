@@ -295,7 +295,7 @@
     :orientation "vertical"}
    (->> @state
         :mics
-        (cons (:mic @config))
+        (utils/setval specter/AFTER-ELEM (:mic @config))
         (apply sorted-set)
         (map (fn [mic]
                [:> ToggleButton

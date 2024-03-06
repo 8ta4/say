@@ -131,6 +131,12 @@
   [transcription-filepath]
   (child_process/spawn "code" (clj->js ["-g" (str transcription-filepath ":" line)])))
 
+(defn generate-text-filename []
+  (str (random-uuid) ".txt"))
+
+(defn generate-text-path []
+  (path/join app-temp-directory (generate-text-filename)))
+
 (defn handler [transcription-filepath response]
   (js/console.log "handler called")
   (let [transcription-text (->> response

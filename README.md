@@ -189,7 +189,11 @@ Each sentence in `say` gets its own line. That way, you can easily move up and d
 
 > Can I modify the transcript files? (Planned)
 
-`DD.txt` is read-only. Sure, you could edit it, but let's not go there.
+`DD.txt` is designed to be read-only.
+
+Dropbox or similar file syncing services might alter the file attribute and make it writable.
+
+Technically, you could switch it to writable, make your edits, and then switch it back to read-only. But let's not go there.
 
 If you want to annotate or edit something, copy the content to a new file and work on that.
 

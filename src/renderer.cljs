@@ -195,10 +195,11 @@
   (merge-into-atom {:manual true
                     :open true}
                    state)
-  (js-await [transcription-files (recursive transcription-directory-path)]
-    (let [transcription-files* (js->clj transcription-files)]
-      (when (not-empty transcription-files*)
-        (open-transcription (last (sort transcription-files*)))))))
+  (when (fs/existsSync transcription-directory-path)
+    (js-await [transcription-files (recursive transcription-directory-path)]
+      (let [transcription-files* (js->clj transcription-files)]
+        (when (not-empty transcription-files*)
+          (open-transcription (last (sort transcription-files*))))))))
 
 (defn get-mic-labels [devices]
   (->> devices

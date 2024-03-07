@@ -16,14 +16,16 @@
                                                  (js/console.log "Global shortcut" shortcut "pressed.")
                                                  (.webContents.send win channel)))
     (.on win "close" (fn [event]
+                       (js/console.log "Window close event triggered.")
                        (.preventDefault event)
                        (.hide win)
                        (electron/app.dock.hide)))
     (electron/app.on "activate" (fn []
+                                  (js/console.log "App activated, showing window.")
                                   (.show win)
                                   (electron/app.dock.show)))
     (electron/powerSaveBlocker.start "prevent-app-suspension")))
 
 (defn main []
-  (js/console.log "Hello, Electron!")
+  (js/console.log "App is ready, initializing...")
   (.then (electron/app.whenReady) initialize))

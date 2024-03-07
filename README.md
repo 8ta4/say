@@ -175,7 +175,7 @@ But it uses Deepgram as the transcription service. And Deepgram say they only ho
 
 Each day's transcript is organized by year (`YYYY`), month (`MM`), and day (`DD`).
 
-> What decides the transcript file, the start or end time of my audio? (Planned)
+> What decides the transcript file, the start or end time of my audio?
 
 `say` uses audio end time to pick the right file for your transcript. This makes it easier to find what you said today, even if you started talking before midnight.
 
@@ -187,7 +187,7 @@ Each day's transcript is organized by year (`YYYY`), month (`MM`), and day (`DD`
 
 Each sentence in `say` gets its own line. That way, you can easily move up and down with `j` and `k`.
 
-> Can I modify the transcript files? (Planned)
+> Can I modify the transcript files?
 
 `DD.txt` is designed to be read-only.
 

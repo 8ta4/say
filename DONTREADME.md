@@ -369,7 +369,7 @@ This makes it easy to search for a specific date.
 
 If you need weekly or monthly transcriptions, you can simply concatenate the daily transcriptions.
 
-> What permissions are assigned to each transcription file? (Planned)
+> What permissions are assigned to each transcription file?
 
 Each transcription file is assigned `-r--------` permissions. Only you can read them.
 
@@ -377,7 +377,7 @@ Each transcription file is assigned `-r--------` permissions. Only you can read 
 
 Each transcription directory is assigned `drwx------` permissions. Only you can access it.
 
-> How does this tool keep its transcript read-only when it updates it? (Planned)
+> How does this tool keep its transcript read-only when it updates it?
 
 1. `say` makes a copy of the `DD.txt` file and creates a temporary file in the system's temp directory. This ensures that the application directory doesn't get cluttered.
 

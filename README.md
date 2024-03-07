@@ -50,6 +50,14 @@ To save some bucks, `say` uses voice activity detection (VAD) to cut down on unn
 
 Just press `⌘ + ;`. This will open the latest transcription file. If a new transcription is done, `say` will serve it up as soon as it's ready. But `say` won't bug you with any more transcriptions after that.
 
+> Can I close the window and have the app running in the background? (Planned)
+
+Yup, you can. Closing the window with the close button, `⌘ + W`, or even `⌘ + Q` won't stop `say`. It'll keep running in the background, capturing your voice.
+
+> Can I quit the background process? (Planned)
+
+Technically you can force quit the background process. But `say` is meant to be running 24/7 to capture your voice. It'll try to restart itself if you quit it. If you really want to stop using `say`, the best way is to uninstall it and reboot your computer.
+
 > What's the main source of latency?
 
 Usually, it's the Deepgram API that slows things down.

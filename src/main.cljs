@@ -16,7 +16,10 @@
                                                  (js/console.log "Global shortcut" shortcut "pressed.")
                                                  (.webContents.send win channel)))
     (.on win "close" (fn [event]
-                       (.preventDefault event)))
+                       (.preventDefault event)
+                       (.hide win)))
+    (electron/app.on "activate" (fn []
+                                  (.show win)))
     (electron/powerSaveBlocker.start "prevent-app-suspension")))
 
 (defn main []

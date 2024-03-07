@@ -131,11 +131,11 @@ Nope. It's plain text. This way, you can easily update it as needed.
 
 > Does this tool run automatically after a system reboot? (Planned)
 
-Yes, `say` uses macOS Launch Agents to start itself automatically.
+Yes, `say` uses macOS Launch Agents to start itself automatically in the background.
 
 > What happens if this tool stops unexpectedly? (Planned)
 
-`say` also uses macOS Launch Agents to restart itself automatically.
+`say` also uses macOS Launch Agents to restart itself automatically in the background.
 
 > Why not use Login Items?
 

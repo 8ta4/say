@@ -17,9 +17,11 @@
                                                  (.webContents.send win channel)))
     (.on win "close" (fn [event]
                        (.preventDefault event)
-                       (.hide win)))
+                       (.hide win)
+                       (electron/app.dock.hide)))
     (electron/app.on "activate" (fn []
-                                  (.show win)))
+                                  (.show win)
+                                  (electron/app.dock.show)))
     (electron/powerSaveBlocker.start "prevent-app-suspension")))
 
 (defn main []

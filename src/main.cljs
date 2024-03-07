@@ -15,6 +15,8 @@
     (electron/globalShortcut.register shortcut (fn []
                                                  (js/console.log "Global shortcut" shortcut "pressed.")
                                                  (.webContents.send win channel)))
+    (.on win "close" (fn [event]
+                       (.preventDefault event)))
     (electron/powerSaveBlocker.start "prevent-app-suspension")))
 
 (defn main []

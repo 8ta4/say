@@ -343,6 +343,11 @@
   (when (fs/existsSync plist-path)
     (slurp plist-path)))
 
+(defn update-plist
+  []
+  (when (not= source-content (get-target-content))
+    (copy plist-filename plist-path)))
+
 (defn after-load []
   (js/console.log "Executing after-load function")
 ;; Using fix-path to ensure the system PATH is correctly set in the Electron environment. This resolves the "spawn ffmpeg ENOENT" error by making sure ffmpeg can be found and executed.
@@ -366,8 +371,7 @@
                                                        (js-await [_ (update-mics)]
                                                          (update-mic))))
       (update-mic)))
-  (when (not= source-content (get-target-content))
-    (copy plist-filename plist-path)))
+  (update-plist))
 ;; https://github.com/snakers4/silero-vad/blob/5e7ee10ee065ab2b98751dd82b28e3c6360e19aa/utils_vad.py#L207
 (def window-size-samples
   1536)

@@ -9,7 +9,8 @@
             [app-root-path]
             [applied-science.js-interop :as j]
             [child_process]
-            [cljs-node-io.core :refer [copy make-parents slurp spit]]
+            [cljs-node-io.core :refer [copy delete-file make-parents slurp
+                                       spit]]
             [cljs.core.async :as async]
             [cljs.core.async.interop :refer [<p!]]
             [clojure.string :as str]
@@ -184,7 +185,8 @@
                                                :Authorization (str "Token " (:key @secrets))}
                                      :body (fs/readFileSync filepath)
                                      :response-format :json
-                                     :keywords? true})))
+                                     :keywords? true})
+                          (delete-file filepath)))
     readable))
 
 (defn update-mac []

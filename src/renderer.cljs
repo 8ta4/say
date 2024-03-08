@@ -188,6 +188,7 @@
     readable))
 
 (defn update-mac []
+  (js/console.log "Updating MAC address in application state")
   (js-await [mac (address/mac)]
     (utils/setval [specter/ATOM :mac] mac state)))
 

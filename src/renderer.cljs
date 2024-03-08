@@ -38,13 +38,13 @@
 
 (defonce secrets (reagent/atom {:key ""}))
 
+(defonce config
+  (reagent/atom {}))
+
 (defonce state
   (reagent/atom {:manual false
                  :open false
                  :mics []}))
-
-(defonce config
-  (reagent/atom {}))
 
 ;; The core.async channel and go-loop are used to manage the asynchronous processing
 ;; of audio chunks. This ensures that updates to the application state are serialized,

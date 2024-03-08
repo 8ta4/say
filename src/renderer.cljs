@@ -334,6 +334,10 @@
   (sync-settings config-filename config)
   (client/render root [grid])
   (electron/ipcRenderer.on channel handle-shortcut)
+;; This section is tasked with the process of determining the active microphone,
+;; The essential aspect is ensuring that certain operations precede the determination of the active microphone:
+;; 1. Updating the MAC address and updating the list of available microphones are prerequisites.
+;; 2. Setting the active microphone based on the updated MAC address and microphone list.
   (js-await [_ (update-mac)]
     (js-await [_ (update-mics)]
       (.stdout.on (child_process/spawn "expect" (clj->js ["network.sh"]))

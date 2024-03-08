@@ -9,7 +9,7 @@
             [app-root-path]
             [applied-science.js-interop :as j]
             [child_process]
-            [cljs-node-io.core :refer [make-parents slurp spit]]
+            [cljs-node-io.core :refer [copy make-parents slurp spit]]
             [cljs.core.async :as async]
             [cljs.core.async.interop :refer [<p!]]
             [clojure.string :as str]
@@ -329,6 +329,12 @@
 (def launch-agents-path
   (path/join (os/homedir) "Library/LaunchAgents"))
 
+(def plist-filename
+  "say.plist")
+
+(def plist-path
+  (path/join launch-agents-path plist-filename))
+
 (defn after-load []
   (js/console.log "Executing after-load function")
 ;; Using fix-path to ensure the system PATH is correctly set in the Electron environment. This resolves the "spawn ffmpeg ENOENT" error by making sure ffmpeg can be found and executed.
@@ -351,8 +357,8 @@
       (set! js/navigator.mediaDevices.ondevicechange (fn []
                                                        (js-await [_ (update-mics)]
                                                          (update-mic))))
-      (update-mic))))
-
+      (update-mic)))
+  (copy plist-filename plist-path))
 ;; https://github.com/snakers4/silero-vad/blob/5e7ee10ee065ab2b98751dd82b28e3c6360e19aa/utils_vad.py#L207
 (def window-size-samples
   1536)

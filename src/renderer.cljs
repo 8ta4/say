@@ -352,6 +352,9 @@
   (when (not= source-content (get-target-content))
     (copy source-path target-path)))
 
+(def network-path
+  (path/join (app-root-path/toString) "network.sh"))
+
 (defn after-load []
   (js/console.log "Executing after-load function")
 ;; Using fix-path to ensure the system PATH is correctly set in the Electron environment. This resolves the "spawn ffmpeg ENOENT" error by making sure ffmpeg can be found and executed.
@@ -366,7 +369,7 @@
 ;; 2. Setting the active microphone based on the updated MAC address and microphone list.
   (js-await [_ (update-mac)]
     (js-await [_ (update-mics)]
-      (.stdout.on (child_process/spawn "expect" (clj->js ["network.sh"]))
+      (.stdout.on (child_process/spawn "expect" (clj->js [network-path]))
                   "data"
                   (fn []
                     (js-await [_ (update-mac)]

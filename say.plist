@@ -7,6 +7,7 @@
     <key>ProgramArguments</key>
     <array>
         <string>/Applications/say.app/Contents/MacOS/say</string>
+        <string>--background</string>
     </array>
     <key>RunAtLoad</key>
     <true/>

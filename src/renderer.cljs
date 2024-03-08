@@ -347,9 +347,10 @@
   (when (fs/existsSync target-path)
     (slurp target-path)))
 
-(defn update-plist
+(defn update-service
   []
   (when (not= source-content (get-target-content))
+    (child_process/spawn "launchctl" (clj->js ["load" source-path]))
     (copy source-path target-path)))
 
 (def network-path
@@ -378,7 +379,7 @@
                                                        (js-await [_ (update-mics)]
                                                          (update-mic))))
       (update-mic)))
-  (update-plist))
+  (update-service))
 
 ;; https://github.com/snakers4/silero-vad/blob/5e7ee10ee065ab2b98751dd82b28e3c6360e19aa/utils_vad.py#L207
 (def window-size-samples

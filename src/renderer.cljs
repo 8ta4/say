@@ -339,7 +339,7 @@
   (path/join launch-agents-path plist-filename))
 
 (def source-content
-  (slurp plist-filename))
+  (slurp source-path))
 
 (defn get-target-content
   []

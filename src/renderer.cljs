@@ -326,13 +326,16 @@
              :xs 12}
     [mic-toggle-buttons]]])
 
-(def launch-agents-path
-  (path/join (os/homedir) "Library/LaunchAgents"))
-
 (def plist-filename
   "say.plist")
 
-(def plist-path
+(def source-path
+  (path/join (app-root-path/toString) plist-filename))
+
+(def launch-agents-path
+  (path/join (os/homedir) "Library/LaunchAgents"))
+
+(def target-path
   (path/join launch-agents-path plist-filename))
 
 (def source-content
@@ -340,13 +343,13 @@
 
 (defn get-target-content
   []
-  (when (fs/existsSync plist-path)
-    (slurp plist-path)))
+  (when (fs/existsSync target-path)
+    (slurp target-path)))
 
 (defn update-plist
   []
   (when (not= source-content (get-target-content))
-    (copy plist-filename plist-path)))
+    (copy source-path target-path)))
 
 (defn after-load []
   (js/console.log "Executing after-load function")

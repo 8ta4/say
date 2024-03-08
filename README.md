@@ -50,7 +50,7 @@ To save some bucks, `say` uses voice activity detection (VAD) to cut down on unn
 
 Just press `⌘ + ;`. This will open the latest transcription file. If a new transcription is done, `say` will serve it up as soon as it's ready. But `say` won't bug you with any more transcriptions after that.
 
-> Can I close the window and have the app running in the background? (Planned)
+> Can I close the window and have the app running in the background?
 
 Yup, you can. Closing the window with the close button, `⌘ + W`, or even `⌘ + Q` won't stop `say`. It'll keep running in the background, capturing your voice.
 

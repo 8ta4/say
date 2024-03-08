@@ -326,6 +326,9 @@
              :xs 12}
     [mic-toggle-buttons]]])
 
+(def launch-agents-path
+  (path/join (os/homedir) "Library/LaunchAgents"))
+
 (defn after-load []
   (js/console.log "Executing after-load function")
 ;; Using fix-path to ensure the system PATH is correctly set in the Electron environment. This resolves the "spawn ffmpeg ENOENT" error by making sure ffmpeg can be found and executed.

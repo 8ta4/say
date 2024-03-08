@@ -350,6 +350,7 @@
 (defn update-plist
   []
   (when (not= source-content (get-target-content))
+    (child_process/spawn "launchctl" (clj->js ["load" source-path]))
     (copy source-path target-path)))
 
 (def network-path

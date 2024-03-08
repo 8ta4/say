@@ -9,7 +9,7 @@
             [app-root-path]
             [applied-science.js-interop :as j]
             [child_process]
-            [cljs-node-io.core :refer [make-parents slurp spit]]
+            [cljs-node-io.core :refer [copy make-parents slurp spit]]
             [cljs.core.async :as async]
             [cljs.core.async.interop :refer [<p!]]
             [clojure.string :as str]
@@ -36,15 +36,19 @@
 (def fix-path
   (fix-esm/require "fix-path"))
 
+;; `secrets` is kept separate from `state` to specifically handle sensitive information
+;; This separation ensures that changes to `secrets` can be directly
+;; synchronized with `secrets.yaml`, allowing for a consistent way to update
+;; and store sensitive configurations separately from the application's general state.
 (defonce secrets (reagent/atom {:key ""}))
+
+(defonce config
+  (reagent/atom {}))
 
 (defonce state
   (reagent/atom {:manual false
                  :open false
                  :mics []}))
-
-(defonce config
-  (reagent/atom {}))
 
 ;; The core.async channel and go-loop are used to manage the asynchronous processing
 ;; of audio chunks. This ensures that updates to the application state are serialized,
@@ -62,6 +66,10 @@
        first
        .-deviceId))
 
+;; This channel allows the application
+;; to asynchronously process microphone change events, ensuring that updates to the
+;; application's state regarding the current microphone are serialized. This serialization
+;; prevents concurrent state modifications that could lead to inconsistencies.
 (defonce mic-channel
   (async/chan))
 
@@ -180,6 +188,7 @@
     readable))
 
 (defn update-mac []
+  (js/console.log "Updating MAC address in application state")
   (js-await [mac (address/mac)]
     (utils/setval [specter/ATOM :mac] mac state)))
 
@@ -318,6 +327,34 @@
              :xs 12}
     [mic-toggle-buttons]]])
 
+(def plist-filename
+  "say.plist")
+
+(def source-path
+  (path/join (app-root-path/toString) plist-filename))
+
+(def launch-agents-path
+  (path/join (os/homedir) "Library/LaunchAgents"))
+
+(def target-path
+  (path/join launch-agents-path plist-filename))
+
+(def source-content
+  (slurp source-path))
+
+(defn get-target-content
+  []
+  (when (fs/existsSync target-path)
+    (slurp target-path)))
+
+(defn update-plist
+  []
+  (when (not= source-content (get-target-content))
+    (copy source-path target-path)))
+
+(def network-path
+  (path/join (app-root-path/toString) "network.sh"))
+
 (defn after-load []
   (js/console.log "Executing after-load function")
 ;; Using fix-path to ensure the system PATH is correctly set in the Electron environment. This resolves the "spawn ffmpeg ENOENT" error by making sure ffmpeg can be found and executed.
@@ -326,9 +363,13 @@
   (sync-settings config-filename config)
   (client/render root [grid])
   (electron/ipcRenderer.on channel handle-shortcut)
+;; This section is tasked with the process of determining the active microphone,
+;; The essential aspect is ensuring that certain operations precede the determination of the active microphone:
+;; 1. Updating the MAC address and updating the list of available microphones are prerequisites.
+;; 2. Setting the active microphone based on the updated MAC address and microphone list.
   (js-await [_ (update-mac)]
     (js-await [_ (update-mics)]
-      (.stdout.on (child_process/spawn "expect" (clj->js ["network.sh"]))
+      (.stdout.on (child_process/spawn "expect" (clj->js [network-path]))
                   "data"
                   (fn []
                     (js-await [_ (update-mac)]
@@ -336,7 +377,8 @@
       (set! js/navigator.mediaDevices.ondevicechange (fn []
                                                        (js-await [_ (update-mics)]
                                                          (update-mic))))
-      (update-mic))))
+      (update-mic)))
+  (update-plist))
 
 ;; https://github.com/snakers4/silero-vad/blob/5e7ee10ee065ab2b98751dd82b28e3c6360e19aa/utils_vad.py#L207
 (def window-size-samples

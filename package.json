@@ -34,8 +34,10 @@
     "asar": false,
     "files": [
       ".shadow-cljs/**/*",
+      "network.sh",
       "out",
       "public",
+      "say.plist",
       "vad.onnx"
     ],
     "mac": {

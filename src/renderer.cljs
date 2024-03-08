@@ -36,6 +36,10 @@
 (def fix-path
   (fix-esm/require "fix-path"))
 
+;; `secrets` is kept separate from `state` to specifically handle sensitive information
+;; This separation ensures that changes to `secrets` can be directly
+;; synchronized with `secrets.yaml`, allowing for a consistent way to update
+;; and store sensitive configurations separately from the application's general state.
 (defonce secrets (reagent/atom {:key ""}))
 
 (defonce config
@@ -62,6 +66,10 @@
        first
        .-deviceId))
 
+;; This channel allows the application
+;; to asynchronously process microphone change events, ensuring that updates to the
+;; application's state regarding the current microphone are serialized. This serialization
+;; prevents concurrent state modifications that could lead to inconsistencies.
 (defonce mic-channel
   (async/chan))
 

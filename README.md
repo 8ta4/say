@@ -54,7 +54,7 @@ Just press `⌘ + ;`. This will open the latest transcription file. If a new tra
 
 Yup, you can. Closing the window with the close button, `⌘ + W`, or even `⌘ + Q` won't stop `say`. It'll keep running in the background, capturing your voice.
 
-> Can I quit the background process? (Planned)
+> Can I quit the background process?
 
 Technically you can force quit the background process. But `say` is meant to be running 24/7 to capture your voice. It'll try to restart itself if you quit it. If you really want to stop using `say`, the best way is to uninstall it and reboot your computer.
 
@@ -163,7 +163,7 @@ No. If you're not in a hideaway and there's no external mic, `say` won't use the
 
 1. Click `DISABLE HIDEAWAY`.
 
-> Does this tool keep a record of the audio? (Planned)
+> Does this tool keep a record of the audio?
 
 Nope, `say` doesn't store any audio after it's transcribed.
 

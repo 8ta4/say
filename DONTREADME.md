@@ -129,15 +129,15 @@ YAML FAQ says "[use '.yaml' when possible.](https://yaml.org/faq.html#:~:text=Is
 
 Nope. It's plain text. This way, you can easily update it as needed.
 
-> Does this tool run automatically after a system reboot? (Planned)
+> Does this tool run automatically after a system reboot?
 
 Yes, `say` uses macOS Launch Agents to start itself automatically in the background.
 
-> If `say` crashes unexpectedly, will it reboot on its own? (Planned)
+> If `say` crashes unexpectedly, will it reboot on its own?
 
 Yep, `say` has a mechanism to restart automatically.
 
-> When does this tool appear in the application switcher? (Planned)
+> When does this tool appear in the application switcher?
 
 You'll only see `say` in the application switcher when the settings window is open.
 
@@ -155,7 +155,7 @@ Well, if `say` tried to filter voices, it might accidentally filter yours too.
 
 I wanted to make `say` easy to try out.
 
-> Why doesn't this tool store my audio after transcribing? (Planned)
+> Why doesn't this tool store my audio after transcribing?
 
 Storing audio can amplify the observer effect, potentially making you more self-conscious.
 

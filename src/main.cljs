@@ -30,9 +30,9 @@
     (electron/app.on "activate" (fn []
                                   (js/console.log "App activated, showing window.")
                                   (.show win)
-                                  (electron/app.dock.show)))
-    (electron/app.relaunch)
-    (electron/powerSaveBlocker.start "prevent-app-suspension")))
+                                  (electron/app.dock.show))))
+  (electron/app.relaunch)
+  (electron/powerSaveBlocker.start "prevent-app-suspension"))
 
 (defn main []
   (js/console.log "App is ready, initializing...")

@@ -133,13 +133,9 @@ Nope. It's plain text. This way, you can easily update it as needed.
 
 Yes, `say` uses macOS Launch Agents to start itself automatically in the background.
 
-> What happens if this tool stops unexpectedly? (Planned)
+> If `say` crashes unexpectedly, will it reboot on its own? (Planned)
 
-`say` also uses macOS Launch Agents to restart itself automatically in the background.
-
-> Why not use Login Items?
-
-Login Items only work when you log in. They won't help you if `say` stops working for some reason.
+Yep, `say` has a mechanism to restart automatically.
 
 > When does this tool appear in the application switcher? (Planned)
 

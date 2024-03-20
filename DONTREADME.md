@@ -317,11 +317,11 @@ But a manual trigger can be activated anytime, so it's more likely to overlap.
 
 With [Deepgram's Pay-as-You-Go at $0.0043/min](https://deepgram.com/pricing#:~:text=Nova%2D2,%240.0043/min), here's a quick math:
 
-An average month has about 30.44 days.
+An average month has about 30 days.
 
-$$\frac{100\text{ dollar/month}}{0.0043\text{ dollar/min} \times 30.44\text{ d/month} \times 60\text{ min/h}} \approx 12.73\text{ h}$$
+$$\frac{100\text{ dollar/month}}{0.0043\text{ dollar/min} \times 30\text{ d/month} \times 60\text{ min/h}} \approx 13\text{ h}$$
 
-So, you can transcribe roughly 12.73 hours of voice activity daily.
+So, you can transcribe roughly 13 hours of voice activity daily.
 
 > Does this tool send any previous speech to the API for context?
 

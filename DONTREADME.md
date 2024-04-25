@@ -203,7 +203,7 @@ For comparison, [Silero VAD uses an even shorter padding of 30 milliseconds](htt
 
 The padding duration matches the 1.5-second pause. This consistency helps `say` capture natural speech patterns, including meaningful pauses.
 
-The 1.5 -second pause was statistically derived from storytelling and interview pause durations.
+The 1.5-second pause was statistically derived from storytelling and interview pause durations.
 
 The choice of a 1.5-second pause was statistically derived from storytelling and interview pause durations. [The mean pause duration in storytelling is 0.94 seconds (standard deviation: 0.23 seconds; sample size: 437), while in interviews it's 0.53 seconds (standard deviation: 0.06 seconds; sample size: 69)](https://www.researchgate.net/profile/Richard-Wiese-2/publication/257239931_The_Use_of_Time_in_Storytelling/links/00b4952d7b579ab2ac000000/The-Use-of-Time-in-Storytelling.pdf#page=11).
 

@@ -327,9 +327,9 @@ So, you can transcribe roughly 13 hours of voice activity daily.
 
 `say` doesn't send any previous speech to the API for context. Sending partial context may not help much with accuracy. Sending full context may help, but it may also increase cost, latency, and complexity.
 
-> Why doesn't this tool use streaming transcription?
+> Is this tool built on a streaming API transcription?
 
-Streaming transcription seems less accurate and more expensive.
+Nah, it isn't. Streaming APIs tend to trade off accuracy because they don't take into account the context that comes later.
 
 > Can transcription API calls ever fail?
 

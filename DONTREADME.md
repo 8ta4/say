@@ -167,7 +167,7 @@ Even the sound of typing can sometimes reveal what you're typing. This is risky 
 
 If you want to document everything, you might consider recording video. But this has its own risks, such as accidentally capturing yourself naked.
 
-> So, does this tool store any audio at all?
+> Does this tool store any audio at all?
 
 Yep, `say` does temporarily store audio, but it uses the Opus format.
 

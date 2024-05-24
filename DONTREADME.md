@@ -106,7 +106,7 @@ Because iOS won't let you do continuous real-time voice detection and transcript
 
 The API key is in `~/.config/say/secrets.yaml`.
 
-> Why not JSON?
+> Why choose YAML over JSON for storing the API key?
 
 YAML is better than JSON because it
 
@@ -117,7 +117,7 @@ YAML is better than JSON because it
 
 YAML FAQ says "[use '.yaml' when possible.](https://yaml.org/faq.html#:~:text=Is%20there%20an,yaml%22%20when%20possible.)"
 
-> Why not `Application Support`?
+> Why not use the `Application Support` directory for the API key?
 
 `~/.config` is the standard config folder for Unix systems. It's easier to access from the command line.
 

@@ -337,7 +337,7 @@ Absolutely, API calls can fail. The usual suspects are network issues.
 
 Error notification depends on whether transcription is triggered manually or automatically.
 
-> Will I get notified if transcription fails when it is triggered manually?
+> Will I get notified if transcription fails when it is triggered manually? (Planned)
 
 Yup, you will.
 

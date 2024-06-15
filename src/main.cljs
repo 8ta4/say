@@ -31,7 +31,6 @@
                                   (js/console.log "App activated, showing window.")
                                   (.show win)
                                   (electron/app.dock.show))))
-  (electron/app.relaunch)
   (electron/powerSaveBlocker.start "prevent-app-suspension"))
 
 (defn main []

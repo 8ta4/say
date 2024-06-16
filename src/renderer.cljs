@@ -176,7 +176,10 @@
 (defn create-readable []
   (let [readable (stream/Readable. (clj->js {:read (fn [])}))
         filepath (generate-audio-path)
-        ffmpeg (child_process/spawn "ffmpeg" (clj->js ["-f" "f32le" "-ar" sample-rate "-i" "pipe:0" "-b:a" "24k" filepath]))]
+        ffmpeg (child_process/spawn "ffmpeg"
+                                    (clj->js ["-f" "f32le" "-ar" sample-rate "-i" "pipe:0" "-b:a" "24k" filepath])
+;; https://github.com/nodejs/node/blob/672e4ccf0507dd7893e36adb10929d99687dbcaa/doc/api/child_process.md?plain=1#L30-L34
+                                    (clj->js {:stdio ["pipe" "ignore" "ignore"]}))]
     (.pipe readable ffmpeg.stdin)
     (.on ffmpeg "close" (fn []
                           (js/console.log "ffmpeg process closed")

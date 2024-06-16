@@ -176,7 +176,14 @@
 (defn create-readable []
   (let [readable (stream/Readable. (clj->js {:read (fn [])}))
         filepath (generate-audio-path)
-        ffmpeg (child_process/spawn "ffmpeg" (clj->js ["-f" "f32le" "-ar" sample-rate "-i" "pipe:0" "-b:a" "24k" filepath]))]
+        ffmpeg (child_process/spawn "ffmpeg"
+                                    (clj->js ["-f" "f32le" "-ar" sample-rate "-i" "pipe:0" "-b:a" "24k" filepath])
+;; https://github.com/nodejs/node/blob/672e4ccf0507dd7893e36adb10929d99687dbcaa/doc/api/child_process.md?plain=1#L30-L34
+;; Ignore stderr to prevent ffmpeg from blocking on writing to the stderr pipe.
+;; `ffmpeg` writes to stderr continuously, and if it's not ignored, the 'close' event
+;; may not occur as expected. This is because the stderr pipe buffer might become full,
+;; causing ffmpeg to block.
+                                    (clj->js {:stdio ["pipe" "ignore" "ignore"]}))]
     (.pipe readable ffmpeg.stdin)
     (.on ffmpeg "close" (fn []
                           (js/console.log "ffmpeg process closed")

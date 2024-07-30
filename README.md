@@ -44,6 +44,10 @@
 
 To save some bucks, `say` uses voice activity detection (VAD) to cut down on unnecessary usage. But VAD may not be flawless.
 
+> Am I going to get arrested for using this software?
+
+Well, that depends on where you live. Different places have different laws about recording conversations. This software is meant to help with accessibility, not to act as a recording device. But if someone misuses it, there could be legal trouble.
+
 ## Usage
 
 > How do I access recent transcriptions?

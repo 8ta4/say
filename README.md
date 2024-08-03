@@ -56,7 +56,7 @@ Just press `⌘ + ;`. This will open the latest transcription file. If a new tra
 
 > Can I close the window and have the app running in the background?
 
-Yup, you can. Closing the window with the close button, `⌘ + W`, or even `⌘ + Q` won't stop `say`. It'll keep running in the background, capturing your voice.
+Yup, you can. Closing the window with the close button, `⌘ + w`, or even `⌘ + q` won't stop `say`. It'll keep running in the background, capturing your voice.
 
 > Can I quit the background process?
 

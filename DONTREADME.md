@@ -291,7 +291,7 @@ Longer speech gives more context and improves accuracy.
 
 But I also want to keep things snappy with the manual trigger aiming for sub-second latency.
 
-From my experience, if the audio is 1 minute or less, the transcription API usually responds in under a second. But if the audio is 2 minutes or longer, the latency can extend to 1 second or more. And that's on a North American gigabit connection.
+From my experience, if the audio is 1 minute or less, the transcription API usually responds in under a second. But if the audio is 2 minutes or longer, the latency can extend to 1 second or more. And that's on a North American 5 Gbps connection.
 
 > Why use ONNX instead of PyTorch?
 

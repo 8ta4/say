@@ -157,15 +157,21 @@ The sound intensity is inversely proportional to the square of the distance.
 
 No. If you're not in a hideaway and there's no external mic, `say` won't use the built-in mic to avoid recording poor audio. You can either connect an external mic or mark your current location as a hideaway if you think the built-in mic is good enough.
 
-> How do I disable hideaway?
+> Can I enable multiple hideaways? (Planned)
 
-1. Hit `⌘ + Space` to open your launcher.
+Absolutely!
 
-1. Type `say`.
+> How do I disable a hideaway?
 
-1. Hit `Enter` when `say` pops up.
+1. Connect to the Wi-Fi or Ethernet network you want to disable as a hideaway.
 
-1. Click `DISABLE HIDEAWAY`.
+2. Hit `⌘ + Space` to open your launcher.
+
+3. Type `say`.
+
+4. Hit `Enter` when `say` pops up.
+
+5. Click `DISABLE HIDEAWAY` to turn off the hideaway for that network.
 
 > Does this tool keep a record of the audio?
 

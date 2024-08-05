@@ -41,7 +41,7 @@
 ;; This separation ensures that changes to `secrets` can be directly
 ;; synchronized with `secrets.yaml`, allowing for a consistent way to update
 ;; and store sensitive configurations separately from the application's general state.
-(defonce secrets (reagent/atom {:key ""}))
+(defonce secrets (reagent/atom {:key "" :hideaways #{}}))
 
 (defonce config
   (reagent/atom {}))
@@ -237,19 +237,6 @@
 (defn get-path [filename]
   (path/join (os/homedir) ".config/say" filename))
 
-(defn sync-settings
-  [filename atom*]
-  (let [path* (get-path filename)]
-    (when (fs/existsSync path*)
-      (-> path*
-          slurp
-          yaml/parse
-          (js->clj :keywordize-keys true)
-          (merge-into-atom atom*)))
-    (add-watch atom* :change (fn [_ _ _ value]
-                               (js/console.log "Settings atom value updated, writing to file")
-                               (spit path* (yaml/stringify (clj->js value)))))))
-
 (def secrets-filename "secrets.yaml")
 
 (def config-filename "config.yaml")
@@ -260,16 +247,15 @@
 
 (defn select-mic [map*]
   (cond
-    (or (nil? (:hideaway map*)) (= (:hideaway map*) (:mac map*))) (->> map*
-                                                                       :mics
-                                                                       (filter is-built-in)
-                                                                       first)
+    ((:hideaways map*) (:mac map*)) (->> map*
+                                         :mics
+                                         (filter is-built-in)
+                                         first)
     (:mic map*) (some #{(:mic map*)} (:mics map*))))
 
 (defn update-mic []
 ;; An empty string "" is used as a fallback to avoid "Can't put nil on a channel" error.
   (async/put! mic-channel (or (select-mic (merge @secrets @config @state)) "")))
-
 ;; Using defonce to ensure the root is only created once. This prevents warnings about
 ;; calling ReactDOMClient.createRoot() on a container that has already been passed to
 ;; createRoot() before during hot reloads or re-evaluations of the code.
@@ -284,21 +270,25 @@
                               (utils/setval [specter/ATOM :key] event.target.value secrets))
                  :full-width true}])
 
+(defn toggle
+  [key* set*]
+  ((if (set* key*)
+     disj
+     conj)
+   set*
+   key*))
+
 (defn hideaway-button []
   (let [secrets* @secrets
         state* @state]
-    [:> Button {:variant (if (or (:hideaway secrets*) (:mac state*))
-                           "contained"
-                           "disabled")
+    [:> Button {:variant "contained"
                 :on-click (fn []
-                            (utils/setval [specter/ATOM :hideaway]
-                                          (if (:hideaway secrets*)
-                                            specter/NONE
-                                            (:mac state*))
-                                          secrets)
+                            (specter/transform [specter/ATOM :hideaways]
+                                               (partial toggle (:mac state*))
+                                               secrets)
                             (update-mic))
                 :full-width true}
-     (if (:hideaway secrets*)
+     (if ((:hideaways secrets*) (:mac state*))
        "DISABLE HIDEAWAY"
        "ENABLE HIDEAWAY")]))
 
@@ -364,12 +354,31 @@
 (def network-path
   (path/join (app-root-path/toString) "network.sh"))
 
+(defn sync-settings
+  [path atom*]
+  (add-watch atom* :change (fn [_ _ _ value]
+                             (js/console.log "Settings atom value updated, writing to file")
+                             (spit path (yaml/stringify (clj->js value))))))
+
+(defn parse
+  [path]
+  (-> path
+      slurp
+      yaml/parse
+      (js->clj :keywordize-keys true)))
+
 (defn after-load []
   (js/console.log "Executing after-load function")
 ;; Using fix-path to ensure the system PATH is correctly set in the Electron environment. This resolves the "spawn ffmpeg ENOENT" error by making sure ffmpeg can be found and executed.
   ((.-default fix-path))
-  (sync-settings secrets-filename secrets)
-  (sync-settings config-filename config)
+  (let [secrets-path (get-path secrets-filename)]
+    (when (fs/existsSync secrets-path)
+      (merge-into-atom (specter/transform :hideaways set (parse secrets-path)) secrets))
+    (sync-settings secrets-path secrets))
+  (let [config-path (get-path config-filename)]
+    (when (fs/existsSync config-path)
+      (merge-into-atom (parse config-path) config))
+    (sync-settings config-path config))
   (client/render root [grid])
   (electron/ipcRenderer.on channel handle-shortcut)
 ;; This section is tasked with the process of determining the active microphone,

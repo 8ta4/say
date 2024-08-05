@@ -256,7 +256,6 @@
 (defn update-mic []
 ;; An empty string "" is used as a fallback to avoid "Can't put nil on a channel" error.
   (async/put! mic-channel (or (select-mic (merge @secrets @config @state)) "")))
-
 ;; Using defonce to ensure the root is only created once. This prevents warnings about
 ;; calling ReactDOMClient.createRoot() on a container that has already been passed to
 ;; createRoot() before during hot reloads or re-evaluations of the code.

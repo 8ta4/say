@@ -157,7 +157,7 @@ The sound intensity is inversely proportional to the square of the distance.
 
 No. If you're not in a hideaway and there's no external mic, `say` won't use the built-in mic to avoid recording poor audio. You can either connect an external mic or mark your current location as a hideaway if you think the built-in mic is good enough.
 
-> Can I enable multiple hideaways? (Planned)
+> Can I enable multiple hideaways?
 
 Absolutely!
 

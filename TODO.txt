@@ -1,1 +1,0 @@
-Prevent multiple instances from restarting upon app termination

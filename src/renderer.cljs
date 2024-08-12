@@ -225,8 +225,7 @@
 
 (defn update-mac []
   (js/console.log "Updating MAC address in application state")
-  (js-await [mac (address/mac)]
-    (utils/setval [specter/ATOM :mac] mac state)))
+  (utils/setval [specter/ATOM :mac] (get-mac) state))
 
 (defn merge-into-atom
   [map* atom*]

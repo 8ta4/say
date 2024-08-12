@@ -1,1 +1,0 @@
-Identify the Wi-Fi network using the router’s MAC address.

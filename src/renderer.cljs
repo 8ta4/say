@@ -407,17 +407,17 @@
 ;; The essential aspect is ensuring that certain operations precede the determination of the active microphone:
 ;; 1. Updating the MAC address and updating the list of available microphones are prerequisites.
 ;; 2. Setting the active microphone based on the updated MAC address and microphone list.
-  (js-await [_ (update-mac)]
-    (js-await [_ (update-mics)]
-      (.stdout.on (child_process/spawn "expect" (clj->js [network-path]))
-                  "data"
-                  (fn []
-                    (js-await [_ (update-mac)]
-                      (update-mic))))
-      (set! js/navigator.mediaDevices.ondevicechange (fn []
-                                                       (js-await [_ (update-mics)]
-                                                         (update-mic))))
-      (update-mic)))
+  (update-mac)
+  (js-await [_ (update-mics)]
+    (.stdout.on (child_process/spawn "expect" (clj->js [network-path]))
+                "data"
+                (fn []
+                  (update-mac)
+                  (update-mic)))
+    (set! js/navigator.mediaDevices.ondevicechange (fn []
+                                                     (js-await [_ (update-mics)]
+                                                       (update-mic))))
+    (update-mic))
   (update-plist))
 
 ;; https://github.com/snakers4/silero-vad/blob/5e7ee10ee065ab2b98751dd82b28e3c6360e19aa/utils_vad.py#L207

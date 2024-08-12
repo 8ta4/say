@@ -273,10 +273,7 @@
 
 (defn select-mic [map*]
   (cond
-    ((:hideaways map*) (:mac map*)) (->> map*
-                                         :mics
-                                         (filter is-built-in)
-                                         first)
+    ((:hideaways map*) (:mac map*)) (find-first is-built-in (:mics map*))
     (:mic map*) (some #{(:mic map*)} (:mics map*))))
 
 (defn update-mic []

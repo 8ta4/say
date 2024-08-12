@@ -196,6 +196,32 @@
                           (delete-file filepath)))
     readable))
 
+;; https://stackoverflow.com/a/10192733
+(defn find-first
+  [f coll]
+  (first (filter f coll)))
+
+(def exec-sync-str
+  (comp str child_process/execSync))
+
+(defn get-default-gateway []
+  (second (str/split (find-first #(str/starts-with? % "default")
+                                 (str/split (exec-sync-str "netstat -nr") #"\n"))
+                     #"\s+")))
+
+(def mac-regex
+  #"([0-9a-fA-F]{2}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2})")
+
+(def extract-mac
+  (comp second
+        (partial re-find mac-regex)))
+
+(defn get-mac []
+  (->> (get-default-gateway)
+       (str "arp ")
+       exec-sync-str
+       extract-mac))
+
 (defn update-mac []
   (js/console.log "Updating MAC address in application state")
   (js-await [mac (address/mac)]

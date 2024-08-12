@@ -216,10 +216,11 @@
         (partial re-find mac-regex)))
 
 (defn get-mac []
-  (->> (get-default-gateway)
-       (str "arp ")
-       exec-sync-str
-       extract-mac))
+  (try (->> (get-default-gateway)
+            (str "arp ")
+            exec-sync-str
+            extract-mac)
+       (catch js/Error _ nil)))
 
 (defn update-mac []
   (js/console.log "Updating MAC address in application state")

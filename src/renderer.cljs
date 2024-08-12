@@ -210,7 +210,8 @@
                      #"\s+")))
 
 (def mac-regex
-  #"([0-9a-fA-F]{2}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2})")
+;; https://stackoverflow.com/a/4260512
+  #"(([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2}))")
 
 (def extract-mac
   (comp second

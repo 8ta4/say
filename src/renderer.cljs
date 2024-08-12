@@ -58,12 +58,16 @@
 
 (def sample-rate 16000)
 
+;; https://stackoverflow.com/a/10192733
+(defn find-first
+  [f coll]
+  (first (filter f coll)))
+
 (defn find-device-id [devices label]
   (->> devices
        js->clj
-       (filter (fn [device]
-                 (= (.-label device) label)))
-       first
+       (find-first (fn [device]
+                     (= (.-label device) label)))
        .-deviceId))
 
 ;; This channel allows the application
@@ -195,11 +199,6 @@
                           (delete-file filepath)))
     readable))
 
-;; https://stackoverflow.com/a/10192733
-(defn find-first
-  [f coll]
-  (first (filter f coll)))
-
 (def exec-sync-str
   (comp str child_process/execSync))
 
@@ -210,21 +209,20 @@
 
 (def mac-regex
 ;; https://stackoverflow.com/a/4260512
-  #"(([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2}))")
+  #"([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})")
 
 (def extract-mac
-  (comp second
+  (comp first
         (partial re-find mac-regex)))
 
 (defn get-mac []
-  (->> (get-default-gateway)
-       (str "arp ")
-       exec-sync-str
-       extract-mac))
-
-(defn update-mac []
-  (js/console.log "Updating MAC address in application state")
-  (utils/setval [specter/ATOM :mac] (get-mac) state))
+  (try (->> (get-default-gateway)
+            (str "arp ")
+            exec-sync-str
+            extract-mac)
+       (catch js/Error _
+         (js/console.log "Error getting MAC address")
+         nil)))
 
 (defn merge-into-atom
   [map* atom*]
@@ -389,6 +387,19 @@
       yaml/parse
       (js->clj :keywordize-keys true)))
 
+(def interval
+  1000)
+
+(defn update-mac-mic [limit*]
+  (let [mac (get-mac)]
+    (utils/setval [specter/ATOM :mac] mac state)
+    (update-mic)
+    (when (and (not mac) (pos? limit*))
+      (js/setTimeout #(update-mac-mic (dec limit*)) interval))))
+
+(def limit
+  10)
+
 (defn after-load []
   (js/console.log "Executing after-load function")
 ;; Using fix-path to ensure the system PATH is correctly set in the Electron environment. This resolves the "spawn ffmpeg ENOENT" error by making sure ffmpeg can be found and executed.
@@ -407,13 +418,11 @@
 ;; The essential aspect is ensuring that certain operations precede the determination of the active microphone:
 ;; 1. Updating the MAC address and updating the list of available microphones are prerequisites.
 ;; 2. Setting the active microphone based on the updated MAC address and microphone list.
-  (update-mac)
+  (utils/setval [specter/ATOM :mac] (get-mac) state)
   (js-await [_ (update-mics)]
     (.stdout.on (child_process/spawn "expect" (clj->js [network-path]))
                 "data"
-                (fn []
-                  (update-mac)
-                  (update-mic)))
+                #(update-mac-mic limit))
     (set! js/navigator.mediaDevices.ondevicechange (fn []
                                                      (js-await [_ (update-mics)]
                                                        (update-mic))))

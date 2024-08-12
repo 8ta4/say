@@ -224,10 +224,6 @@
          (js/console.log "Error getting MAC address")
          nil)))
 
-(defn update-mac []
-  (js/console.log "Updating MAC address in application state")
-  (utils/setval [specter/ATOM :mac] (get-mac) state))
-
 (defn merge-into-atom
   [map* atom*]
   (specter/transform specter/ATOM
@@ -391,6 +387,19 @@
       yaml/parse
       (js->clj :keywordize-keys true)))
 
+(def interval
+  1000)
+
+(defn update-mac-mic [limit*]
+  (let [mac (get-mac)]
+    (utils/setval [specter/ATOM :mac] mac state)
+    (update-mic)
+    (when (and (not mac) (pos? limit*))
+      (js/setTimeout #(update-mac-mic (dec limit*)) interval))))
+
+(def limit
+  10)
+
 (defn after-load []
   (js/console.log "Executing after-load function")
 ;; Using fix-path to ensure the system PATH is correctly set in the Electron environment. This resolves the "spawn ffmpeg ENOENT" error by making sure ffmpeg can be found and executed.
@@ -409,13 +418,11 @@
 ;; The essential aspect is ensuring that certain operations precede the determination of the active microphone:
 ;; 1. Updating the MAC address and updating the list of available microphones are prerequisites.
 ;; 2. Setting the active microphone based on the updated MAC address and microphone list.
-  (update-mac)
+  (utils/setval [specter/ATOM :mac] (get-mac) state)
   (js-await [_ (update-mics)]
     (.stdout.on (child_process/spawn "expect" (clj->js [network-path]))
                 "data"
-                (fn []
-                  (update-mac)
-                  (update-mic)))
+                #(update-mac-mic limit))
     (set! js/navigator.mediaDevices.ondevicechange (fn []
                                                      (js-await [_ (update-mics)]
                                                        (update-mic))))

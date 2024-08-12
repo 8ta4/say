@@ -58,12 +58,16 @@
 
 (def sample-rate 16000)
 
+;; https://stackoverflow.com/a/10192733
+(defn find-first
+  [f coll]
+  (first (filter f coll)))
+
 (defn find-device-id [devices label]
   (->> devices
        js->clj
-       (filter (fn [device]
-                 (= (.-label device) label)))
-       first
+       (find-first (fn [device]
+                     (= (.-label device) label)))
        .-deviceId))
 
 ;; This channel allows the application
@@ -194,11 +198,6 @@
                                      :keywords? true})
                           (delete-file filepath)))
     readable))
-
-;; https://stackoverflow.com/a/10192733
-(defn find-first
-  [f coll]
-  (first (filter f coll)))
 
 (def exec-sync-str
   (comp str child_process/execSync))

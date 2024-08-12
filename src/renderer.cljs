@@ -209,10 +209,10 @@
 
 (def mac-regex
 ;; https://stackoverflow.com/a/4260512
-  #"(([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2}))")
+  #"([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})")
 
 (def extract-mac
-  (comp second
+  (comp first
         (partial re-find mac-regex)))
 
 (defn get-mac []

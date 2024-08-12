@@ -390,6 +390,7 @@
 (def interval
   1000)
 
+;; This function includes retry logic to handle potential delays when `scutil` detects changes and `arp` is able to get the MAC address.
 (defn update-mac-mic [limit*]
   (let [mac (get-mac)]
     (utils/setval [specter/ATOM :mac] mac state)

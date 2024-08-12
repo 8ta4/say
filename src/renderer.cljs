@@ -220,7 +220,9 @@
             (str "arp ")
             exec-sync-str
             extract-mac)
-       (catch js/Error _ nil)))
+       (catch js/Error _
+         (js/console.log "Error getting MAC address")
+         nil)))
 
 (defn update-mac []
   (js/console.log "Updating MAC address in application state")

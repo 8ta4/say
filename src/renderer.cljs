@@ -4,7 +4,6 @@
             ["@mui/material/TextField" :default TextField]
             ["@mui/material/ToggleButton" :default ToggleButton]
             ["@mui/material/ToggleButtonGroup" :default ToggleButtonGroup]
-            ["address/promises" :as address]
             [ajax.core :refer [POST]]
             [app-root-path]
             [applied-science.js-interop :as j]
@@ -196,10 +195,36 @@
                           (delete-file filepath)))
     readable))
 
+;; https://stackoverflow.com/a/10192733
+(defn find-first
+  [f coll]
+  (first (filter f coll)))
+
+(def exec-sync-str
+  (comp str child_process/execSync))
+
+(defn get-default-gateway []
+  (second (str/split (find-first #(str/starts-with? % "default")
+                                 (str/split (exec-sync-str "netstat -nr") #"\n"))
+                     #"\s+")))
+
+(def mac-regex
+;; https://stackoverflow.com/a/4260512
+  #"(([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2}))")
+
+(def extract-mac
+  (comp second
+        (partial re-find mac-regex)))
+
+(defn get-mac []
+  (->> (get-default-gateway)
+       (str "arp ")
+       exec-sync-str
+       extract-mac))
+
 (defn update-mac []
   (js/console.log "Updating MAC address in application state")
-  (js-await [mac (address/mac)]
-    (utils/setval [specter/ATOM :mac] mac state)))
+  (utils/setval [specter/ATOM :mac] (get-mac) state))
 
 (defn merge-into-atom
   [map* atom*]
@@ -247,10 +272,7 @@
 
 (defn select-mic [map*]
   (cond
-    ((:hideaways map*) (:mac map*)) (->> map*
-                                         :mics
-                                         (filter is-built-in)
-                                         first)
+    ((:hideaways map*) (:mac map*)) (find-first is-built-in (:mics map*))
     (:mic map*) (some #{(:mic map*)} (:mics map*))))
 
 (defn update-mic []
@@ -385,17 +407,17 @@
 ;; The essential aspect is ensuring that certain operations precede the determination of the active microphone:
 ;; 1. Updating the MAC address and updating the list of available microphones are prerequisites.
 ;; 2. Setting the active microphone based on the updated MAC address and microphone list.
-  (js-await [_ (update-mac)]
-    (js-await [_ (update-mics)]
-      (.stdout.on (child_process/spawn "expect" (clj->js [network-path]))
-                  "data"
-                  (fn []
-                    (js-await [_ (update-mac)]
-                      (update-mic))))
-      (set! js/navigator.mediaDevices.ondevicechange (fn []
-                                                       (js-await [_ (update-mics)]
-                                                         (update-mic))))
-      (update-mic)))
+  (update-mac)
+  (js-await [_ (update-mics)]
+    (.stdout.on (child_process/spawn "expect" (clj->js [network-path]))
+                "data"
+                (fn []
+                  (update-mac)
+                  (update-mic)))
+    (set! js/navigator.mediaDevices.ondevicechange (fn []
+                                                     (js-await [_ (update-mics)]
+                                                       (update-mic))))
+    (update-mic))
   (update-plist))
 
 ;; https://github.com/snakers4/silero-vad/blob/5e7ee10ee065ab2b98751dd82b28e3c6360e19aa/utils_vad.py#L207

@@ -62,6 +62,14 @@ Yup, you can. Closing the window with the close button, `⌘ + w`, or even `⌘ 
 
 Technically you can force quit the background process. But `say` is meant to be running 24/7 to capture your voice. It'll try to restart itself if you quit it. If you really want to stop using `say`, the best way is to uninstall it and reboot your computer.
 
+> Can this tool automatically turn off during meetings?
+
+Nope, `say` is always on, even during meetings.
+
+> Can this tool be scheduled to turn off at specific times?
+
+`say` doesn't have a scheduling feature to turn off at certain times.
+
 > What's the main source of latency?
 
 Usually, it's the Deepgram API that slows things down.

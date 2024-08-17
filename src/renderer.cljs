@@ -406,6 +406,7 @@
 ;; Using fix-path to ensure the system PATH is correctly set in the Electron environment. This resolves the "spawn ffmpeg ENOENT" error by making sure ffmpeg can be found and executed.
   ((.-default fix-path))
   (let [secrets-path (get-path secrets-filename)]
+    (make-parents secrets-path)
     (when (fs/existsSync secrets-path)
       (merge-into-atom (specter/transform :hideaways set (parse secrets-path)) secrets))
     (sync-settings secrets-path secrets))

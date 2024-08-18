@@ -87,6 +87,10 @@ Nope, your Mac stays awake when `say` is running, even on battery power. After a
 
 Absolutely! If you care more about saving battery, feel free to put your Mac to sleep.
 
+> Will this tool stop my MacBook from sleeping when I close the lid?
+
+Nah. If your MacBook's set to sleep when you close it up, it'll still do that even with `say` running. But hey, if you've got your MacBook set up to stay awake in clamshell mode, it'll stay up regardless of whether `say` is doing its thing or not.
+
 > Does this tool filter out other voices?
 
 Nah, `say` is an equal-opportunity listener.

@@ -66,7 +66,7 @@ Some folks might say that a higher price makes you use the tool more. You know, 
 
 > How do I set up this tool's dev environment?
 
-1. Follow the [setup steps](https://github.com/8ta4/say?tab=readme-ov-file#setup) in the README.md.
+1. Follow the [setup steps](https://github.com/8ta4/say/blob/2eb2a67c7ee6e75eb21111fe17ad879ca78256d6/README.md#setup) in the README.md.
 
 1. Install [devenv](https://github.com/cachix/devenv/blob/dad24416b1ca61a5551db0de863b047765ac0454/docs/getting-started.md#installation).
 

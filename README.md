@@ -6,6 +6,8 @@
 
 `say` is always on, recording and transcribing your voice 24/7. Whenever inspiration strikes, just say it.
 
+[![](https://raw.githubusercontent.com/8ta4/say-media/e99b357ecd6ec673c10b05b775f9b57eedf70e55/timeline.gif)](https://youtu.be/Yemn1UAKx0M)
+
 ## Setup
 
 > How do I set up this tool?

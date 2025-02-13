@@ -126,7 +126,7 @@
   (path/join app-temp-directory (generate-audio-filename)))
 
 (def url
-  "https://api.deepgram.com/v1/listen?model=nova-2&smart_format=true")
+  "https://api.deepgram.com/v1/listen?model=nova-3&smart_format=true")
 
 (def transcription-directory-path
   (path/join (os/homedir) ".local/share/say"))
